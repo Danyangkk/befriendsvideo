@@ -1,0 +1,1704 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>短视频智能体 · Befriendsvideo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg-app:#F6F5F0; --bg-canvas:#FBFAF6; --bg-card:#FFFFFF;
+  --bg-nav:#FFFFFF; --bg-side:#F4F2EB;
+  --ink:#1B1D27; --ink-2:#4A4E5B; --ink-3:#828794; --ink-mute:#B7BAC2;
+  --line:#E8E4D8; --line-2:#D9D4C5; --line-soft:#EFECE2;
+  --brand:#5B6CFF; --brand-deep:#4453E5; --brand-soft:#EEF0FF; --brand-ink:#2A35B8;
+  --accent:#E8835C; --accent-soft:#FBEDE3; --accent-ink:#C25E32;
+  --ok:#1FA86B; --ok-soft:#E3F5EC; --warn:#D9923A; --warn-soft:#FBF0DD; --danger:#D5483B; --danger-soft:#FBE7E4;
+  --r-sm:7px; --r-md:11px; --r-lg:15px; --r-xl:19px; --r-pill:999px;
+  --sh-sm:0 1px 2px rgba(20,22,30,.06),0 0 0 1px rgba(20,22,30,.03);
+  --sh-md:0 6px 20px -6px rgba(27,29,46,.10),0 1px 2px rgba(27,29,46,.04);
+  --sh-lg:0 24px 48px -16px rgba(27,29,46,.18),0 2px 8px rgba(27,29,46,.06);
+  --font:"Manrope","PingFang SC","Microsoft YaHei",-apple-system,sans-serif;
+  --mono:"JetBrains Mono",ui-monospace,Menlo,monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{font-family:var(--font);color:var(--ink);background:var(--bg-app);font-size:14px;line-height:1.5;-webkit-font-smoothing:antialiased}
+::selection{background:var(--brand);color:#fff}
+button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit}
+.mono{font-family:var(--mono)}
+.hidden{display:none!important}
+
+/* ---------- shell ---------- */
+.app{display:grid;grid-template-columns:300px 1fr;height:100vh;min-width:1000px;overflow:hidden}
+
+/* merged sidebar */
+.side{background:var(--bg-side);border-right:1px solid var(--line);display:flex;flex-direction:column;padding:18px 14px;overflow:hidden}
+.side-sec{display:flex;justify-content:space-between;align-items:center;font-size:11px;font-weight:700;color:var(--ink-3);padding:16px 8px 6px;text-transform:uppercase;letter-spacing:.6px}
+.side-sec .n{color:var(--ink-mute);font-family:var(--mono)}
+.brand{display:flex;align-items:center;gap:11px;padding:6px 8px 18px}
+.brand .logo{width:34px;height:34px;border-radius:10px;background:linear-gradient(135deg,var(--brand),var(--brand-deep));display:flex;align-items:center;justify-content:center;color:#fff;box-shadow:var(--sh-sm)}
+.brand .bt{font-weight:800;font-size:15px;letter-spacing:.2px}
+.brand .bs{font-size:10px;color:var(--ink-3);letter-spacing:1.5px;font-weight:600}
+.ws{display:flex;align-items:center;gap:9px;border:1px solid var(--line);border-radius:var(--r-md);padding:9px 11px;margin-bottom:18px;cursor:pointer;transition:.15s}
+.ws:hover{border-color:var(--line-2)}
+.ws .ico{width:26px;height:26px;border-radius:8px;background:var(--brand-soft);color:var(--brand-deep);display:flex;align-items:center;justify-content:center}
+.ws .t{font-weight:700;font-size:13.5px;flex:1}
+.nav-sec{font-size:10.5px;font-weight:700;color:var(--ink-mute);letter-spacing:1px;padding:14px 10px 7px;text-transform:uppercase}
+.nav-item{display:flex;align-items:center;gap:11px;padding:10px 11px;border-radius:var(--r-md);color:var(--ink-2);font-weight:600;font-size:13.5px;cursor:pointer;transition:.13s;position:relative}
+.nav-item:hover{background:var(--bg-side)}
+.nav-item.active{background:var(--brand-soft);color:var(--brand-ink)}
+.nav-item.active svg{color:var(--brand)}
+.nav-item svg{width:18px;height:18px;color:var(--ink-3);flex-shrink:0}
+.nav-item .ver{margin-left:auto;font-size:9.5px;font-weight:700;color:var(--ink-mute);font-family:var(--mono)}
+.nav-item .badge{margin-left:auto;font-size:11px;font-weight:700;color:var(--ink-3)}
+.nav-foot{margin-top:auto;display:flex;align-items:center;gap:7px;padding:10px;font-size:11px;color:var(--ink-mute);font-family:var(--mono)}
+.nav-foot .dot{width:6px;height:6px;border-radius:50%;background:var(--ok)}
+
+/* session list */
+.btn-new{display:flex;align-items:center;justify-content:center;gap:8px;background:var(--brand);color:#fff;font-weight:700;font-size:14px;padding:12px;border-radius:var(--r-md);box-shadow:0 6px 16px -6px rgba(91,108,255,.6);transition:.15s}
+.btn-new:hover{background:var(--brand-deep);transform:translateY(-1px)}
+.search{display:flex;align-items:center;gap:9px;background:#fff;border:1px solid var(--line);border-radius:var(--r-md);padding:10px 12px;margin:14px 0 6px;color:var(--ink-3)}
+.search input{border:none;outline:none;background:none;font-family:inherit;font-size:13px;flex:1;color:var(--ink)}
+.search .kk{font-size:10px;font-family:var(--mono);color:var(--ink-mute);border:1px solid var(--line);border-radius:5px;padding:1px 5px}
+.sess-scroll{flex:1;overflow-y:auto;margin:6px -6px;padding:0 6px}
+.sess-grp{display:flex;justify-content:space-between;align-items:center;padding:14px 6px 8px;font-size:11px;font-weight:700;color:var(--ink-3)}
+.sess-grp .n{color:var(--ink-mute)}
+.sess-item{padding:10px 11px;border-radius:var(--r-md);cursor:pointer;transition:.12s;border:1px solid transparent}
+.sess-item:hover{background:#fff;border-color:var(--line)}
+.sess-item.active{background:#fff;border-color:var(--line-2);box-shadow:var(--sh-sm)}
+.sess-item .tt{display:flex;align-items:center;gap:8px;font-weight:600;font-size:13px;color:var(--ink);margin-bottom:4px}
+.sess-item .tt .dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+.sess-item .mt{font-size:11.5px;color:var(--ink-3);padding-left:15px}
+.sess-item .mt .st{font-weight:700}
+.sess-foot{margin-top:8px;border-top:1px solid var(--line-soft);padding-top:8px}
+.sfoot-item{display:flex;align-items:center;gap:10px;padding:9px 11px;border-radius:var(--r-md);cursor:pointer;color:var(--ink-2);font-weight:600;font-size:13px;transition:.12s}
+.sfoot-item:hover{background:#fff}
+.sfoot-item.active{background:var(--brand-soft);color:var(--brand-ink)}
+.sfoot-item.active svg{color:var(--brand)}
+.sfoot-item svg{width:16px;height:16px;color:var(--ink-3)}
+.sfoot-item .badge{margin-left:auto;font-size:11px;color:var(--ink-3);font-family:var(--mono)}
+
+/* canvas */
+.canvas{display:flex;flex-direction:column;background:var(--bg-app);overflow:hidden}
+.topbar{display:flex;align-items:center;gap:14px;padding:0 26px;height:60px;border-bottom:1px solid var(--line);background:var(--bg-canvas);flex-shrink:0}
+.crumb{display:flex;align-items:center;gap:9px;font-size:13.5px;font-weight:600;color:var(--ink-3)}
+.crumb .sep{color:var(--ink-mute)}
+.crumb .cur{color:var(--ink);font-weight:700}
+.topbar .sp{flex:1}
+.tb-ic{width:36px;height:36px;border-radius:9px;display:flex;align-items:center;justify-content:center;color:var(--ink-2);transition:.12s;position:relative}
+.tb-ic:hover{background:var(--bg-side)}
+.tb-ic svg{width:18px;height:18px}
+.tb-ic .pip{position:absolute;top:8px;right:9px;width:7px;height:7px;border-radius:50%;background:var(--accent);border:1.5px solid var(--bg-canvas)}
+.user{display:flex;align-items:center;gap:9px;padding:5px 11px 5px 6px;border-radius:var(--r-pill);cursor:pointer;transition:.12s;position:relative}
+.user:hover{background:var(--bg-side)}
+.user .av{width:30px;height:30px;border-radius:50%;background:linear-gradient(135deg,var(--accent),#d96b3f);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:13px}
+.user .nm{font-weight:700;font-size:13.5px}
+.user .rl{font-size:10px;font-weight:700;padding:2px 7px;border-radius:var(--r-pill);background:var(--brand-soft);color:var(--brand-ink)}
+.user .rl.admin{background:var(--accent-soft);color:var(--accent-ink)}
+.role-pop{position:absolute;top:46px;right:0;width:210px;background:#fff;border:1px solid var(--line);border-radius:var(--r-lg);box-shadow:var(--sh-lg);padding:8px;z-index:90}
+.role-pop .h{font-size:11px;font-weight:700;color:var(--ink-3);padding:7px 10px 4px}
+.role-opt{display:flex;align-items:center;gap:10px;padding:10px;border-radius:var(--r-md);cursor:pointer;font-weight:600;font-size:13px}
+.role-opt:hover{background:var(--bg-side)}
+.role-opt.on{background:var(--brand-soft);color:var(--brand-ink)}
+.role-opt small{display:block;font-weight:500;font-size:11px;color:var(--ink-3)}
+.view-wrap{flex:1;overflow-y:auto;min-height:0}
+.view-wrap.no-scroll{overflow:hidden}
+.view{display:none}
+.view.on{display:block}
+#view-session.on{height:100%}
+.sess-view>.flow,.sess-view>.artifact{min-height:0}
+
+/* ---------- home ---------- */
+.home{max-width:980px;margin:0 auto;padding:60px 40px 50px}
+.hero-t{text-align:center;font-size:34px;font-weight:800;letter-spacing:.5px}
+.hero-t .hl{color:var(--brand)}
+.hero-s{text-align:center;color:var(--ink-3);font-size:14px;font-weight:600;margin-top:14px}
+.hero-s b{color:var(--ink-2)}
+.composer{margin:30px 0 14px;background:#fff;border:1.5px solid var(--line);border-radius:var(--r-xl);box-shadow:var(--sh-md);transition:.18s}
+.composer:focus-within{border-color:var(--brand);box-shadow:0 0 0 4px var(--brand-soft)}
+.composer .ta{width:100%;border:none;outline:none;resize:none;font-family:inherit;font-size:15px;padding:22px 24px 6px;color:var(--ink);background:none;min-height:96px}
+.composer .ta::placeholder{color:var(--ink-mute)}
+.comp-bar{display:flex;align-items:center;gap:8px;padding:12px 16px 14px}
+.comp-ic{width:36px;height:36px;border-radius:9px;display:flex;align-items:center;justify-content:center;color:var(--ink-3);transition:.12s}
+.comp-ic:hover{background:var(--bg-side);color:var(--ink-2)}
+.comp-ic svg{width:18px;height:18px}
+.comp-div{width:1px;height:22px;background:var(--line);margin:0 4px}
+.chip{display:flex;align-items:center;gap:6px;font-size:12.5px;font-weight:700;padding:7px 12px;border-radius:var(--r-pill);cursor:pointer}
+.chip.mode{background:var(--brand-soft);color:var(--brand-ink)}
+.chip.skills{background:var(--ok-soft);color:var(--ok)}
+.chip.model{background:var(--accent-soft);color:var(--accent-ink)}
+.chip svg{width:14px;height:14px}
+.comp-send{margin-left:auto;width:44px;height:44px;border-radius:12px;background:var(--brand);color:#fff;display:flex;align-items:center;justify-content:center;transition:.15s}
+.comp-send:hover{background:var(--brand-deep);transform:translatey(-1px)}
+.comp-send svg{width:20px;height:20px}
+.sec-h{display:flex;align-items:center;gap:12px;margin:38px 0 16px}
+.sec-h .bar{width:4px;height:18px;border-radius:2px;background:var(--brand)}
+.sec-h .t{font-weight:800;font-size:17px}
+.sec-h .en{font-family:var(--mono);font-size:12px;color:var(--ink-mute);letter-spacing:.5px}
+.sec-h .more{margin-left:auto;font-size:12.5px;font-weight:700;color:var(--brand);cursor:pointer}
+.cap-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.cap{background:#fff;border:1px solid var(--line);border-radius:var(--r-lg);padding:20px;cursor:pointer;transition:.16s;position:relative}
+.cap:hover{border-color:var(--brand);box-shadow:var(--sh-md);transform:translateY(-2px)}
+.cap .ico{width:42px;height:42px;border-radius:11px;display:flex;align-items:center;justify-content:center;margin-bottom:14px}
+.cap .ico svg{width:21px;height:21px}
+.cap .arr{position:absolute;top:20px;right:20px;color:var(--ink-mute);transition:.15s}
+.cap:hover .arr{color:var(--brand)}
+.cap .ct{font-weight:800;font-size:15.5px;margin-bottom:7px}
+.cap .cd{font-size:12.5px;color:var(--ink-3);line-height:1.6;min-height:48px}
+.cap .tags{display:flex;gap:6px;margin-top:13px;flex-wrap:wrap}
+.tag{font-size:11px;font-weight:600;padding:3px 9px;border-radius:var(--r-sm);background:var(--bg-side);color:var(--ink-2)}
+
+/* ---------- session ---------- */
+.sess-view{display:flex;height:100%}
+.flow{flex:1;min-width:0;display:flex;flex-direction:column}
+.flow-scroll{flex:1;overflow-y:auto;padding:26px 30px}
+.msg{margin-bottom:22px}
+.msg .who{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--ink-3);margin-bottom:8px;font-weight:600}
+.msg .who .av{width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:10px;color:#fff}
+.msg.user .who .av{background:var(--accent)}
+.msg.bot .who .av{background:var(--brand)}
+.msg.user{display:flex;flex-direction:column;align-items:flex-end}
+.msg.user .who{flex-direction:row-reverse}
+.msg.user .bubble{background:var(--brand-soft);border-color:#d9ddff;border-radius:var(--r-lg) var(--r-lg) 4px var(--r-lg);max-width:82%}
+.msg.bot{display:flex;flex-direction:column;align-items:flex-start}
+.msg.bot .plan,.msg.bot .think,.msg.bot>.bubble{width:100%}
+.bubble{background:#fff;border:1px solid var(--line);border-radius:var(--r-lg);padding:14px 16px;font-size:14px}
+.bubble .lk{color:var(--brand);font-family:var(--mono);font-size:12.5px}
+.think{display:flex;align-items:center;gap:9px;color:var(--ink-3);font-size:13px;font-style:italic;padding:4px 0 12px}
+.think .sp{width:14px;height:14px;border:2px solid var(--line-2);border-top-color:var(--brand);border-radius:50%;animation:spin 1s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.plan{background:#fff;border:1px solid var(--line);border-radius:var(--r-lg);overflow:hidden}
+.plan-h{display:flex;align-items:center;gap:9px;padding:13px 16px;font-weight:700;font-size:13.5px;border-bottom:1px solid var(--line-soft);background:var(--bg-canvas)}
+.plan-h svg{width:16px;height:16px;color:var(--brand)}
+.step{display:flex;align-items:flex-start;gap:11px;padding:11px 16px;border-bottom:1px solid var(--line-soft)}
+.step:last-child{border-bottom:none}
+.step .mk{width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px}
+.step .mk.done{background:var(--ok-soft);color:var(--ok)}
+.step .mk.done svg{width:12px;height:12px}
+.step .mk.wait{background:var(--warn-soft);color:var(--warn);font-weight:800;font-size:11px}
+.step .sb{flex:1}
+.step .sn{font-weight:700;font-size:13.5px}
+.step .sd{font-size:12px;color:var(--ink-3);margin-top:2px}
+.step .art{display:inline-flex;align-items:center;gap:6px;margin-top:8px;font-size:12px;font-weight:700;color:var(--brand);background:var(--brand-soft);padding:5px 10px;border-radius:var(--r-sm);cursor:pointer}
+.step .art svg{width:13px;height:13px}
+.gate{background:var(--warn-soft);border:1px solid #f0d9ad;border-radius:var(--r-lg);padding:15px 16px;margin-top:2px}
+.gate .gt{font-weight:800;font-size:13.5px;color:var(--warn);margin-bottom:4px;display:flex;align-items:center;gap:7px}
+.gate .gd{font-size:12.5px;color:var(--ink-2);margin-bottom:12px}
+.gate-btns{display:flex;gap:9px}
+.btn-pri{background:var(--brand);color:#fff;font-weight:700;font-size:13px;padding:9px 16px;border-radius:var(--r-md);transition:.13s}
+.btn-pri:hover{background:var(--brand-deep)}
+.btn-sec{background:#fff;border:1px solid var(--line-2);color:var(--ink-2);font-weight:700;font-size:13px;padding:9px 16px;border-radius:var(--r-md)}
+.btn-sec:hover{border-color:var(--ink-3)}
+.risk{background:var(--danger-soft);border:1px solid #f1c4bd;border-radius:var(--r-md);padding:10px 13px;font-size:12.5px;color:var(--danger);font-weight:600;margin-top:8px;display:flex;align-items:center;gap:8px}
+.composer-mini{border-top:1px solid var(--line);padding:14px 30px;background:var(--bg-canvas)}
+.cm-box{display:flex;align-items:center;gap:10px;background:#fff;border:1px solid var(--line);border-radius:var(--r-lg);padding:11px 14px}
+.cm-box input{flex:1;border:none;outline:none;font-family:inherit;font-size:14px;background:none}
+.cm-box .s{width:34px;height:34px;border-radius:9px;background:var(--brand);color:#fff;display:flex;align-items:center;justify-content:center}
+.cm-box .s svg{width:17px;height:17px}
+
+/* right artifact panel */
+.artifact{width:42%;min-width:360px;max-width:560px;border-left:1px solid var(--line);background:var(--bg-canvas);display:flex;flex-direction:column}
+.art-top{display:flex;align-items:center;gap:8px;padding:14px 18px;border-bottom:1px solid var(--line)}
+.art-top .t{font-weight:800;font-size:14px;flex:1}
+.art-top .x{width:30px;height:30px;border-radius:8px;display:flex;align-items:center;justify-content:center;color:var(--ink-3)}
+.art-top .x:hover{background:var(--bg-side)}
+.art-tabs{display:flex;gap:6px;padding:11px 18px;border-bottom:1px solid var(--line-soft)}
+.art-tab{font-size:12.5px;font-weight:700;padding:6px 13px;border-radius:var(--r-pill);color:var(--ink-3);cursor:pointer;background:var(--bg-side)}
+.art-tab.on{background:var(--brand);color:#fff}
+.art-tab.dis{opacity:.4;cursor:not-allowed}
+.art-body{flex:1;overflow-y:auto;padding:20px;min-height:0}
+.doc{background:#fff;border:1px solid var(--line);border-radius:var(--r-md);padding:22px}
+.doc h3{font-size:16px;font-weight:800;margin-bottom:4px}
+.doc .sub{font-size:12px;color:var(--ink-3);margin-bottom:16px}
+.doc h4{font-size:13px;font-weight:800;color:var(--brand-ink);margin:18px 0 9px;display:flex;align-items:center;gap:7px}
+.doc h4 .num{width:18px;height:18px;border-radius:6px;background:var(--brand-soft);color:var(--brand-ink);display:flex;align-items:center;justify-content:center;font-size:11px}
+.elem{border:1px solid var(--line-soft);border-radius:var(--r-sm);padding:11px 13px;margin-bottom:9px}
+.elem .eh{font-weight:700;font-size:12.5px;margin-bottom:5px;display:flex;justify-content:space-between}
+.elem .src{font-family:var(--mono);font-size:10.5px;color:var(--brand);cursor:pointer}
+.elem .ed{font-size:12px;color:var(--ink-2);line-height:1.6}
+.elem .clip{display:inline-flex;align-items:center;gap:5px;margin-top:7px;font-size:11px;font-family:var(--mono);color:var(--ink-3);background:var(--bg-side);padding:3px 8px;border-radius:5px}
+.dl{display:flex;align-items:center;justify-content:center;gap:8px;margin-top:16px;border:1px dashed var(--line-2);border-radius:var(--r-md);padding:11px;font-weight:700;font-size:13px;color:var(--ink-2);cursor:pointer}
+.dl:hover{border-color:var(--brand);color:var(--brand)}
+.scriptcard{background:#fff;border:1px solid var(--line);border-radius:var(--r-md);padding:15px;margin-bottom:12px}
+.scriptcard .sh{display:flex;justify-content:space-between;align-items:center;margin-bottom:9px}
+.scriptcard .nm{font-weight:800;font-size:13.5px}
+.scriptcard .rk{font-size:10.5px;font-weight:700;color:var(--ok);background:var(--ok-soft);padding:2px 8px;border-radius:var(--r-pill)}
+.scriptcard .ln{font-size:12.5px;color:var(--ink-2);line-height:1.7;border-left:2px solid var(--brand-soft);padding-left:11px;margin:7px 0}
+.scriptcard .ref{font-size:11px;color:var(--ink-3);margin-top:8px}
+.scriptcard .ref a{color:var(--brand);font-family:var(--mono);text-decoration:none}
+
+/* ---------- generic page ---------- */
+.page{max-width:1040px;margin:0 auto;padding:34px 40px 50px}
+.page-h{display:flex;align-items:center;gap:14px;margin-bottom:22px}
+.page-h .t{font-weight:800;font-size:22px}
+.page-h .sp{flex:1}
+.page-h .search{margin:0;width:240px}
+.filter{display:flex;gap:8px;margin-bottom:20px}
+.ftab{font-size:13px;font-weight:700;padding:8px 16px;border-radius:var(--r-pill);color:var(--ink-2);cursor:pointer;background:#fff;border:1px solid var(--line);transition:.12s}
+.ftab:hover{border-color:var(--line-2)}
+.ftab.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+.ftab.sed{margin-left:auto;background:var(--accent-soft);color:var(--accent-ink);border-color:transparent;display:flex;align-items:center;gap:7px}
+.ftab.sed .b{background:var(--accent);color:#fff;border-radius:var(--r-pill);font-size:10px;padding:1px 6px;font-family:var(--mono)}
+.skill-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:15px}
+.skill{background:#fff;border:1px solid var(--line);border-radius:var(--r-lg);padding:17px;cursor:pointer;transition:.15s}
+.skill:hover{border-color:var(--brand);box-shadow:var(--sh-md)}
+.skill .top{display:flex;align-items:center;gap:9px;margin-bottom:9px}
+.skill .nm{font-family:var(--mono);font-weight:600;font-size:13px;color:var(--ink)}
+.skill .cn{font-weight:800;font-size:14px;margin-bottom:6px}
+.skill .dd{font-size:12px;color:var(--ink-3);line-height:1.55;min-height:34px}
+.skill .meta{display:flex;gap:6px;margin-top:12px;flex-wrap:wrap}
+.pill{font-size:10.5px;font-weight:700;padding:3px 9px;border-radius:var(--r-sm)}
+.pill.cat{background:var(--brand-soft);color:var(--brand-ink)}
+.pill.cat.sub{background:#f3ecfb;color:#7a4dc9}
+.pill.cat.common{background:var(--bg-side);color:var(--ink-2)}
+.pill.def{background:var(--ok-soft);color:var(--ok)}
+.pill.sed{background:var(--accent-soft);color:var(--accent-ink)}
+.conn-row{margin-top:24px;padding-top:18px;border-top:1px solid var(--line);font-size:12.5px;color:var(--ink-3)}
+.conn-row b{color:var(--ink-2)}
+.conn-row .mono{color:var(--ink-2)}
+
+/* candidate */
+.cand{background:#fff;border:1px solid var(--line);border-radius:var(--r-lg);padding:16px 18px;margin-bottom:13px;display:flex;align-items:center;gap:14px}
+.cand .ci{width:40px;height:40px;border-radius:11px;background:var(--accent-soft);color:var(--accent-ink);display:flex;align-items:center;justify-content:center}
+.cand .cb{flex:1}
+.cand .cn{font-family:var(--mono);font-weight:600;font-size:13.5px;display:flex;align-items:center;gap:9px}
+.cand .cd{font-size:12px;color:var(--ink-3);margin-top:3px}
+.cand .reuse{font-size:11px;font-weight:700;color:var(--accent-ink);background:var(--accent-soft);padding:2px 9px;border-radius:var(--r-pill)}
+.sed-note{background:var(--accent-soft);border:1px solid #f2d3c0;border-radius:var(--r-md);padding:12px 15px;font-size:12.5px;color:var(--accent-ink);margin-bottom:18px;display:flex;align-items:center;gap:9px}
+
+/* dashboard */
+.dash-grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:24px}
+.cron{background:#fff;border:1px solid var(--line);border-radius:var(--r-lg);padding:18px}
+.cron .ch{display:flex;align-items:center;justify-content:space-between;margin-bottom:13px}
+.cron .ct{font-weight:800;font-size:14.5px}
+.cron .when{font-size:11px;font-family:var(--mono);color:var(--ink-3)}
+.cron .stat{display:flex;align-items:center;gap:7px;font-size:12.5px;font-weight:700;color:var(--ok);margin-bottom:11px}
+.cron .stat .d{width:8px;height:8px;border-radius:50%;background:var(--ok)}
+.cron .row{display:flex;gap:20px;font-size:12.5px;margin-bottom:11px}
+.cron .row .k{color:var(--ink-3)}
+.cron .row .v{font-weight:800;font-family:var(--mono)}
+.cron .row .v.up{color:var(--ok)}
+.cron .log{font-size:12px;font-weight:700;color:var(--brand);cursor:pointer}
+.tbl{width:100%;background:#fff;border:1px solid var(--line);border-radius:var(--r-lg);border-collapse:collapse;overflow:hidden;margin-bottom:24px}
+.tbl th{text-align:left;font-size:11.5px;font-weight:700;color:var(--ink-3);padding:12px 16px;background:var(--bg-canvas);border-bottom:1px solid var(--line)}
+.tbl td{padding:13px 16px;border-bottom:1px solid var(--line-soft);font-size:13px}
+.tbl tr:last-child td{border-bottom:none}
+.tbl tr.clk{cursor:pointer}
+.tbl tr.clk:hover td{background:var(--brand-soft)}
+.tbl .cat-nm{font-weight:700}
+.bar{height:7px;border-radius:4px;background:var(--bg-side);overflow:hidden;width:90px;display:inline-block;vertical-align:middle}
+.bar i{display:block;height:100%;background:var(--brand);border-radius:4px}
+.full{font-size:10.5px;font-weight:700;color:var(--ok);margin-left:6px}
+.trend{background:#fff;border:1px solid var(--line);border-radius:var(--r-lg);padding:18px;margin-bottom:24px}
+.trend .th{font-weight:800;font-size:14px;margin-bottom:14px}
+.trend .tr{display:flex;align-items:center;gap:14px;margin-bottom:10px;font-size:12.5px}
+.trend .tr .lb{width:64px;font-weight:700;color:var(--ink-2)}
+.tlegend{display:inline-flex;gap:14px;margin-left:12px;font-size:11.5px;font-weight:600;color:var(--ink-2)}
+.tlegend i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:5px;vertical-align:-1px}
+.tchart{display:flex;align-items:flex-end;gap:16px;height:158px;padding:18px 6px 0}
+.tg{flex:1;display:flex;flex-direction:column;align-items:center;gap:7px;height:100%;justify-content:flex-end}
+.tbars{display:flex;gap:5px;align-items:flex-end}
+.tb{width:20px;border-radius:4px 4px 0 0;position:relative;min-height:4px}
+.tb.in{background:var(--brand)}.tb.ex{background:var(--accent);opacity:.92}
+.tb .tv{position:absolute;top:-15px;left:50%;transform:translateX(-50%);font-family:var(--mono);font-size:9.5px;color:var(--ink-mute);white-space:nowrap}
+.tw{font-size:11px;color:var(--ink-mute);font-family:var(--mono)}
+.toptabs{display:flex;gap:7px;margin-bottom:16px;flex-wrap:wrap}
+.toptab{font-size:13px;font-weight:700;padding:7px 15px;border-radius:var(--r-pill);background:#fff;border:1px solid var(--line);color:var(--ink-2);cursor:pointer}
+.toptab.on{background:var(--brand);color:#fff;border-color:var(--brand)}
+.rank2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.ranklist{background:#fff;border:1px solid var(--line);border-radius:var(--r-lg);padding:16px 18px}
+.ranklist .rh{font-weight:800;font-size:13.5px;margin-bottom:4px}
+.ranklist .rs{font-size:11px;color:var(--ink-3);margin-bottom:12px}
+.rankrow{display:flex;align-items:center;gap:11px;padding:9px 0;border-bottom:1px solid var(--line-soft);font-size:13px}
+.rankrow:last-child{border-bottom:none}
+.rankrow .no{width:18px;font-weight:800;color:var(--ink-mute);font-family:var(--mono)}
+.rankrow .rt{flex:1;font-weight:600}
+.rankrow .lib{font-size:10px;font-weight:700;padding:1px 7px;border-radius:var(--r-pill)}
+.rankrow .lib.in{background:var(--brand-soft);color:var(--brand-ink)}
+.rankrow .lib.ex{background:var(--accent-soft);color:var(--accent-ink)}
+.rankrow .sc{font-family:var(--mono);font-weight:700;font-size:12px}
+.rankrow .ck{font-size:11px;font-weight:700;color:var(--brand);cursor:pointer}
+
+/* drawer */
+.scrim{position:fixed;inset:0;background:rgba(20,22,30,.4);z-index:100;display:none}
+.scrim.on{display:block}
+.drawer{position:fixed;top:0;right:0;height:100%;width:460px;background:var(--bg-canvas);box-shadow:var(--sh-lg);z-index:101;transform:translateX(100%);transition:transform .26s cubic-bezier(.4,0,.2,1);display:flex;flex-direction:column}
+.drawer.on{transform:translateX(0)}
+.dr-top{display:flex;align-items:center;gap:12px;padding:18px 22px;border-bottom:1px solid var(--line)}
+.dr-top .bk{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;color:var(--ink-2)}
+.dr-top .bk:hover{background:var(--bg-side)}
+.dr-top .nm{font-family:var(--mono);font-weight:600;font-size:15px;flex:1}
+.dr-body{flex:1;overflow-y:auto;padding:22px}
+.dr-row{margin-bottom:18px}
+.dr-row .k{font-size:11px;font-weight:700;color:var(--ink-3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px}
+.dr-row .v{font-size:13.5px;color:var(--ink);line-height:1.65}
+.dr-foot{padding:18px 22px;border-top:1px solid var(--line);display:flex;gap:10px}
+.dr-foot .btn-pri,.dr-foot .btn-sec{flex:1;text-align:center;padding:12px}
+.mdfile{background:#fff;border:1px solid var(--line);border-radius:var(--r-md);overflow:hidden}
+.mdfile .fname{font-family:var(--mono);font-size:11.5px;font-weight:600;color:var(--ink-3);padding:9px 14px;border-bottom:1px solid var(--line-soft);background:var(--bg-canvas);display:flex;align-items:center;gap:7px}
+.fm{font-family:var(--mono);font-size:11.5px;line-height:1.75;white-space:pre-wrap;background:#FBFAF3;border-bottom:1px solid var(--line-soft);padding:12px 14px;color:var(--ink-2)}
+.fm .fk{color:var(--brand-deep);font-weight:600}
+.mdbody{padding:14px 16px 18px}
+.mdh1{font-size:15px;font-weight:800;margin:2px 0 10px}
+.mdh{font-size:12.5px;font-weight:800;color:var(--brand-ink);margin:15px 0 7px}
+.mdp{font-size:13px;color:var(--ink-2);line-height:1.65;margin:4px 0}
+.mdul{margin:5px 0;padding:0;list-style:none}
+.mdul li{font-size:13px;color:var(--ink-2);line-height:1.62;padding-left:16px;position:relative;margin:3px 0}
+.mdul li:before{content:"•";position:absolute;left:3px;color:var(--brand)}
+
+.toast{position:fixed;bottom:30px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--ink);color:#fff;font-weight:700;font-size:13.5px;padding:13px 22px;border-radius:var(--r-pill);box-shadow:var(--sh-lg);z-index:200;opacity:0;transition:.3s;display:flex;align-items:center;gap:9px;pointer-events:none}
+.toast.on{opacity:1;transform:translateX(-50%) translateY(0)}
+.toast svg{width:16px;height:16px;color:#6fe6ad}
+.admin-only{display:none}
+body[data-role="admin"] .admin-only{display:flex}
+body:not([data-role="admin"]) .admin-only{display:none!important}
+
+/* ---------- v0.5 report/script bits ---------- */
+.chips{display:flex;flex-wrap:wrap;gap:5px;margin-top:7px}
+.chip2{font-size:11px;font-weight:700;padding:2px 9px;border-radius:7px;background:var(--brand-soft);color:var(--brand-ink)}
+.chip2.un{background:var(--warn-soft);color:var(--accent-ink)}
+.refv{border:1px solid var(--line-soft);border-radius:9px;margin-bottom:8px;overflow:hidden}
+.refv .rvh{display:flex;align-items:center;gap:7px;padding:8px 11px;cursor:pointer;background:#fcfbf7}
+.refv .rvh .lib{font-size:10px;font-weight:700;padding:1px 6px;border-radius:5px}
+.refv .rvh .lib.in{background:var(--brand-soft);color:var(--brand-ink)}.refv .rvh .lib.ex{background:var(--accent-soft);color:var(--accent-ink)}
+.refv .rvh .nm{font-weight:700;font-size:12px}.refv .rvh .sc{margin-left:auto;font-family:var(--mono);font-size:10.5px;color:var(--ink-3)}
+.refv .rvh .ar{color:var(--ink-mute);font-size:10px;transition:.2s}.refv.col .rvh .ar{transform:rotate(-90deg)}
+.refv .rvb{padding:5px 11px 9px;border-top:1px solid var(--line-soft)}.refv.col .rvb{display:none}
+.segc{display:flex;align-items:center;gap:7px;margin-top:5px;font-size:11.5px;padding:4px 8px;border-radius:6px;background:var(--bg-side)}
+.segc.p{background:#fff6dd}.segc.e{background:#fce6dc}
+.segc .sn{font-weight:700;min-width:58px;flex-shrink:0}
+.segc .tg{font-size:10px;font-weight:700;padding:1px 6px;border-radius:5px;flex-shrink:0}
+.segc .tg.p{background:#ffe39a;color:#8a6600}.segc .tg.e{background:#ffcdb8;color:var(--accent-ink)}
+.segc .tc{font-family:var(--mono);font-size:10px;color:var(--ink-3);margin-left:auto;flex-shrink:0}
+.segc .pl{width:20px;height:20px;border-radius:50%;background:var(--brand);color:#fff;display:flex;align-items:center;justify-content:center;font-size:8px;cursor:pointer;flex-shrink:0}
+.segc .pl:hover{background:var(--brand-deep)}
+.srcv{margin-top:7px;font-size:11px;color:var(--brand-ink);cursor:pointer}
+.pager{display:flex;align-items:center;justify-content:center;gap:9px;margin-top:9px;font-size:11.5px}
+.pager button{border:1px solid var(--line);background:#fff;border-radius:6px;padding:4px 11px;font-weight:700;font-size:11.5px;cursor:pointer}
+.pager button:disabled{opacity:.4;cursor:default}.pager .pg{color:var(--ink-3);font-weight:700}
+.bpc{border:1px solid var(--line-soft);border-radius:9px;margin-bottom:8px;overflow:hidden}
+.bpc .bh{display:flex;align-items:center;gap:7px;padding:8px 11px;cursor:pointer;background:#fcfbf7;font-weight:700;font-size:12px}
+.bpc .bh .rk{font-size:9.5px;font-weight:700;color:var(--ok);background:var(--ok-soft);padding:1px 6px;border-radius:99px}
+.bpc .bh .ar{margin-left:auto;color:var(--ink-mute);font-size:10px;transition:.2s}.bpc.col .bh .ar{transform:rotate(-90deg)}
+.bpc .bb{border-top:1px solid var(--line-soft)}.bpc.col .bb{display:none}
+.bptbl{width:100%;border-collapse:collapse;font-size:11px;table-layout:fixed}
+.bptbl td{border-bottom:1px solid var(--line-soft);padding:5px 8px;vertical-align:top;word-break:break-word}
+.bptbl .sg{font-weight:700;white-space:nowrap;width:50px}.bptbl .sg.p{color:#8a6600}.bptbl .sg.e{color:var(--accent-ink)}
+.bptbl td:nth-child(2){width:50%}
+.bptbl .ct{color:var(--brand-ink);font-size:10.5px;white-space:normal;line-height:1.45}.bptbl .ct.orig{color:var(--ink-mute)}
+.bptbl .bphd td{font-weight:700;color:var(--ink-3);background:var(--bg-canvas);font-size:10px;white-space:normal}
+.hl{background:#fff2c8;padding:0 3px;border-radius:3px}.hl.e{background:#ffe0d2}
+.seg-cite{display:block;font-family:var(--mono);font-size:9.5px;color:var(--brand);margin-bottom:1px}.seg-cite.orig{color:var(--ink-mute)}
+.fbt{width:100%;border-collapse:collapse;font-size:10px;margin-top:8px}
+.fbt th,.fbt td{border:1px solid var(--line-soft);padding:3px 5px;text-align:left}.fbt th{background:var(--bg-canvas);font-weight:700}
+.fbcap{font-size:10.5px;font-weight:700;color:var(--ink-3);margin-top:9px}
+/* ===== v0.6 ===== */
+.try-row{display:flex;gap:8px;flex-wrap:wrap;margin:12px 2px 0;align-items:center}
+.try-row .lb{font-size:11.5px;color:var(--ink-3);font-weight:700}
+.try{font-size:12px;font-weight:700;color:var(--brand-ink);background:var(--brand-soft);border:1px solid #d9ddff;border-radius:99px;padding:5px 12px;cursor:pointer;transition:.15s}
+.try:hover{background:#e2e6ff;transform:translateY(-1px)}
+.tags.scn .tag{cursor:pointer}
+.tag.hotscn{background:#f3ecfb;color:#7a4dc9}
+.cap .hint{font-size:10px;color:var(--mute);margin-top:7px}
+.tparams{display:flex;flex-wrap:wrap;gap:4px;margin:4px 0 3px}
+.tp{font-family:var(--mono);font-size:9.5px;font-weight:700;background:#f0eee6;color:var(--ink-2);border-radius:5px;padding:1px 7px}
+.tp b{color:var(--brand-ink)}
+.player{border:1px solid var(--line);border-radius:10px;overflow:hidden;margin:8px 0;background:#0e1018}
+.pcv{position:relative;height:118px;display:flex;align-items:center;justify-content:center}
+.pcv .pttl{position:absolute;left:10px;top:8px;font-size:10.5px;color:#cdd3ea;font-weight:700;opacity:.85}
+.pcv .pbtn{width:40px;height:40px;border-radius:50%;background:rgba(255,255,255,.92);display:flex;align-items:center;justify-content:center;cursor:pointer;color:#1c1f2b;box-shadow:0 4px 14px rgba(0,0,0,.4);transition:.15s}
+.pcv .pbtn:hover{transform:scale(1.07)}
+.pcv .pbtn svg{width:16px;height:16px}
+.pbar{position:relative;height:24px;background:#161927;display:flex;align-items:center;padding:0 9px;gap:7px}
+.ptrk{position:relative;flex:1;height:4px;border-radius:3px;background:#33384f}
+.psg{position:absolute;top:0;height:4px;border-radius:3px;background:rgba(232,131,92,.6)}
+.pfl{position:absolute;top:0;left:0;height:4px;border-radius:3px;background:var(--brand);width:0%}
+.ptm{font-family:var(--mono);font-size:9.5px;color:#9aa3c4}
+.resc{background:var(--card);border:1px solid var(--line);border-radius:11px;padding:11px 13px;margin:9px 0}
+.resc .rh{display:flex;align-items:center;gap:7px;font-size:12.5px;font-weight:800;flex-wrap:wrap}
+.resc .rh .zan{margin-left:auto;font-size:11px;color:#B73A6A;font-weight:800}
+.resc .rh .sc2{font-size:10.5px;color:var(--ink-3);font-weight:700}
+.resc .line{font-size:11.5px;color:var(--ink-2);margin:5px 0 2px}
+.resc .line b{color:var(--ink)}
+.qa{display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:700;color:var(--brand-ink);background:var(--brand-soft);border:1px solid #d9ddff;border-radius:7px;padding:4px 10px;cursor:pointer;margin:6px 6px 0 0;transition:.15s}
+.qa:hover{background:#e2e6ff}
+.qa.sec{background:#fff;color:var(--ink-2);border-color:var(--line)}
+.qa.acc{background:var(--accent-soft);color:var(--accent-ink);border-color:#f2d3c0}
+.fxcard{background:var(--card);border:1px solid var(--line);border-radius:11px;padding:12px 14px;margin:9px 0}
+.fxcard .fh{font-size:12.5px;font-weight:800;margin-bottom:6px}
+.frow{font-size:11.5px;color:var(--ink-2);margin:4px 0;line-height:1.7}
+.frow b{color:var(--ink)}
+.dline{text-decoration:line-through;color:var(--danger);opacity:.7}
+.fixv{color:var(--ok);font-weight:700}
+.resc .tg{font-size:9.5px;font-weight:700;padding:1px 6px;border-radius:5px;display:inline-block}
+.resc .tg.p{background:#ffe39a;color:#8a6600}.resc .tg.e{background:#ffcdb8;color:var(--accent-ink)}
+/* —— v0.6.1: 借鉴点可点 + 切片弹层播放器 + 路由任务框 —— */
+.cl{color:var(--brand-ink);font-weight:700;cursor:pointer;border-bottom:1px dashed #aab3ff;white-space:nowrap}
+.cl:hover{color:#4453E5}
+.cl .cpl{width:10px;height:10px;vertical-align:-1px;margin-left:1px}
+.clipov{position:fixed;inset:0;background:rgba(20,22,34,.45);backdrop-filter:blur(2px);z-index:99;display:flex;align-items:center;justify-content:center}
+.clipm{width:min(450px,92vw);background:#FBFAF6;border-radius:16px;padding:13px 15px 11px;box-shadow:0 18px 60px rgba(0,0,0,.28)}
+.cmh{display:flex;align-items:center;gap:7px;font-size:13px;font-weight:800}
+.cmh .tcx{font-size:10.5px;color:var(--ink-3);font-weight:600}
+.cmx{margin-left:auto;cursor:pointer;font-size:18px;line-height:1;color:var(--ink-3);padding:2px 7px;border-radius:6px}
+.cmx:hover{background:rgba(0,0,0,.06);color:var(--ink)}
+.cmrow{display:flex;flex-wrap:wrap;gap:5px;margin:8px 0 0}
+.cmchip{font-size:10.5px;padding:2px 9px;border-radius:999px;border:1px solid var(--line);background:#fff;cursor:pointer;font-weight:600;color:var(--ink-2)}
+.cmchip.on{background:var(--brand-soft);border-color:#5B6CFF;color:var(--brand-ink)}
+.cmline{font-size:12.5px;margin-top:9px;background:#fff;border:1px solid var(--line);border-radius:9px;padding:7px 10px;line-height:1.55}
+.cmnote{font-size:10.5px;color:var(--ink-3);margin-top:7px;text-align:center}
+.route .rt-tag{background:var(--brand-soft);color:var(--brand-ink);padding:1px 8px;border-radius:6px;font-weight:800}
+.rt-b{font-size:12px;padding:3px 2px 1px}
+.rt-d{font-size:11px;color:var(--ink-3);margin-top:4px;line-height:1.5}
+.vbd{font-size:9px;font-weight:800;color:#fff;background:var(--accent);padding:0 5px;border-radius:4px;margin-left:5px;vertical-align:1px}
+.bsm{font-size:11.5px;padding:5px 12px;margin-top:6px}
+</style>
+</head>
+<body data-role="user">
+<div class="app">
+
+  <!-- ===== SIDEBAR (merged) ===== -->
+  <aside class="side">
+    <div class="brand">
+      <div class="logo"><svg viewBox="0 0 24 24" width="19" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h16M4 12h16M4 17h10"/></svg></div>
+      <div><div class="bt">短视频业务中台</div><div class="bs">BUSINESS HUB</div></div>
+    </div>
+    <div class="ws" onclick="newSession()">
+      <div class="ico"><svg viewBox="0 0 24 24" width="15" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m10 9 5 3-5 3z"/></svg></div>
+      <div class="t">短视频管理</div>
+      <svg viewBox="0 0 24 24" width="15" fill="none" stroke="var(--ink-3)" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg>
+    </div>
+    <button class="btn-new" onclick="newSession()">
+      <svg viewBox="0 0 24 24" width="18" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 5v14M5 12h14"/></svg> New Session
+    </button>
+    <div class="search">
+      <svg viewBox="0 0 24 24" width="15" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4-4"/></svg>
+      <input placeholder="搜索会话 / 商品"><span class="kk">⌘K</span>
+    </div>
+    <div class="side-sec">历史会话 <span class="n">128</span></div>
+    <div class="sess-scroll" id="sessList"></div>
+    <div class="sess-foot">
+      <div class="sfoot-item" data-nav="skills" onclick="go('skills',this)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m13 2-3 7h5l-3 7"/><circle cx="12" cy="12" r="9"/></svg>
+        技能 Store <span class="badge" id="skillCount">13</span>
+      </div>
+      <div class="sfoot-item admin-only" data-nav="dashboard" onclick="go('dashboard',this)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19V5"/><path d="M4 19h16"/><rect x="7" y="10" width="3" height="6"/><rect x="13" y="6" width="3" height="10"/></svg>
+        副线 &amp; 爆款库看板
+      </div>
+    </div>
+    <div class="nav-foot"><span class="dot"></span> Agent OS · 杭州抖音节点</div>
+  </aside>
+
+  <!-- ===== CANVAS ===== -->
+  <main class="canvas">
+    <div class="topbar">
+      <div class="crumb"><span>首页</span><span class="sep">/</span><span>短视频管理</span><span class="sep">/</span><span class="cur" id="crumbCur">短视频智能体</span></div>
+      <div class="sp"></div>
+      <div class="tb-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg></div>
+      <div class="tb-ic"><span class="pip"></span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M10.3 21a2 2 0 0 0 3.4 0"/></svg></div>
+      <div class="user" onclick="toggleRolePop(event)">
+        <div class="av">K</div>
+        <div><div class="nm">Hi, kk</div></div>
+        <span class="rl" id="roleBadge">普通用户</span>
+        <svg viewBox="0 0 24 24" width="14" fill="none" stroke="var(--ink-3)" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg>
+        <div class="role-pop hidden" id="rolePop" onclick="event.stopPropagation()">
+          <div class="h">切换角色（原型演示）</div>
+          <div class="role-opt on" id="optUser" onclick="setRole('user')">
+            <svg viewBox="0 0 24 24" width="18" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M5 21a7 7 0 0 1 14 0"/></svg>
+            <div>普通用户<small>创作 + 历史 + 技能 Store</small></div>
+          </div>
+          <div class="role-opt" id="optAdmin" onclick="setRole('admin')">
+            <svg viewBox="0 0 24 24" width="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2 4 6v6c0 5 8 8 8 8s8-3 8-8V6z"/></svg>
+            <div>超管<small>+ 看板 + 技能沉淀</small></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="view-wrap">
+
+      <!-- HOME -->
+      <section class="view on" id="view-home">
+        <div class="home">
+          <div class="hero-t">创作好的视频，<span class="hl">从这里开始</span></div>
+          <div class="hero-s"><b>商品理解 · 素材调取 · 创作分析 · 脚本撰写</b>　告诉 Agent 你想做什么，剩下交给它</div>
+          <div class="composer">
+            <textarea class="ta" id="homeInput" placeholder="输入创作需求，粘贴商品链接或上传素材，支持 “/” 使用技能，和 Agent 一起创作…"></textarea>
+            <div class="comp-bar">
+              <div class="comp-ic" title="附件"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5 12 20a5 5 0 0 1-7-7l9-9a3.5 3.5 0 0 1 5 5l-9 9a2 2 0 0 1-3-3l8-8"/></svg></div>
+              <div class="comp-ic" title="链接"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 0 0 7 0l3-3a5 5 0 0 0-7-7l-1 1"/><path d="M14 11a5 5 0 0 0-7 0l-3 3a5 5 0 0 0 7 7l1-1"/></svg></div>
+              <div class="comp-ic" title="技能"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 20 16 4"/></svg></div>
+              <div class="comp-div"></div>
+              <div class="chip mode">● Agent 模式</div>
+              <div class="chip skills">✓ 13 Skills 已加载</div>
+              <div class="chip model">⌬ Claude Opus · 主控</div>
+              <button class="comp-send" onclick="submitHome()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+            </div>
+          </div>
+          <div class="try-row"><span class="lb">试试：</span>
+            <span class="try" onclick="fillQuery('给这个商品做 10 条短视频脚本，主推熬夜急救〔粘贴商品链接〕')">给商品做 10 条脚本</span>
+            <span class="try" onclick="fillQuery('在爆款库找 3 条：开箱风 · 高赞 的钩子')">⌕ 爆款库找 3 条开箱钩子</span>
+            <span class="try" onclick="fillQuery('帮我审一下这条脚本的合规：熬夜脸暗沉？这瓶精华全网最佳补水，永久保湿不干燥，点下方下单')">审一段脚本合规</span>
+          </div>
+          <div class="sec-h"><div class="bar"></div><div class="t">智能体能力</div><div class="en">/ 5 SubAgent</div><div class="more" onclick="go('skills')">查看全部技能 →</div></div>
+          <div class="cap-grid" id="capGrid"></div>
+        </div>
+      </section>
+
+      <!-- SESSION -->
+      <section class="view" id="view-session">
+        <div class="sess-view">
+          <div class="flow">
+            <div class="flow-scroll" id="flowScroll"></div>
+            <div class="composer-mini">
+              <div class="cm-box">
+                <input id="tweakInput" placeholder="输入想调整的部分，如：钩子换成提问式、CTA 换成限时优惠…" onkeydown="if(event.key==='Enter')sendTweak()">
+                <div class="comp-ic" title="技能"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 20 16 4"/></svg></div>
+                <div class="s" onclick="sendTweak()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+              </div>
+            </div>
+          </div>
+          <div class="artifact">
+            <div class="art-top"><div class="t">产出物预览</div><div class="x" onclick="go('home')"><svg viewBox="0 0 24 24" width="17" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18M6 6l12 12"/></svg></div></div>
+            <div class="art-tabs" id="artTabs">
+              <div class="art-tab on" data-tab="report" onclick="artTab('report')">报告</div>
+              <div class="art-tab dis" data-tab="script" id="tabScript" onclick="artTab('script')">脚本 v1</div>
+              
+            </div>
+            <div class="art-body" id="artBody"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- SKILLS -->
+      <section class="view" id="view-skills">
+        <div class="page">
+          <div class="page-h"><div class="t" id="skillsTitle">技能 Store</div><div class="sp"></div>
+            <div class="search"><svg viewBox="0 0 24 24" width="15" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4-4"/></svg><input placeholder="搜索技能"></div>
+          </div>
+          <div class="filter" id="skillFilter">
+            <div class="ftab on" data-f="all" onclick="filterSkills('all',this)">全部</div>
+            <div class="ftab" data-f="main" onclick="filterSkills('main',this)">主线</div>
+            <div class="ftab" data-f="sub" onclick="filterSkills('sub',this)">副线</div>
+            <div class="ftab" data-f="common" onclick="filterSkills('common',this)">通用</div>
+            <div class="ftab sed admin-only" onclick="openSed()"><svg viewBox="0 0 24 24" width="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2 3 14h7l-1 8 10-12h-7z"/></svg> 技能沉淀 <span class="b" id="sedBadge">2</span></div>
+          </div>
+          <div id="skillsBody"></div>
+        </div>
+      </section>
+
+      <!-- DASHBOARD -->
+      <section class="view" id="view-dashboard">
+        <div class="page">
+          <div class="page-h"><div class="t">副线 &amp; 爆款库看板</div><div class="sp"></div><span class="pill sed">仅超管 · 只读监控</span></div>
+
+          <div class="dash-grid2">
+            <div class="cron">
+              <div class="ch"><div class="ct">外验 · 爆款库</div><div class="when">每周一 02:00</div></div>
+              <div class="stat"><span class="d"></span> 正常 · 上次 周一 02:14</div>
+              <div class="row"><div><span class="k">本次新增 </span><span class="v up">+172</span></div><div><span class="k">去重 </span><span class="v">311</span></div><div><span class="k">失败重试 </span><span class="v">0</span></div></div>
+              <div class="log" onclick="openLog('外验·爆款库','周一 02:14',172,311,0)">查看日志 →</div>
+            </div>
+            <div class="cron">
+              <div class="ch"><div class="ct">内验 · 千川库</div><div class="when">每天</div></div>
+              <div class="stat"><span class="d"></span> 正常 · 上次 今日 02:03</div>
+              <div class="row"><div><span class="k">本次新增 </span><span class="v up">+28</span></div><div><span class="k">去重 </span><span class="v">96</span></div><div><span class="k">失败重试 </span><span class="v">1</span></div></div>
+              <div class="log" onclick="openLog('内验·千川库','今日 02:03',28,96,1)">查看日志 →</div>
+            </div>
+          </div>
+
+          <div class="sec-h"><div class="bar"></div><div class="t">效果指标</div><div class="en">过程代理指标 · 本地脱敏埋点上报 · 近 30 天演示数据</div></div>
+          <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px">
+            <div class="cron"><div class="ch"><div class="ct">确认闸一次通过率</div></div><div style="font-size:26px;font-weight:700;margin:6px 0 4px">58%</div><div class="row"><div><span class="k">样本 </span><span class="v">166 会话</span></div></div><div style="margin-top:8px"><span class="k">直接确认 ÷ 全部报告 · 衡量蓝图质量</span></div></div>
+            <div class="cron"><div class="ch"><div class="ct">平均微调轮次</div></div><div style="font-size:26px;font-weight:700;margin:6px 0 4px">1.6</div><div class="row"><div><span class="k">P90 </span><span class="v">3 轮</span></div></div><div style="margin-top:8px"><span class="k">确认前微调次数 · 衡量路由与复筛有效性</span></div></div>
+            <div class="cron"><div class="ch"><div class="ct">审核首次通过率</div></div><div style="font-size:26px;font-weight:700;margin:6px 0 4px">76%</div><div class="row"><div><span class="k">10 轮上限触发 </span><span class="v">0 次</span></div></div><div style="margin-top:8px"><span class="k">⑥ 首轮即过审占比 · 衡量脚本合规质量</span></div></div>
+            <div class="cron"><div class="ch"><div class="ct">脚本采纳率</div></div><div style="font-size:26px;font-weight:700;margin:6px 0 4px">41%</div><div class="row"><div><span class="k">导出 </span><span class="v">169 / 412 条</span></div></div><div style="margin-top:8px"><span class="k">导出条数 ÷ 生成条数 · 衡量业务价值</span></div></div>
+          </div>
+
+          <div class="sec-h"><div class="bar"></div><div class="t">库健康度</div><div class="en">总计 5,832 · 内验 2,940 / 外验 2,892</div></div>
+          <table class="tbl">
+            <thead><tr><th>品类</th><th>内验</th><th>外验</th><th>Top100 占用</th><th>均爆款分 (内/外)</th></tr></thead>
+            <tbody id="healthBody"></tbody>
+          </table>
+
+          <div class="trend">
+            <div class="th">每周新增趋势 · 近 8 周<span class="tlegend"><span><i style="background:var(--brand)"></i>内验</span><span><i style="background:var(--accent)"></i>外验</span></span></div>
+            <div class="tchart">
+              <div class="tg"><div class="tbars"><div class="tb in" style="height:35px"><span class="tv">62</span></div><div class="tb ex" style="height:21px"><span class="tv">38</span></div></div><span class="tw">W1</span></div>
+              <div class="tg"><div class="tbars"><div class="tb in" style="height:49px"><span class="tv">88</span></div><div class="tb ex" style="height:23px"><span class="tv">41</span></div></div><span class="tw">W2</span></div>
+              <div class="tg"><div class="tbars"><div class="tb in" style="height:59px"><span class="tv">105</span></div><div class="tb ex" style="height:37px"><span class="tv">66</span></div></div><span class="tw">W3</span></div>
+              <div class="tg"><div class="tbars"><div class="tb in" style="height:80px"><span class="tv">142</span></div><div class="tb ex" style="height:53px"><span class="tv">95</span></div></div><span class="tw">W4</span></div>
+              <div class="tg"><div class="tbars"><div class="tb in" style="height:94px"><span class="tv">168</span></div><div class="tb ex" style="height:55px"><span class="tv">98</span></div></div><span class="tw">W5</span></div>
+              <div class="tg"><div class="tbars"><div class="tb in" style="height:97px"><span class="tv">173</span></div><div class="tb ex" style="height:68px"><span class="tv">121</span></div></div><span class="tw">W6</span></div>
+              <div class="tg"><div class="tbars"><div class="tb in" style="height:106px"><span class="tv">190</span></div><div class="tb ex" style="height:73px"><span class="tv">130</span></div></div><span class="tw">W7</span></div>
+              <div class="tg"><div class="tbars"><div class="tb in" style="height:110px"><span class="tv">196</span></div><div class="tb ex" style="height:96px"><span class="tv">172</span></div></div><span class="tw">本周</span></div>
+            </div>
+          </div>
+
+          <div class="sec-h"><div class="bar"></div><div class="t">品类 Top 榜</div><div class="en">/ 分库 · 不可混排</div></div>
+          <div class="toptabs" id="topTabs"></div>
+          <div class="rank2">
+            <div class="ranklist"><div class="rh">内验榜 · 看转化</div><div class="rs">按转化维度爆款分排序（CTR / 转化率 / ROI / 完播）</div><div id="rankIn"></div></div>
+            <div class="ranklist"><div class="rh">外验榜 · 看传播</div><div class="rs">按传播维度爆款分排序（播放分位 / 互动率 / 上榜）</div><div id="rankEx"></div></div>
+          </div>
+        </div>
+      </section>
+
+    </div>
+  </main>
+</div>
+
+<!-- drawer (skill detail / candidate detail) -->
+<div class="scrim" id="scrim" onclick="closeDrawer()"></div>
+<div class="drawer" id="drawer">
+  <div class="dr-top"><div class="bk" onclick="closeDrawer()"><svg viewBox="0 0 24 24" width="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg></div><div class="nm" id="drName"></div><div id="drPills"></div></div>
+  <div class="dr-body" id="drBody"></div>
+  <div class="dr-foot" id="drFoot"></div>
+</div>
+
+<div class="toast" id="toast"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6 9 17l-5-5"/></svg><span id="toastMsg"></span></div>
+
+<script>
+/* ============ MOCK DATA ============ */
+const SKILLS=[
+ {id:'product-insight',cn:'商品理解',cat:'main',agent:'商品理解',tools:'web_fetch / file_reader / web_search',desc:'任意商品输入(链接/图/手卡/描述)→商品字段+痛点候选；缺失标「未知」不臆造；解析失败诚实上报由主控决定问什么',full:'商品理解。把任意形态商品信息变成结构化【商品字段】：解析电商链接为商详；多模态识别商品图/手卡并OCR；提炼排序卖点；推断人群标签/使用场景/人群诉求；评论区校正；竞品对比。品类归一到6类或标「其他」(提示覆盖不足)；痛点候选尽量映射标签库，映射不上留自由文本标「未在标签库」。输出：商品名+品类+卖点[]+人群标签[]+使用场景[]+人群诉求+竞品[]+痛点候选[]。缺失标「未知」不臆造；链接打不开/图糊→诚实上报(问用户什么由主控定)。'},
+ {id:'viral-asset-match',cn:'素材匹配',cat:'main',agent:'素材匹配 SubAgent',tools:'(只读 viral_assets，不连外部 MCP)',desc:'单一匹配能力：任务={条件/范围/粒度}，覆盖 素材验证·风格复筛·爆款库检索 三种场景；可按指标精确排序(高赞/高播放/最新)',full:'在 viral_assets（或主控指定子集）按条件检索+精排视频/切片，只读、不连MCP、不重拆。柔性任务={匹配条件:商品字段 或 自然语言风格·主题；搜索范围:全库候选池/指定TopN缓存子集/指定品类；返回粒度:整条/指定段类型}。做法：有品类→品类硬过滤；范围=全库取该品类内/外Top100候选，范围=缓存子集只在子集筛(不连库)；LLM精排——商品匹配场景 主:痛点候选↔切片痛点标签+超效，次:人群/卖点，竞品↔识别商品名加权；风格/主题场景 整条风格按视频级自由总结判、段级手法按切片台词+切片级自由总结判。取数：素材验证 外:内=7:3 取TopN(默认10)；可按指标排序/筛(高赞→点赞/高播放→播放量/最新→发布时间，默认爆款分)。三场景同一提示词：①素材验证(主线①后自动)、②风格复筛(微调时仅在TopN缓存内筛、不重检索)、③爆款库检索(旁路，条件=用户自然语言，直接返回不进主线)。命中弱给低置信提示、不编。'},
+ {id:'report-builder',cn:'报告 / 蓝图',cat:'main',agent:'报告/蓝图合成 SubAgent',tools:'—',desc:'创作合成型：组装6块；第6块创作蓝图过模型(Opus编导脑)合成——纯方向+借鉴点；支持按主控范围局部重写(版本+1、改动段高亮)',full:'创作合成型报告。组装6块HTML：1–5块整理①②产出(内/外验列全部匹配视频可翻页、每条露全部骨架段切片含切片台词)；第6块创作蓝图过模型(Opus编导脑)做创作推理——按6段给「本段创作方向(纯方向无台词)+借鉴点(《真实视频名》·段名 借它的什么手法/原创/通用)」。借鉴铁律：只借手法不抄台词、内容结合本商品重生成、可跨多条拼接、绝非1:1复刻。【局部重写】微调时只动主控点名的条/段：消费②复筛结果——命中→借鉴点、无命中→原创/通用；其余与1–5块不变；刷新时蓝图版本+1、改动段高亮。'},
+ {id:'script-writing',cn:'脚本 + 分镜',cat:'main',agent:'脚本+分镜 SubAgent',tools:'豆包 / Qwen 校验',desc:'按确认蓝图出台词，每段标借鉴点(借手法)，每条脚本正下方都带分镜表；支持局部重跑某条',full:'按确认蓝图写 M 条 6 段脚本+分镜。入参=确认蓝图(方向+借鉴点)+蓝图引用切片的{段类型/切片台词/画面/时间码/标签/视频名}(经②缓存取)+任务(M/需求/局部改哪条)。这一步才出台词；每段标借鉴点(《真实视频名》·段名 借它的什么手法；没有可借鉴的标原创/通用)，借手法不抄台词、台词结合本商品自创、可跨多条拼接，痛点段超效段高亮；每条脚本正下方附分镜表(镜号/景别/运镜/画面/口播或字幕/时长/转场/机位借鉴自哪条切片)，脚本+分镜一次生成。【局部重跑】已确认后改某条台词/语气/时长→只重跑该条→⑥只重审该条。一条一卖点一人群；M 与参考数解耦；文案豆包、中文校验 Qwen。'},
+ {id:'compliance-review',cn:'内容审核',cat:'main',agent:'内容审核',tools:'—',desc:'入参=脚本+审核标准(广告法违禁词库+平台规则+夸大/绝对化)；需改自动回路最多10轮，超限放行+风险话术',full:'脚本合规审核(本期仅脚本)。入参：脚本 + 审核标准(广告法违禁词库+平台规则+夸大/绝对化规则)。按审核标准逐句扫描，输出 通过/需改+逐条修改建议。需改自动回⑤改一轮再审，连续 10 轮不过则放行并附风险话术「抱歉，此脚本有合规风险请谨慎采纳。」'},
+ {id:'pain-point-analysis',cn:'痛点分析',cat:'sub',agent:'采集 Agent',tools:'Gemini 多模态',desc:'判痛点(合格门之一)+打标+写切片级自由总结，并通读整片产出视频级自由总结',full:'痛点视角分析(离线灌库)。判断视频是否存在痛点表达——合格门之一(需与超效同时具备才合格)；有则定位时间码、打痛点标签(映射标签库；对不上标「未归类」+提候选)；为相关切片写「切片级自由总结」(这段在做什么)；并通读整片产出「视频级自由总结」(整条套路/风格/节奏一句话，供②判整条风格如开箱风/测评感)。'},
+ {id:'super-effect-analysis',cn:'超效分析',cat:'sub',agent:'采集 Agent',tools:'Gemini 多模态',desc:'判断视频有无超效(合格门之一)，有则识别时间码并打超效标签',full:'超效视角分析(离线灌库)。判断视频是否存在超级效果(前后对比/实测/数据浮层/情绪反转等)——这是合格门之一(需与痛点同时具备才算合格)；有则定位超效片段、标注精确时间码、打超效类型标签。'},
+ {id:'video-cutter',cn:'视频切割',cat:'sub',agent:'采集 Agent',tools:'—',desc:'合格视频按骨架6段切片(允许不完整)+转写每段切片台词(口播ASR+字幕OCR)+切关键帧/标转场',full:'视频切割。合格视频(已过痛点+超效合格门)按骨架 6 段切片，允许不完整(识别到几段切几段)；每段记 段类型+时间码+关键帧/画面；转写每段「切片台词」(口播 ASR + 字幕 OCR)——给⑤学手法、给②做段级匹配；标转场点(转场不算骨架段，记分镜层；分镜只到段级画面，不做镜级拆解)。每段切片写入 viral_assets。'},
+ {id:'viral-scoring',cn:'爆款打分',cat:'sub',agent:'采集 Agent',tools:'—',desc:'读落库原始指标合成 0–100 爆款分(内验看转化/外验看传播)，可解释；仅供 Top100 排序，不当合格门',full:'爆款打分。读采集落库的原始指标(点赞/评论/收藏/分享/播放量/完播率/播放分位/涨粉；内验另含CTR/转化率/ROI/GMV)合成 0–100 爆款分——内验按转化维度、外验按传播维度，分数可解释(能看出为什么高)；仅用于每品类 Top100 滚动淘汰排序，不作为合格门(合格门=痛点 AND 超效)；两库口径不同、不可混排。原始指标随采集归一化落库(+raw_extra+采集时间)，检索时可精确按高赞/高播放/最新排。'},
+ {id:'web_search',cn:'Web 搜索',cat:'common',agent:'通用',tools:'—',desc:'调搜索引擎取互联网信息',full:'通用：调用搜索引擎获取互联网信息。商品理解 / 创作分析使用。'},
+ {id:'web_fetch',cn:'网页抓取',cat:'common',agent:'通用',tools:'—',desc:'抓取指定 URL 内容',full:'通用：抓取指定 URL 内容。商品理解、外验取数使用。'},
+ {id:'file_reader',cn:'文件读取',cat:'common',agent:'通用',tools:'—',desc:'解析 PDF / DOCX / 图片附件',full:'通用：解析 PDF / DOCX / 图片附件为文本。商品理解使用。'},
+ {id:'image_search',cn:'以图搜图',cat:'common',agent:'通用',tools:'—',desc:'以图搜图',full:'通用：以图搜图。素材验证辅助使用。'},
+];
+let CANDIDATES=[
+ {id:'hook-rhythm-booster',cn:'强化开头钩子节奏',reuse:7,agent:'脚本生成',full:'在脚本生成时对开头 3 秒钩子做二次节奏强化：检测信息点密度与卡点位置，自动建议更紧凑的递进。来源于 7 次「钩子太弱」类反馈沉淀。'},
+ {id:'beauty-audience-refine',cn:'美妆细分人群修正',reuse:5,agent:'商品理解',full:'美妆品类下对人群标签做细分修正(早C晚A/敏感肌/熬夜党等)，提升后续素材匹配命中。来源于 5 次美妆任务的人群纠偏。'},
+];
+const SESSIONS=[
+ {g:'今日',t:'悦美精华液 · 脚本 ×10',s:'已完成',ty:'ok',m:'12min'},
+ {g:'今日',t:'蕉下防晒帽 · 报告待确认',s:'待确认',ty:'gate',m:'28min'},
+ {g:'今日',t:'每日坚果 · 素材验证中',s:'进行中',ty:'run',m:'1h'},
+ {g:'今日',t:'降噪耳机 · 草稿',s:'未开始',ty:'idle',m:'3h'},
+ {g:'本周',t:'SHINE 珍珠项链 · 脚本 ×5 (v2)',s:'已完成',ty:'ok',m:'昨天'},
+ {g:'本周',t:'北欧实木椅 · 审核中',s:'进行中',ty:'run',m:'昨天'},
+ {g:'本周',t:'气泡水 · 报告待确认',s:'待确认',ty:'gate',m:'周二'},
+ {g:'本周',t:'XX面膜 · 需改 → 重跑',s:'需改',ty:'warn',m:'周一'},
+];
+const STCOLOR={ok:'var(--ok)',gate:'var(--warn)',run:'var(--brand)',idle:'var(--ink-mute)',warn:'var(--danger)'};
+const CATS=['美妆','食品饮料','服饰','数码','珠宝','家具'];
+const HEALTH=[
+ {c:'美妆',in:'100/100',ex:'100/100',occ:100,sin:82,sex:85},
+ {c:'食品饮料',in:'100/100',ex:'96/100',occ:88,sin:79,sex:80},
+ {c:'服饰',in:'88/100',ex:'100/100',occ:80,sin:76,sex:78},
+ {c:'数码',in:'100/100',ex:'100/100',occ:100,sin:81,sex:83},
+ {c:'珠宝',in:'64/100',ex:'72/100',occ:55,sin:70,sex:72},
+ {c:'家具',in:'51/100',ex:'60/100',occ:42,sin:68,sex:69},
+];
+const TOP={
+ '美妆':{in:[['XX面膜·熬夜党',91],['XX精华·早C晚A',88],['XX眼霜·抗老',85]],ex:[['悦美精华·熬夜急救',96],['XX气垫·伪素颜',94],['XX面膜·熬夜党',91]]},
+ '食品饮料':{in:[['每日坚果·办公室',87],['气泡水·0糖0卡',84]],ex:[['坚果·解馋不胖',92],['气泡水·夏日限定',90]]},
+ '服饰':{in:[['防晒帽·硬控紫外线',83],['冲锋衣·通勤',80]],ex:[['蕉下防晒·伪素颜出门',93],['卫衣·氛围感',88]]},
+ '数码':{in:[['充电宝·续航焦虑',86],['耳机·降噪实测',84]],ex:[['降噪耳机·地铁实测',95],['充电宝·一天三充',89]]},
+ '珠宝':{in:[['珍珠项链·气质',79],['手链·叠戴',74]],ex:[['SHINE珍珠·氛围感',90],['戒指·送礼',82]]},
+ '家具':{in:[['实木椅·久坐不累',77],['床垫·腰托',72]],ex:[['北欧椅·小户型',86],['沙发·猫抓布',80]]},
+};
+
+/* ============ SKILL.md 内容（真实形态：frontmatter + 正文） ============ */
+const MD={
+'product-insight':`---
+name: product-insight
+description: 商品理解能力。当用户提供商品链接 / 商品图 / 手卡图 / 自由描述时触发，输出结构化商品画像。
+allowed-tools: web_fetch, file_reader, web_search, image(Gemini/Qwen-VL)
+agent: 商品理解 SubAgent
+---
+# 商品理解
+## 何时触发
+用户给出电商链接、商品图、达人手卡或自由文字描述商品时。
+## 步骤
+1. 解析电商链接为结构化商详：商品名 / 价格 / SKU / 规格 / 主图。
+2. 对商品图、手卡图做多模态识别与 OCR，补全卖点与参数。
+3. 提炼并按重要度排序卖点。
+4. 推断人群标签 / 痛点候选 / 使用场景（具象字段，不打包）。
+5. 抓取评论区高频反馈，校正卖点真伪。
+6. 同类竞品差异化对比。
+7. 品类归一到 6 类（美妆/食品饮料/服饰/数码/珠宝/家具），否则标「其他」。
+## 输出
+商品名 + 品类 + 卖点(排序) + 人群标签 + 痛点候选 + 竞品分析。
+## 注意
+- 缺失信息不臆造，标「未知」。
+- 品类无法归一必须标「其他」并提示覆盖不足。`,
+'viral-asset-match':`---
+name: viral-asset-match
+description: 素材验证与爆款检索的统一匹配能力。只读 viral_assets 数仓，主匹配痛点+超效，返回全部骨架段切片；不连外部 MCP、不重拆视频。
+allowed-tools: read-only(viral_assets)
+agent: 素材验证 SubAgent / 爆款库检索旁路
+---
+# 素材验证匹配
+## 何时触发
+商品理解完成后做素材验证；或用户在爆款库做自然语言检索。
+## 步骤
+1. 品类硬过滤：命中 6 类走该品类；「其他」则跳过品类、仅按卖点/人群跨库匹配并标低置信。
+2. 取候选池：该品类 内验 Top100 + 外验 Top100。
+3. 向量粗筛(仅全库)：query 向量按场景构造，对库侧预算的切片/整条向量召回，~200→30~50；库小可降级直排。
+4. LLM 精排：主=痛点匹配+超效匹配；次=人群相似+卖点相似；竞品命中加权(不强依赖)；标签为软信号，未归类视频读自由总结兜底。
+4. 外验:内验 = 7:3，取 TopN（默认 10，可指定）。
+## 输出
+TopN 参考，每条含：全部识别到的骨架段切片(段类型+时间码+关键帧) + 痛点/超效标签(落在对应段) + 自由总结 + 源视频链接。
+## 风格复筛模式（蓝图微调时）
+输入 = 段级风格约束(如"X 风格钩子 / Y 风格 CTA") + 已检索 TopN 缓存。在缓存切片内做 LLM 段级风格匹配，输出每段「命中《某视频》·某段」/「无命中」，供 report-builder 重写蓝图对应段。不连 MCP、不重检索全库、不动候选池。
+## 注意
+- 骨架段切片为离线预拆的 payload，本技能只读匹配、绝不重拆。
+- 向量仅用于全库粗筛召回(库侧向量离线预算、不在线重算)，最终排序与字段对位以 LLM 精排为准；缓存子集跳过向量直接精排；痛点覆盖薄给低置信提示。`,
+'report-builder':`---
+name: report-builder
+description: 创作合成型报告。组装6块HTML；第6块创作蓝图过模型(Opus编导脑)合成——纯方向+借鉴点。
+agent: 报告生成 SubAgent
+---
+# 报告生成（创作合成型）
+## 1–5 块（组装，不做创作推理）
+1. 商品理解摘要（含痛点候选）。
+2. 核心卖点矩阵（卖点 × 人群/角度）。
+3. 主力人群标签与诉求。
+4. 内验素材：列出全部匹配视频(可翻页)，每条露全部骨架段切片(段名+时间码+痛点/超效标签)，痛点段超效段高亮。
+5. 外验参考：同上，分库不混。
+## 第 6 块 创作蓝图（过模型做创作推理）
+拿 ①商品画像 + ②参考切片的手法，对 M 条计划脚本逐 6 段产出两栏：
+「本段创作方向」(纯方向、无台词，为本商品定制) + 「借鉴点」(《真实视频名》·段名 借它的什么手法 / 原创 / 通用)。
+## 借鉴铁律
+只借手法/结构/节奏/角度，内容结合本商品重生成，可跨多条参考拼接，禁止照搬台词、非 1:1 复刻。
+## 输出
+6 块 HTML 报告。第 6 块只能是纯方向蓝图(无台词)，绝不写台词/完整脚本。`,
+'script-writing':`---
+name: script-writing
+description: 基于确认蓝图按脚本骨架6段批量产脚本(这一步才出台词)，逐段标借鉴点(借手法)，每条下方附分镜。
+allowed-tools: 豆包(文案), Qwen(中文校验)
+agent: 脚本生成 SubAgent
+---
+# 脚本生成
+## 步骤
+1. 按确认蓝图方向，逐 6 段产文(这一步才出台词)：钩子 → 痛点共鸣 → 产品引出 → 卖点证明 → 促销利益 → CTA。
+2. 每段标「借鉴点：《真实视频名》·段名 — 借它的什么手法」，可跨多条拼接；没有可借鉴的标「原创/通用话术」；
+   借的是手法/结构/节奏，台词结合本商品自创、禁止照搬原视频；痛点段超效段高亮。
+3. 每条脚本正下方附分镜表：镜号/景别/运镜/画面/口播或字幕/时长/转场/借鉴自哪条切片。脚本+分镜一次生成。
+4. 心智化命名「卖点+人群+角度」；尾部按商品匹配度优选排序。
+## 约束
+- 一条脚本只打一个卖点 + 一个人群；脚本数 M 与参考数 N 解耦。
+- 文案走豆包，中文校验走 Qwen；分镜是文字拍摄表，不生成视频。`,
+'compliance-review':`---
+name: compliance-review
+description: 脚本合规审核（本期仅脚本）。检查广告法违禁词、平台规则与夸大表述，输出 通过 / 需改。
+agent: 内容审核 SubAgent
+---
+# 内容审核
+## 步骤
+1. 扫描广告法违禁词、绝对化表述、平台敏感规则。
+2. 命中 → 标「需改」+ 逐条修改建议；否则「通过」。
+## 回路
+- 需改 → 自动回脚本生成改一轮再审。
+- 连续 10 轮仍不过 → 放行并附风险话术：「抱歉，此脚本有合规风险请谨慎采纳。」`,
+'pain-point-analysis':`---
+name: pain-point-analysis
+description: 痛点视角分析（离线灌库）。判断视频有无痛点(合格门之一)，有则识别时间码并打痛点标签。
+allowed-tools: Gemini(多模态)
+agent: 采集 Agent
+---
+# 痛点分析
+## 步骤
+1. 多模态分析整条视频，判断是否存在痛点表达。
+2. 有 → 定位痛点片段、标注精确时间码。
+3. 打痛点类型标签(映射标签库；对不上标「未归类」+保留自由总结，提候选标签)。
+## 合格门
+痛点是合格门之一：必须与超效同时具备(痛点 AND 超效)，视频才算合格、才进入切片。
+## 输出
+有无痛点(bool) + 痛点段时间码 + 痛点类型标签。`,
+'super-effect-analysis':`---
+name: super-effect-analysis
+description: 超效视角分析（离线灌库）。判断视频有无超效(合格门之一)，有则识别时间码并打超效标签。
+allowed-tools: Gemini(多模态)
+agent: 采集 Agent
+---
+# 超效分析
+## 步骤
+1. 多模态分析整条视频，判断是否存在超级效果(前后对比 / 实测 / 数据浮层 / 情绪反转 / 真假对比等)。
+2. 有 → 定位超效片段、标注精确时间码。
+3. 打超效类型标签(超效标签偏全局，跨品类通用)。
+## 合格门
+超效是合格门之一：必须与痛点同时具备(痛点 AND 超效)，视频才算合格。
+## 输出
+有无超效(bool) + 超效段时间码 + 超效类型标签。`,
+'video-cutter':`---
+name: video-cutter
+description: 视频切割。合格视频按脚本骨架 6 段切片(允许不完整)，并按关键帧/场景切画面、标转场点。
+agent: 采集 Agent
+---
+# 视频切割
+## 前提
+仅对已通过合格门(痛点 AND 超效)的视频切片。
+## 步骤
+1. 按脚本骨架 6 段(钩子/痛点共鸣/产品引出/卖点证明/促销/CTA)识别并切段，允许不完整(识别到几段切几段)。
+2. 每段记 段类型 + 时间码 + 关键帧；标转场点(转场不算骨架段，记在分镜层)。
+3. 把痛点/超效标签落到对应切片上。
+## 输出
+骨架段切片[] 写入 viral_assets（合格视频必含痛点切片 + 超效切片）。`,
+'viral-scoring':`---
+name: viral-scoring
+description: 爆款打分。0–100 爆款分（内验看转化/外验看传播），标画像；仅供 Top100 排序，不作为合格门。
+agent: 采集 Agent
+---
+# 爆款打分
+## 步骤
+1. 内验：按转化维度加权（完播 / CTR / 转化率 / ROI / GMV）。
+2. 外验：按传播维度加权（播放分位 / 互动率 / 上榜 / 涨粉）。
+3. 产出 0–100 分（不判合格——合格门是痛点 AND 超效）。
+4. 为视频标注 画像：商品名 / 品类 / 卖点 / 人群。
+## 用途
+分数仅用于每品类 Top100 滚动淘汰排序；两库口径不同、不可混排。`,
+'web_search':`---
+name: web_search
+description: 通用搜索能力。调用搜索引擎获取互联网公开信息。
+---
+# Web 搜索
+## 用途
+商品理解 / 创作分析需要外部信息时调用，返回检索结果摘要与链接。`,
+'web_fetch':`---
+name: web_fetch
+description: 通用抓取能力。抓取指定 URL 的页面内容。
+---
+# 网页抓取
+## 用途
+解析商详页、外验取数等场景抓取指定链接正文。`,
+'file_reader':`---
+name: file_reader
+description: 通用文件读取。解析 PDF / DOCX / 图片等附件为文本。
+---
+# 文件读取
+## 用途
+解析用户上传的手卡、商详 PDF、规格图等为结构化文本。`,
+'image_search':`---
+name: image_search
+description: 通用以图搜图能力。
+---
+# 以图搜图
+## 用途
+素材验证 / 商品理解辅助场景按图检索相似画面。`,
+'hook-rhythm-booster':`---
+name: hook-rhythm-booster
+description: 在脚本生成时对开头 3 秒钩子做二次节奏强化：检测信息点密度与卡点位置，自动建议更紧凑的递进。
+agent: 脚本生成
+status: candidate
+source: 7 次「钩子太弱」类反馈沉淀
+---
+# Hook Rhythm Booster（候选）
+## 何时触发
+脚本生成产出后，对开头 3 秒钩子做二次优化时。
+## 步骤
+1. 解析钩子段每个信息点的出现时间。
+2. 计算信息点密度与卡点间隔。
+3. 密度低于阈值时，建议合并铺垫、前置高信息点。
+4. 给出更紧凑的递进改写建议。
+## 沉淀来源
+从 7 次用户「钩子太弱 / 开头平」反馈中归纳的可复用改写策略。`,
+'beauty-audience-refine':`---
+name: beauty-audience-refine
+description: 美妆品类下对人群标签做细分修正（早C晚A / 敏感肌 / 熬夜党等），提升后续素材匹配命中。
+agent: 商品理解
+status: candidate
+source: 5 次美妆任务的人群纠偏
+---
+# Beauty Audience Refine（候选）
+## 何时触发
+商品理解判定品类为「美妆」且人群标签偏粗时。
+## 步骤
+1. 在通用人群上叠加美妆细分标签（肤质 / 护肤阶段 / 场景）。
+2. 对齐到爆款库美妆人群标签体系。
+3. 输出修正后的细分人群，供素材验证更精准匹配。
+## 沉淀来源
+从 5 次美妆任务的人群纠偏操作归纳。`,
+};
+function renderMd(md){
+ let fm='',body=md;
+ const m=md.match(/^---\n([\s\S]*?)\n---\n?([\s\S]*)$/);
+ if(m){fm=m[1];body=m[2];}
+ let fmHtml='';
+ if(fm){const f=fm.split('\n').map(l=>{const i=l.indexOf(':');return i>0?('<span class="fk">'+l.slice(0,i)+'</span>:'+l.slice(i+1)):l;}).join('\n');fmHtml='<div class="fm">---\n'+f+'\n---</div>';}
+ const lines=body.split('\n');let out='',inList=false;const closeL=()=>{if(inList){out+='</ul>';inList=false;}};
+ for(const ln of lines){
+  if(/^##\s/.test(ln)){closeL();out+='<div class="mdh">'+ln.replace(/^##\s/,'')+'</div>';}
+  else if(/^#\s/.test(ln)){closeL();out+='<div class="mdh1">'+ln.replace(/^#\s/,'')+'</div>';}
+  else if(/^\s*(\d+\.|[-*])\s/.test(ln)){if(!inList){out+='<ul class="mdul">';inList=true;}out+='<li>'+ln.replace(/^\s*(\d+\.|[-*])\s/,'')+'</li>';}
+  else if(ln.trim()===''){closeL();}
+  else{closeL();out+='<p class="mdp">'+ln+'</p>';}
+ }
+ closeL();
+ return '<div class="mdfile"><div class="fname"><svg viewBox="0 0 24 24" width="13" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2h9l5 5v15H6z"/><path d="M14 2v6h6"/></svg> SKILL.md</div>'+fmHtml+'<div class="mdbody">'+out+'</div></div>';
+}
+function defaultMd(s){return '---\nname: '+s.id+'\ndescription: '+(s.full||s.cn)+'\nagent: '+(s.agent||'')+'\n---\n# '+s.cn+'\n## 说明\n'+(s.full||'');}
+
+/* ============ RENDER ============ */
+function el(h){const d=document.createElement('div');d.innerHTML=h.trim();return d.firstChild;}
+const $=s=>document.querySelector(s);
+
+const CAPICON={
+ 'product-insight':['#5B6CFF','#EEF0FF','M4 7h16M4 12h16M4 17h10'],
+ 'viral-asset-match':['#7a4dc9','#f3ecfb','M3 12h4l3 8 4-16 3 8h4'],
+ 'report-builder':['#1FA86B','#E3F5EC','M6 2h9l5 5v15H6zM14 2v6h6M9 13h6M9 17h6'],
+ 'script-writing':['#E8835C','#FBEDE3','M4 4h16v12H4zM4 20h16M8 8h8M8 12h5'],
+ 'compliance-review':['#D9923A','#FBF0DD','M12 2 4 6v6c0 5 8 8 8 8s8-3 8-8V6zM9 12l2 2 4-4'],
+ 'viral-scoring':['#B73A6A','#fbe9f0','M3 12h3l2-7 4 14 2-7h7'],
+};
+/* v0.6：5 个能力 SubAgent（④为人审闸非Agent；爆款库检索是②的场景）；点卡=回填示例query */
+const CAPQ={
+ 'product-insight':'帮我拆解这个商品的卖点和人群〔粘贴商品链接 / 上传商品图〕',
+ 'viral-asset-match':'在爆款库找 3 条：开箱风 · 高赞 的钩子',
+ 'report-builder':'给这个商品做 10 条短视频脚本，主推熬夜急救〔粘贴商品链接〕',
+ 'script-writing':'直接给我写带货脚本',
+ 'compliance-review':'帮我审一下这条脚本的合规：熬夜脸暗沉？这瓶精华全网最佳补水，永久保湿不干燥，点下方下单',
+};
+function fillQuery(q){go('home');const i=$('#homeInput');i.value=q;i.focus();toast('已填入示例 query · 按发送试跑');}
+function renderCaps(){
+ const order=['product-insight','viral-asset-match','report-builder','script-writing','compliance-review'];
+ const nm={'product-insight':'商品理解','viral-asset-match':'素材匹配','report-builder':'报告 / 蓝图','script-writing':'脚本 + 分镜','compliance-review':'内容审核'};
+ const sub={'product-insight':'粘贴链接，自动拆出卖点、人群、竞品和痛点','viral-asset-match':'从爆款库挑出最值得借鉴的同类视频和片段','report-builder':'给你一份能直接照着拍的创作蓝图','script-writing':'一次出多条能开拍的分镜脚本，已排好序','compliance-review':'自动挑出违禁/夸大，先帮你改一轮'};
+ const tags={'product-insight':['链接','商品图','手卡'],'report-builder':['6块报告','蓝图过模型'],'script-writing':['出台词','每条带分镜'],'compliance-review':['广告法','平台规则']};
+ $('#capGrid').innerHTML=order.map(id=>{const ic=CAPICON[id];
+  const scn=id==='viral-asset-match'
+   ?`<div class="tags scn"><span class="tag" onclick="event.stopPropagation();toast('素材验证：创作主线 ① 之后自动执行，不用单独点')">素材验证</span><span class="tag" onclick="event.stopPropagation();toast('风格复筛：出报告后在 ④ 闸下输入「钩子换提问式」等触发')">风格复筛</span><span class="tag hotscn" onclick="event.stopPropagation();fillQuery(CAPQ['viral-asset-match'])">⌕ 爆款库检索</span></div><div class="hint">一个匹配能力 · 3 种任务场景（非 3 个 Agent）</div>`
+   :`<div class="tags">${(tags[id]||[]).map(t=>`<span class="tag">${t}</span>`).join('')}</div><div class="hint">点卡片把示例问题填到输入框，按发送试跑</div>`;
+  return `<div class="cap" onclick="fillQuery(CAPQ['${id}'])">
+   <div class="ico" style="background:${ic[1]};color:${ic[0]}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">${ic[2].split('M').filter(Boolean).map(p=>'<path d="M'+p+'"/>').join('')}</svg></div>
+   <div class="arr"><svg viewBox="0 0 24 24" width="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17 17 7M9 7h8v8"/></svg></div>
+   <div class="ct">${nm[id]}</div>
+   <div class="cd">${sub[id]}</div>
+   ${scn}
+  </div>`;}).join('');
+}
+function renderSessions(){
+ const groups={};SESSIONS.forEach(s=>{(groups[s.g]=groups[s.g]||[]).push(s)});
+ $('#sessList').innerHTML=Object.entries(groups).map(([g,arr])=>
+  `<div class="sess-grp"><span>${g}</span><span class="n">${arr.length}</span></div>`+
+  arr.map(s=>`<div class="sess-item" onclick="openSession('${s.t.replace(/'/g,'')}',this)">
+    <div class="tt"><span class="dot" style="background:${STCOLOR[s.ty]}"></span>${s.t}</div>
+    <div class="mt"><span class="st" style="color:${STCOLOR[s.ty]}">${s.s}</span> · ${s.m}</div></div>`).join('')
+ ).join('');
+}
+let skillFilter='all';
+function renderSkills(){
+ const list=SKILLS.filter(s=>skillFilter==='all'||s.cat===skillFilter);
+ $('#skillsBody').innerHTML=`<div class="skill-grid">`+list.map(s=>{
+  const catlabel={main:'主线',sub:'副线',common:'通用'}[s.cat];
+  const sed=s.source==='sed';
+  return `<div class="skill" onclick="openSkill('${s.id}')">
+    <div class="cn">${s.cn}</div>
+    <div class="top"><span class="nm">${s.id}</span></div>
+    <div class="dd">${s.desc}</div>
+    <div class="meta"><span class="pill cat ${s.cat}">${catlabel}</span><span class="pill ${sed?'sed':'def'}">${sed?'沉淀·已装':'默认·已装'}</span></div>
+  </div>`;}).join('')+`</div>
+  <div class="conn-row">数据连接器(只读，仅副线，密钥超管中心管)：<span class="mono">qianchuan-mcp · chanmama-mcp · feigua-mcp · brand-asset-mcp</span></div>`;
+}
+function renderHealth(){
+ $('#healthBody').innerHTML=HEALTH.map(h=>`<tr class="clk" onclick="setTopCat('${h.c}',1)">
+  <td class="cat-nm">${h.c}</td><td class="mono">${h.in}</td><td class="mono">${h.ex}</td>
+  <td><span class="bar"><i style="width:${h.occ}%"></i></span>${h.occ>=100?'<span class="full">满</span>':''}</td>
+  <td class="mono">${h.sin} / ${h.sex}</td></tr>`).join('');
+}
+let topCat='美妆';
+function renderTopTabs(){$('#topTabs').innerHTML=CATS.map(c=>`<div class="toptab ${c===topCat?'on':''}" onclick="setTopCat('${c}')">${c}</div>`).join('');}
+function renderRank(){
+ const d=TOP[topCat];const row=(arr,lib)=>arr.map((x,i)=>`<div class="rankrow"><span class="no">${i+1}</span><span class="rt">${x[0]}</span><span class="lib ${lib==='内验'?'in':'ex'}">${lib}</span><span class="sc">分${x[1]}</span><span class="ck" onclick="event.stopPropagation();teardown('${x[0].replace(/'/g,'')}')">拆解</span></div>`).join('');
+ $('#rankIn').innerHTML=row(d.in,'内验');$('#rankEx').innerHTML=row(d.ex,'外验');
+}
+function setTopCat(c,scroll){topCat=c;renderTopTabs();renderRank();if(!$('#view-dashboard').classList.contains('on'))go('dashboard');if(scroll){const t=document.getElementById('topTabs');if(t)t.scrollIntoView({behavior:'smooth',block:'center'});}}
+
+/* ============ NAV / VIEW ============ */
+const CRUMB={home:'短视频智能体',session:'创作会话',skills:'技能 Store',dashboard:'副线 & 爆款库看板'};
+function go(name){
+ document.querySelectorAll('.view').forEach(v=>v.classList.remove('on'));
+ $('#view-'+name).classList.add('on');
+ $('#crumbCur').textContent=CRUMB[name]||'短视频智能体';
+ document.querySelectorAll('.sfoot-item').forEach(n=>n.classList.remove('active'));
+ const sf=document.querySelector('.sfoot-item[data-nav="'+name+'"]');if(sf)sf.classList.add('active');
+ if(name!=='session')document.querySelectorAll('.sess-item').forEach(x=>x.classList.remove('active'));
+ if(name==='skills'){skillFilter='all';$('#skillsTitle').textContent='技能 Store';renderSkills();document.querySelectorAll('#skillFilter .ftab').forEach((t,i)=>t.classList.toggle('on',i===0));}
+ const vw=document.querySelector('.view-wrap');if(vw){vw.scrollTop=0;vw.classList.toggle('no-scroll',name==='session');}
+}
+function newSession(){go('home');$('#homeInput').value='';$('#homeInput').focus();}
+function submitHome(){
+ const v=$('#homeInput').value.trim();
+ if(!v){toast('输入点什么，或点下方能力卡填一个示例');return;}
+ routeQuery(v);
+}
+/* v0.6 主控请求路由：任意 query → 场景（检索/审核/写脚本兜底/商品理解/创作） */
+function routeQuery(q){
+ const n=parseN(q);
+ if(/爆款库|检索|找.*钩子|高赞.*(钩子|开箱|视频)/.test(q)){openSearchSession(q,n||5);return;}
+ if(/审一?下|帮我审|^审|审核|合规[:：]/.test(q)){openAuditSession(q);return;}
+ if(/直接.*(写|生成|出).*(脚本|带货)/.test(q)){openNoBpSession(q);return;}
+ if(/(拆解|分析|看看|理解).*(商品|卖点|人群)/.test(q)){openInsightSession(q);return;}
+ SCRIPT_N=n||10;
+ openCreateSession(q);
+}
+
+/* ============ SESSION FLOW ============ */
+let gateConfirmed=false;
+let SCRIPT_N=10; // 脚本/蓝图条数，跟随用户 query
+let BP_VER=1; const CHG={hook:false,cta:false}; let TWEAK_TXT=''; let SCRIPT_PATCH=null; // 蓝图微调/脚本层单条修改状态
+function parseN(t){if(!t)return null;const m=String(t).match(/(?:×|x|X)\s*(\d+)|(\d+)\s*条/);if(!m)return null;return Math.max(1,Math.min(20,+(m[1]||m[2])));}
+let MODE='create'; // create | search | audit | insight | nobp
+let _players={};
+const PLAN_SVG='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>';
+function tparams(o){return `<div class="tparams">${Object.entries(o).map(([k,v])=>`<span class="tp"><b>${k}</b>:${v}</span>`).join('')}</div>`;}
+const ROUTE_SVG='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 2v4M12 18v4M2 12h4M18 12h4M5 5l2.5 2.5M16.5 16.5 19 19M19 5l-2.5 2.5M7.5 16.5 5 19"/></svg>';
+function routeBox(scene,chips,desc){return `<div class="plan route"><div class="plan-h">${ROUTE_SVG}主控 · 请求路由（任务框）</div><div class="rt-b">识别为 <span class="rt-tag">${scene}</span>${chips?tparams(chips):''}${desc?`<div class="rt-d">${desc}</div>`:''}</div></div>`;}
+function openShell(){
+ gateConfirmed=false;BP_VER=1;CHG.hook=false;CHG.cta=false;TWEAK_TXT='';SCRIPT_PATCH=null;
+ Object.values(_players).forEach(p=>p&&clearInterval(p));_players={};
+ go('session');
+ document.querySelectorAll('.sess-item').forEach(x=>x.classList.remove('active'));
+ $('#flowScroll').innerHTML='';
+ const ti=document.getElementById('tweakInput');if(ti){ti.value='';ti.placeholder='继续对话：补充信息 / 微调蓝图 / 发起新请求（主控会重新路由）…';}
+ buildArtifact();
+}
+function pushUser(html,tag){const fs=$('#flowScroll');fs.insertAdjacentHTML('beforeend',`<div class="msg user"><div class="who"><span class="av">K</span> kk${tag?' · '+tag:''}</div><div class="bubble">${html}</div></div>`);fs.scrollTop=fs.scrollHeight;}
+function pushBot(inner){const fs=$('#flowScroll');fs.insertAdjacentHTML('beforeend',`<div class="msg bot"><div class="who"><span class="av">B</span> Befriendsvideo Agent</div>${inner}</div>`);fs.scrollTop=fs.scrollHeight;}
+function setTabsSingle(label){$('#artTabs').innerHTML=`<div class="art-tab on" data-tab="single">${label}</div>`;}
+function setTabsCreate(){$('#artTabs').innerHTML=`<div class="art-tab on" data-tab="report" onclick="artTab('report')">报告</div><div class="art-tab dis" data-tab="script" id="tabScript" onclick="artTab('script')">脚本 v1</div>`;}
+function waitBody(t){$('#artBody').innerHTML=`<div style="padding:36px 20px;text-align:center;color:var(--mute);font-size:12px">${t}</div>`;}
+function maskPH(q){return q.replace(/〔[^〕]*〕/g,'<span style="color:var(--accent-ink);background:var(--accent-soft);border-radius:4px;padding:0 4px;font-size:11px">〔占位符未替换：商品链接/图〕</span>');}
+/* —— 创作主线（① 起，可被任意入口续接复用）—— */
+function creationFlowHtml(){
+ return `${routeBox('创作请求 · 新建全量',{读黑板:'空(无商品/蓝图)',层级:'全量管线',派发:'①→②→③ · 停④'},'Plan 拆解并派发；③ 后必停 ④ 人审')}
+  <div class="plan">
+   <div class="plan-h">${PLAN_SVG}执行计划 · 主控拆解派发</div>
+   ${stepHtml('done','①','商品理解','商品字段已产出：商品名/品类/卖点/人群/场景/诉求/竞品/痛点候选')}
+   ${stepHtml('done','②','素材匹配 · 素材验证',`派发柔性任务${tparams({条件:'商品字段',范围:'全库(美妆)',粒度:'整条',排序:'爆款分'})}外:内 = 7:3 取 Top10`)}
+   ${stepHtml('done','③','报告 / 蓝图合成','6 块报告 + 创作蓝图（纯方向 + 借鉴点）已生成','报告')}
+   <div id="gateBlock">
+     <div style="padding:13px 16px">
+       <div class="gate"><div class="gt">⏸ ④ 用户确认闸（人审 · 非 Agent）</div>
+         <div class="gd">报告已就绪。确认创作方向后再生成脚本，或在下方输入您想要调整的部分。</div>
+         <div class="gate-btns"><button class="btn-pri" onclick="confirmGate()">确认并生成脚本</button></div>
+       </div>
+     </div>
+   </div>
+   <div id="downSteps"></div>
+  </div>`;
+}
+function openSession(title,el){ /* 侧栏历史会话：创作 demo */
+ if(!title.includes('精华液')){toast('演示版仅开放「悦美精华液」会话回放，其余历史为示意数据');return;}
+ const n=parseN(title);SCRIPT_N=n||10;
+ openShell();MODE='create';
+ if(el)el.classList.add('active');
+ setTabsCreate();
+ pushUser(`<span class="lk">https://haohuo.douyin.com/...</span><br>帮我给这个商品做 <b>${SCRIPT_N} 条</b>补水主打的短视频脚本`,'10:14');
+ pushBot(creationFlowHtml());
+ artTab('report');
+}
+function openCreateSession(q){
+ openShell();MODE='create';
+ const hasLink=/https?:\/\//.test(q)&&!/〔/.test(q);
+ pushUser(maskPH(q));
+ if(!hasLink){
+  setTabsSingle('产出物');waitBody('等待补全商品信息后产出');
+  pushBot(`<div class="think"><span class="sp"></span>主控 · 读黑板：无商品字段；query 无有效链接/图 → <b>缺前置 · 依赖补全</b>（不派 Agent 硬跑、不编造）</div>
+   <div class="bubble">要开始创作，先给我<b>商品链接</b>，或上传<b>商品图 / 手卡</b>。<br><span class="qa" onclick="createRun(false)">使用演示商品链接继续</span></div>`);
+  return;
+ }
+ createRun(true);
+}
+function createRun(hadLink){
+ if(!hadLink)pushUser('<span class="lk">https://haohuo.douyin.com/ydemo-778899</span>（演示商品链接）','补充');
+ setTabsCreate();
+ pushBot(creationFlowHtml());
+ artTab('report');
+}
+/* —— 场景：② 爆款库检索（旁路，不进创作主线）—— */
+const SEARCH_RES=[
+ {nm:'XX耳机·开箱一刻',zan:'12.8w',sc:96,cat:'数码',en:3,ln:'这价格我以为是假货…',tag:'怕智商税',sum:'撕封膜特写 + 反差价格钩，3 秒内抛出质疑',g:'#2b2f4a,#4a3a5e',
+  segs:[['钩子','00:00–03'],['产品引出','00:03–06'],['卖点证明','00:06–11'],['CTA','00:13–15']]},
+ {nm:'XX香薰·开箱',zan:'9.2w',sc:93,cat:'家具',en:2,ln:'拆快递最爽的一集',tag:'解压仪式感',sum:'包裹堆叠俯拍 + ASMR 拆箱声，情绪钩',g:'#1f3a3a,#3b2f4f',
+  segs:[['钩子','00:00–02'],['产品引出','00:02–06'],['卖点证明','00:06–10'],['促销利益','00:10–13'],['CTA','00:13–15']]},
+ {nm:'XX数码·拆封实测',zan:'7.5w',sc:91,cat:'数码',en:3,ln:'开箱 10 秒就后悔了？',tag:'反转好奇',sum:'假装翻车再反转，悬念钩',g:'#3a2f1f,#2f3b4f',
+  segs:[['钩子','00:00–03'],['痛点共鸣','00:03–05'],['卖点证明','00:05–11'],['CTA','00:12–15']]},
+];
+function openSearchSession(q,n){
+ openShell();MODE='search';
+ setTabsSingle('检索结果');
+ pushUser(q,'检索');
+ pushBot(`${routeBox('爆款库检索 · ② 旁路',{主线:'不进创作主线',黑板:'不写创作黑板',派发:'② 一步到位'},'② 单一匹配能力的检索形态：只取数，取完干嘛主控接')}
+  <div class="plan"><div class="plan-h">${PLAN_SVG}执行计划 · 主控拆解派发</div>
+  ${stepHtml('done','②','素材匹配 · 爆款库检索',`派发柔性任务${tparams({条件:'开箱风 + 高赞',范围:'全库(未指定品类→跨品类)',粒度:'钩子段',排序:'点赞↓',条数:n+' 条'})}整条风格按视频级自由总结判「开箱」· 按落库点赞数精确排序 · 只抽钩子段`)}
+  </div>
+  <div class="bubble">命中 ${Math.min(n,SEARCH_RES.length)} 条（右侧 →）：可播放钩子段、拆解整条、或带入创作当借鉴点。${n>SEARCH_RES.length?`<br><span style="font-size:11px;color:var(--ink-3)">你要 ${n} 条；演示库内置 ${SEARCH_RES.length} 条，已全部展示。</span>`:''}</div>`);
+ renderSearch(n);
+}
+function playerHtml(r,i){
+ const l=0,w=(r.en/15*100).toFixed(0);
+ return `<div class="player"><div class="pcv" style="background:linear-gradient(135deg,${r.g} 55%,#1c2030)">
+   <span class="pttl">《${r.nm}》 模拟播放</span>
+   <div class="pbtn" onclick="togglePlay(this,${i})"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></div></div>
+  <div class="pbar"><span class="ptm" id="ptm${i}">00:00</span><div class="ptrk"><div class="psg" style="left:${l}%;width:${w}%" title="钩子段"></div><div class="pfl" id="pfl${i}"></div></div><span class="ptm">00:15</span></div></div>`;
+}
+function togglePlay(btn,i){
+ const fl=document.getElementById('pfl'+i),tm=document.getElementById('ptm'+i);if(!fl)return;
+ if(_players[i]){clearInterval(_players[i]);_players[i]=null;btn.innerHTML='<svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>';return;}
+ btn.innerHTML='<svg viewBox="0 0 24 24" fill="currentColor"><path d="M6 5h4v14H6zM14 5h4v14h-4z"/></svg>';
+ let t=parseFloat(fl.dataset.t||0);
+ _players[i]=setInterval(()=>{t+=0.18;if(t>=15)t=0;fl.dataset.t=t;fl.style.width=(t/15*100)+'%';tm.textContent='00:'+String(Math.floor(t)).padStart(2,'0');},120);
+}
+function renderSearch(n){
+ const list=SEARCH_RES.slice(0,Math.min(n,SEARCH_RES.length));
+ $('#artBody').innerHTML=`<div class="doc"><h3>爆款库检索 · 钩子段 × ${list.length}</h3><div class="sub">条件: 开箱风+高赞 · 范围: 全库 · 粒度: 钩子段 · 点赞降序 · 旁路结果不进创作黑板</div>
+ ${list.map((r,i)=>`<div class="resc">
+   <div class="rh">▷ 《${r.nm}》<span class="sc2">${r.cat} · 爆款分 ${r.sc}</span><span class="zan">赞 ${r.zan}</span></div>
+   ${playerHtml(r,i)}
+   <div class="line"><b>钩子段 00:00–0${r.en}</b>（进度条橙色区）· 台词「${r.ln}」 <span class="tg p" style="font-size:9.5px">痛点·${r.tag}</span></div>
+   <div class="line" style="color:var(--ink-3)">切片级自由总结：${r.sum}</div>
+   <span class="qa sec" onclick="this.parentElement.querySelector('.fullsegs').classList.toggle('hidden')">拆解整条 ▾</span><span class="qa acc" onclick="toast('已带入会话：创作时可作为借鉴点引用（借手法不抄台词）')">带入会话当借鉴点</span>
+   <div class="fullsegs hidden" style="margin-top:7px"><div style="font-size:10.5px;color:var(--ink-3);margin-bottom:3px">整条骨架段切片（库内离线已拆好，含各段台词；分镜只到段级画面）：</div>${r.segs.map(s=>`<div class="segc"><span class="sn">${s[0]}</span><span class="tc">${s[1]}</span><span class="pl" onclick="clipPlay('${r.nm}','${s[0]}','${s[1]}')">▶</span></div>`).join('')}</div>
+  </div>`).join('')}
+ <div style="font-size:11px;color:var(--ink-3);text-align:center;margin:6px 0">原始指标随采集落库 → 才能精确按「高赞」排序；爆款分由指标合成、可解释</div></div>`;
+}
+/* —— 场景：⑥ 内容审核（自包含，脚本随 query 给到）—— */
+function openAuditSession(q){
+ openShell();MODE='audit';
+ setTabsSingle('审核结果');
+ pushUser(q,'审核');
+ pushBot(`${routeBox('脚本审核 · ⑥ 独立',{前置:'无需黑板(脚本随 query)',审核标准:'系统自带·不用问',派发:'⑥ 独立运行'})}
+  <div class="plan"><div class="plan-h">${PLAN_SVG}执行计划 · 主控拆解派发</div>
+  ${stepHtml('done','⑥','内容审核',`派发柔性任务${tparams({入参:'用户贴的脚本',审核标准:'广告法违禁词库+平台规则+夸大/绝对化'})}逐句扫描`)}
+  </div>
+  <div class="bubble">审核完成：<b>需改 2 处</b>（右侧 →）。可一键应用修改并复审。</div>`);
+ renderAudit(false);
+}
+function renderAudit(fixed){
+ $('#artBody').innerHTML=`<div class="doc"><h3>内容审核结果</h3><div class="sub">脚本 vs 审核标准（广告法违禁词库 + 平台规则 + 夸大/绝对化）</div>
+ ${fixed
+  ?`<div class="risk" style="background:var(--ok-soft);border-color:#bfe6d2;color:#15663f"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6 9 17l-5-5"/></svg>复审通过 · 修改已应用（审核回路 1/10 轮）</div>`
+  :`<div class="risk">⚠ 需改 2 处 —— 命中绝对化用语 + 夸大功效</div>`}
+ <div class="fxcard"><div class="fh">逐句对照</div>
+  <div class="frow">「熬夜脸暗沉？这瓶精华${fixed?'<span class="dline">全网最佳补水</span> <span class="fixv">实测更水润</span>':'<b style="color:var(--danger)">全网最佳补水</b>'}，${fixed?'<span class="dline">永久保湿不干燥</span> <span class="fixv">长效保湿不易干</span>':'<b style="color:var(--danger)">永久保湿不干燥</b>'}，点下方下单」</div>
+ </div>
+ <div class="fxcard"><div class="fh">${fixed?'已应用的修改':'修改建议'}</div>
+  <div class="frow">1. <b>「全网最佳补水」</b> → 绝对化用语（广告法）→ 建议「实测更水润」${fixed?' <span class="fixv">✓ 已改</span>':''}</div>
+  <div class="frow">2. <b>「永久保湿」</b> → 夸大功效 → 建议「长效保湿」${fixed?' <span class="fixv">✓ 已改</span>':''}</div>
+ </div>
+ ${fixed?'<div style="font-size:11px;color:var(--ink-3);text-align:center;margin:6px 0">若连续 10 轮不过：放行 + 风险话术「抱歉，此脚本有合规风险请谨慎采纳。」</div>':'<span class="qa" onclick="applyAudit()">应用修改并复审</span>'}
+ </div>`;
+}
+function applyAudit(){
+ pushBot(`<div class="think"><span class="sp"></span>主控 → ⑤ 按建议改一轮（局部）→ ⑥ 复审 → <b>通过</b>（审核回路 1/10 轮）</div>`);
+ renderAudit(true);toast('已应用修改 → 复审通过');
+}
+/* —— 场景：① 商品理解（缺链接→主控依赖补全）—— */
+function openInsightSession(q){
+ openShell();MODE='insight';
+ setTabsSingle('商品字段');
+ pushUser(maskPH(q),'商品理解');
+ const hasLink=/https?:\/\//.test(q)&&!/〔/.test(q);
+ if(!hasLink){
+  waitBody('等待商品输入');
+  pushBot(`${routeBox('商品拆解 · ① 单步',{前置:'需要商品输入',读黑板:'无商品字段',判定:'缺前置→补全询问'})}<div class="think"><span class="sp"></span>主控 · 读黑板：无商品字段；query 无有效链接/图 → <b>缺前置 · 依赖补全</b>（不派 ① 硬跑）</div>
+   <div class="bubble">要拆解商品，给我<b>商品链接</b>或<b>商品图 / 手卡</b>。<br><span class="qa" onclick="insightRun()">使用演示商品链接继续</span></div>`);
+  return;
+ }
+ insightRun();
+}
+function insightRun(){
+ pushUser('<span class="lk">https://haohuo.douyin.com/ydemo-778899</span>（演示商品链接）','补充');
+ pushBot(`<div class="think"><span class="sp"></span>主控：拿到商品输入 → 派 ①（解析失败/图糊时由 ① 诚实上报，再由主控决定问什么）</div>
+  <div class="plan"><div class="plan-h">${PLAN_SVG}执行计划</div>
+  ${stepHtml('done','①','商品理解',`派发柔性任务${tparams({入参:'商品链接',动作:'解析商详+卖点+人群+场景+诉求+竞品+痛点候选'})}缺失标「未知」不臆造`)}
+  </div>
+  <div class="bubble">商品字段在右侧 →。要继续往下吗：匹配素材 → 出报告蓝图（到 ④ 确认闸）。<br><span class="qa" onclick="insightContinue()">继续出完整报告</span></div>`);
+ renderInsight();
+}
+function renderInsight(){
+ $('#artBody').innerHTML=`<div class="doc"><h3>商品字段</h3><div class="sub">① 输出 · 缺失标「未知」不臆造 · 痛点候选尽量映射标签库</div>
+ <div class="fxcard"><div class="fh">悦美精华液 · 白日梦</div>
+  <div class="frow"><b>品类</b> 美妆　<b>识别置信</b> 高</div>
+  <div class="frow"><b>卖点</b> <span class="chip2">72h长效补水</span><span class="chip2">熬夜急救</span><span class="chip2">温和配方</span></div>
+  <div class="frow"><b>人群标签</b> 18–28 熬夜党 / 敏感肌　<b>使用场景</b> 通勤前急救 / 睡前修护</div>
+  <div class="frow"><b>人群诉求</b> 怕没效果、怕刺激</div>
+  <div class="frow"><b>竞品</b> XX水乳 / XX安瓶（匹配时对「识别商品名」加权）</div>
+  <div class="frow"><b>痛点候选</b> ${RP_PAIN.map(p=>`<span class="chip2">${p}</span>`).join('')}<span class="chip2 un">毛孔粗大·未归类</span></div>
+ </div></div>`;
+}
+function insightContinue(){
+ MODE='create';SCRIPT_N=10;gateConfirmed=false;BP_VER=1;CHG.hook=false;CHG.cta=false;SCRIPT_PATCH=null;
+ setTabsCreate();
+ pushUser('继续，出完整报告','确认');
+ pushBot(`<div class="think"><span class="sp"></span>主控 · 读黑板：商品字段已有 → <b>复用，① 不重跑</b> → 派 ② ③，停 ④</div>
+  <div class="plan"><div class="plan-h">${PLAN_SVG}执行计划 · 续接</div>
+  ${stepHtml('done','①','商品理解','复用黑板缓存，不重跑')}
+  ${stepHtml('done','②','素材匹配 · 素材验证',`派发柔性任务${tparams({条件:'商品字段',范围:'全库(美妆)',粒度:'整条',排序:'爆款分'})}外:内 = 7:3 取 Top10`)}
+  ${stepHtml('done','③','报告 / 蓝图合成','6 块报告 + 蓝图已生成','报告')}
+  <div id="gateBlock"><div style="padding:13px 16px"><div class="gate"><div class="gt">⏸ ④ 用户确认闸（人审 · 非 Agent）</div><div class="gd">确认方向后生成脚本，或在下方输入要调整的部分。</div><div class="gate-btns"><button class="btn-pri" onclick="confirmGate()">确认并生成脚本</button></div></div></div></div>
+  <div id="downSteps"></div></div>`);
+ artTab('report');
+}
+/* —— 场景：⑤ 写脚本但无蓝图（主控依赖补全 · 二选一）—— */
+function openNoBpSession(q){
+ openShell();MODE='nobp';
+ setTabsSingle('脚本');waitBody('等待蓝图或商品信息');
+ pushUser(q,'写脚本');
+ pushBot(`${routeBox('直接写脚本 · ⑤',{前置:'确认过的蓝图',读黑板:'无商品·无蓝图',判定:'缺前置→二选一补全'})}<div class="think"><span class="sp"></span>主控 · 读黑板：<b>没有商品字段、也没有确认过的蓝图</b> → 缺前置 · 依赖补全（⑤ 不被派、不硬跑、不编造）</div>
+  <div class="bubble">写脚本得先有「确认过的创作蓝图」——脚本要花成本，得先对齐方向。两条路你选：<br>
+  <span class="qa" onclick="nobpGive()">① 给商品链接，从头跑到确认闸</span>
+  <span class="qa sec" onclick="nobpPaste()">② 我已有蓝图，贴进来直接写</span></div>`);
+}
+function nobpGive(){
+ MODE='create';SCRIPT_N=10;
+ pushUser('<span class="lk">https://haohuo.douyin.com/ydemo-778899</span> 给这个商品做 10 条脚本（演示）','补充');
+ setTabsCreate();
+ pushBot(creationFlowHtml());
+ artTab('report');
+}
+function nobpPaste(){
+ pushBot(`<div class="bubble">把蓝图贴到<b>下方输入框</b>发我（方向要点也行），我基于它直接出脚本 + 分镜。</div>`);
+ const i=document.getElementById('tweakInput');if(i){i.placeholder='把你的蓝图 / 方向要点贴在这里，回车发送…';i.focus();}
+}
+function stepHtml(mk,no,nm,sd,art){
+ const m=mk==='done'?`<div class="mk done"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6 9 17l-5-5"/></svg></div>`:`<div class="mk wait">${no}</div>`;
+ return `<div class="step">${m}<div class="sb"><div class="sn">${no} ${nm}</div><div class="sd">${sd}</div>${art?`<span class="art" onclick="artTab('${art==='报告'?'report':'script'}')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2h9l5 5v15H6z"/></svg>${art} artifact</span>`:''}</div></div>`;
+}
+function confirmGate(){
+ if(gateConfirmed){artTab('script');toast('已确认过 → 看「脚本」tab');return;}gateConfirmed=true;
+ $('#gateBlock').innerHTML=`<div class="step"><div class="mk done"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6 9 17l-5-5"/></svg></div><div class="sb"><div class="sn">④ 用户确认闸</div><div class="sd">已确认创作方向 · 补水主打</div></div></div>`;
+ $('#downSteps').innerHTML=stepHtml('done','⑤','脚本 + 分镜',`按确认蓝图出 ${SCRIPT_N} 条（这一步才出台词），每条正下方带分镜表，已优选排序`)+stepHtml('done','⑥','内容审核','审核标准扫描 · 1 处绝对化已修正 → 通过','脚本');
+ $('#tabScript').classList.remove('dis');
+ buildArtifact();artTab('script');
+ toast('已确认 → 生成脚本 + 通过审核');
+}
+function sendTweak(){
+ const inp=document.getElementById('tweakInput');if(!inp)return;
+ const v=inp.value.trim();if(!v){toast('输入点什么');return;}
+ inp.value='';
+ if(MODE==='nobp'){ /* 把输入当作用户提供的蓝图 → ⑤ 直接写（演示 3 条） */
+  pushUser(v,'贴蓝图');
+  SCRIPT_N=Math.min(3,RP_BP.length);gateConfirmed=true;
+  pushBot(`<div class="think"><span class="sp"></span>主控：收到外部蓝图 → 写入黑板（来源:用户提供）→ 派 ⑤（M=3 演示）→ ⑥</div>
+   <div class="plan"><div class="plan-h">${PLAN_SVG}执行计划</div>
+   ${stepHtml('done','⑤','脚本 + 分镜','按你提供的蓝图出 3 条（演示），每条正下方带分镜表')}
+   ${stepHtml('done','⑥','内容审核','通过 · 0 处需改')}
+   </div><div class="bubble">3 条脚本在右侧 → 每条都带分镜。</div>`);
+  setTabsSingle('脚本 v1');
+  renderScript();MODE='nobp-done';
+  return;
+ }
+ if(MODE!=='create'){ /* 检索/审核/商品理解等场景里的新输入 → 主控重新路由 */
+  toast('主控：识别为新请求 → 重新路由');
+  routeQuery(v);return;
+ }
+ const mNum=v.match(/脚本\s*(\d+)/);
+ if(gateConfirmed&&mNum){scriptTweak(+mNum[1],v);return;} // 脚本层·单条 → 不重开④
+ const wantHook=/钩子|开头|hook/i.test(v),wantCta=/cta|行动|结尾|号召/i.test(v);
+ const none=!wantHook&&!wantCta;const h=wantHook||none,c=wantCta||none; // 未点名则默认钩子+CTA
+ CHG.hook=CHG.hook||h;CHG.cta=CHG.cta||c;BP_VER=BP_VER<2?2:BP_VER+1;TWEAK_TXT=v;
+ const segName=(h?'钩子':'')+(h&&c?' + ':'')+(c?'CTA':'');
+ const planSvg='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>';
+ const fs=$('#flowScroll');
+ fs.insertAdjacentHTML('beforeend',
+  `<div class="msg user"><div class="who"><span class="av">K</span> kk · 微调</div><div class="bubble">${v}</div></div>
+   <div class="msg bot"><div class="who"><span class="av">B</span> Befriendsvideo Agent</div>
+     ${routeBox('蓝图方向微调 · 蓝图层',{段:segName,影响:'全局 '+SCRIPT_N+' 条蓝图',确认闸:'④ 重新确认',策略:'①复用 · ②缓存复筛 · ③局部重写'},'不重跑商品理解、不重检索全库；蓝图层改动 → 必须重过 ④'+(gateConfirmed?'，确认后全量重写脚本':''))}
+     <div class="plan"><div class="plan-h">${planSvg}局部重跑 · 蓝图微调 v${BP_VER}</div>
+       ${stepHtml('done','①','商品理解','复用，不重跑')}
+       ${stepHtml('done','②','素材验证 · 风格复筛','在已检索 TopN 缓存内按风格筛，不重检索全库')}
+       ${stepHtml('done','③','报告生成',`只重写蓝图的 ${segName} 段（命中→借鉴点 / 无命中→原创）`,'报告')}
+       ${stepHtml('done','④','用户确认闸',`蓝图已更新 v${BP_VER}，请复核高亮段（报告 tab 橙色"已更新"）后确认<br><button class="btn-pri bsm" onclick="gateV2(this)">${gateConfirmed?`确认 v${BP_VER} · 重写全部 ${SCRIPT_N} 条脚本`:`确认 v${BP_VER} 并生成脚本`}</button>`)}
+     </div></div>`);
+ fs.scrollTop=fs.scrollHeight;
+ artTab('report');
+ toast(`蓝图已更新 v${BP_VER}（${segName}）`);
+}
+/* ===== v0.5 artifact data（悦美精华液 · 美妆；每条参考带全部识别到的骨架6段切片；合格视频必含痛点+超效切片）===== */
+const RP_PAIN=['熬夜脸暗沉','敏感肌怕刺激','怕没效果·智商税','价格不透明'];
+// seg: [段名, 时间码, 痛点标签|null, 超效标签|null]
+const RP_OUT=[
+ {nm:'悦美精华·熬夜急救',sc:96,segs:[['钩子','00:00–03','熬夜脸暗沉',null],['痛点共鸣','00:03–06',null,null],['产品引出','00:06–08',null,null],['卖点证明','00:08–11',null,'前后对比'],['CTA','00:13–15',null,null]]},
+ {nm:'XX气垫·伪素颜',sc:94,segs:[['钩子','00:00–02','怕没效果·智商税',null],['产品引出','00:02–05',null,null],['卖点证明','00:05–09',null,'情绪反转'],['CTA','00:12–15',null,null]]},
+ {nm:'XX面膜·熬夜党',sc:91,segs:[['痛点共鸣','00:00–04','熬夜脸暗沉',null],['卖点证明','00:08–11',null,'数据浮层'],['促销利益','00:12–14',null,null]]},
+ {nm:'XX水乳·屏障修护',sc:89,segs:[['钩子','00:00–03','敏感肌怕刺激',null],['痛点共鸣','00:03–06',null,null],['卖点证明','00:07–11',null,'实测'],['CTA','00:13–15',null,null]]},
+ {nm:'XX安瓶·急救屏障',sc:88,segs:[['钩子','00:00–03','敏感肌怕刺激',null],['卖点证明','00:06–11',null,'前后对比'],['CTA','00:13–15',null,null]]},
+ {nm:'XX喷雾·随时补水',sc:86,segs:[['痛点共鸣','00:00–04','怕没效果·智商税',null],['卖点证明','00:05–10',null,'多场景'],['促销利益','00:11–14',null,null]]},
+ {nm:'XX冻干粉·熬夜修护',sc:85,segs:[['钩子','00:00–03','熬夜脸暗沉',null],['卖点证明','00:06–11',null,'数据浮层'],['CTA','00:13–15',null,null]]},
+];
+const RP_IN=[
+ {nm:'XX精华·早C晚A',sc:88,segs:[['钩子','00:00–03','怕没效果·智商税',null],['卖点证明','00:05–10',null,'前后对比'],['CTA','00:13–15',null,null]]},
+ {nm:'XX眼霜·抗老',sc:85,segs:[['钩子','00:00–03','熬夜脸暗沉',null],['卖点证明','00:06–11',null,'数据浮层'],['CTA','00:13–15',null,null]]},
+ {nm:'XX面膜·熬夜党(内验)',sc:91,segs:[['痛点共鸣','00:00–04','敏感肌怕刺激',null],['卖点证明','00:07–11',null,'实测'],['促销利益','00:12–15',null,null]]},
+];
+// 蓝图/脚本 6 段 [段名, 本段创作方向(纯,无台词), 台词(成稿), 借鉴点文案, 'p'|'e'|'orig']
+const RP_BP=[
+ {t:'熬夜急救·痛点提问款',r:1,note:'钩子/痛点借《悦美精华·熬夜急救》、证明借《XX面膜·熬夜党》（跨两条结合，非复刻）',segs:[
+   ['钩子','用痛点反问制造熬夜焦虑，先不报产品','熬夜脸暗沉显老？别急着遮','借《悦美精华·熬夜急救》·开场钩子的反问痛点节奏','p'],
+   ['痛点共鸣','放大加班党"脸先垮"的场景代入','加班党的脸，总是最先垮的那个','借《悦美精华·熬夜急救》·痛点铺垫的场景化共鸣','p'],
+   ['产品引出','亮明 72h 长效补水的差异点','这瓶 72h 长效补水精华，专治熬夜暗沉','原创','orig'],
+   ['卖点证明','用敷前敷后对比+数据浮层证明效果','敷前敷后对比，水分值直接拉满','借《XX面膜·熬夜党》·高光证明的前后对比+数据浮层手法','e'],
+   ['促销利益','落到急救装/尝鲜价','急救装限时尝鲜','通用话术','orig'],
+   ['CTA','引导今晚就用','点下方，今晚就回温','原创','orig']]},
+ {t:'72h补水·实测对比款',r:2,note:'钩子借《XX气垫·伪素颜》、证明借《XX精华·早C晚A》（跨两条结合）',segs:[
+   ['钩子','用"到底有没有用"的质疑钩起好奇','补水产品到底有没有用？我做了个实验','借《XX气垫·伪素颜》·开场钩子的质疑式钩子','p'],
+   ['痛点共鸣','戳"怕交智商税"的顾虑','就怕又是智商税','通用话术','orig'],
+   ['产品引出','引出 72h 锁水科技','72h 锁水科技，实测说话','原创','orig'],
+   ['卖点证明','24h 水分曲线实测、前后对比','24 小时水分曲线，肉眼可见','借《XX精华·早C晚A》·高光证明的前后对比实测手法','e'],
+   ['促销利益','正装尝鲜价','正装尝鲜价','通用话术','orig'],
+   ['CTA','引导看完整实测','点下方看完整实测','原创','orig']]},
+ {t:'敏感肌·温和承诺款',r:3,note:'钩子/痛点借《XX面膜·熬夜党(内验)》、证明借《XX眼霜·抗老》（跨两条结合）',segs:[
+   ['钩子','用"敏感肌也怕踩雷"切入','敏感肌选护肤，最怕踩雷','借《XX面膜·熬夜党(内验)》·开场钩子的痛点提问','p'],
+   ['痛点共鸣','上脸刺痛泛红的场景代入','上脸刺痛、泛红、闷痘','借《XX面膜·熬夜党(内验)》·痛点铺垫的场景共鸣','p'],
+   ['产品引出','无香精温和配方','无香精、无酒精，敏感肌也能用','原创','orig'],
+   ['卖点证明','成分浓度+实测无刺激','敏感肌实测，全程零刺激','借《XX眼霜·抗老》·高光证明的数据浮层手法','e'],
+   ['促销利益','敏感肌友好装','敏感肌友好装','通用话术','orig'],
+   ['CTA','引导放心入','点下方，放心入','原创','orig']]},
+ {t:'早C晚A·夜间修护款',r:4,segs:[
+   ['钩子','用"晚上到底涂啥"的疑问钩','早C晚A，晚上到底涂啥？','借《XX精华·早C晚A》·开场钩子的疑问钩','p'],
+   ['痛点共鸣','白天抗氧化、晚上不修护=白做','白天涂了，晚上不补=白忙','通用话术','orig'],
+   ['产品引出','夜间修护搭子定位','这瓶就是你的晚A搭子','原创','orig'],
+   ['卖点证明','连用前后肤况对比','连用两周，暗沉肉眼变亮','借《XX精华·早C晚A》·高光证明的前后对比手法','e'],
+   ['促销利益','早晚搭配套装','早晚搭配更划算','通用话术','orig'],
+   ['CTA','引导凑套装','点下方看早晚套装','原创','orig']]},
+ {t:'换季干皮·泛红救急款',r:5,segs:[
+   ['钩子','换季干到起皮的痛点直击','换季一到，脸干到起皮？','借《XX面膜·熬夜党》·痛点铺垫的痛点直击','p'],
+   ['痛点共鸣','干痒泛红、上妆卡粉','干、痒、泛红，上妆卡粉','借《XX面膜·熬夜党》·痛点铺垫的场景共鸣','p'],
+   ['产品引出','沙漠级补水定位','沙漠干皮的回血水','原创','orig'],
+   ['卖点证明','补水前后泛红消退对比','补水后，泛红肉眼退','借《XX安瓶·急救屏障》·高光证明的前后对比手法','e'],
+   ['促销利益','换季囤货价','换季囤货价','通用话术','orig'],
+   ['CTA','引导囤货','点下方囤一波','原创','orig']]},
+ {t:'通勤前5分钟·伪素颜款',r:6,segs:[
+   ['钩子','赶时间还想气色好的场景钩','赶地铁还想气色好？5分钟','借《XX气垫·伪素颜》·开场钩子的场景钩','p'],
+   ['痛点共鸣','早起脸垮、没时间护肤','早起脸垮、没时间护肤','通用话术','orig'],
+   ['产品引出','快速吸收不搓泥定位','拍开秒吸收，不搓泥','原创','orig'],
+   ['卖点证明','上脸即时提亮的情绪反转','涂完那一下，气色直接回来','借《XX气垫·伪素颜》·高光证明的情绪反转手法','e'],
+   ['促销利益','通勤随身装','通勤随身装','通用话术','orig'],
+   ['CTA','引导带一支','点下方带一支','原创','orig']]},
+ {t:'成分党·科技解析款',r:7,segs:[
+   ['钩子','用"凭什么72h"的质疑钩成分党','凭什么说72h锁水？看成分','借《XX精华·早C晚A》·开场钩子的质疑钩','p'],
+   ['痛点共鸣','成分党最怕交智商税','成分党最怕交智商税','通用话术','orig'],
+   ['产品引出','核心成分点名','核心是X分子玻尿酸','原创','orig'],
+   ['卖点证明','成分浓度数据浮层','浓度数据摆上来，锁水曲线说话','借《XX冻干粉·熬夜修护》·高光证明的数据浮层手法','e'],
+   ['促销利益','成分党专享价','成分党专享价','通用话术','orig'],
+   ['CTA','引导看成分表','点下方看完整成分','原创','orig']]},
+ {t:'学生党·平价急救款',r:8,segs:[
+   ['钩子','学生党平价补水的诉求钩','学生党也能用的平价补水？','借《XX冻干粉·熬夜修护》·开场钩子的痛点提问','p'],
+   ['痛点共鸣','预算有限又怕踩雷','预算有限，又怕踩雷','通用话术','orig'],
+   ['产品引出','平价大碗定位','平价大碗，学生党友好','原创','orig'],
+   ['卖点证明','用量与效果数据','一瓶用俩月，数据说话','借《XX冻干粉·熬夜修护》·高光证明的数据浮层手法','e'],
+   ['促销利益','学生党友好价','学生党友好价','通用话术','orig'],
+   ['CTA','引导学生价入','点下方学生价入','原创','orig']]},
+ {t:'妆前打底·服帖款',r:9,segs:[
+   ['钩子','卡粉脱妆的痛点钩','底妆总卡粉脱妆？先补水','借《XX气垫·伪素颜》·开场钩子的痛点钩','p'],
+   ['痛点共鸣','干皮上妆斑驳','干皮上妆，斑驳得很','通用话术','orig'],
+   ['产品引出','妆前补水定位','妆前一步，底妆服帖','原创','orig'],
+   ['卖点证明','上妆前后服帖对比','用前用后，妆面差一截','借《XX喷雾·随时补水》·高光证明的多场景对比手法','e'],
+   ['促销利益','妆前必备','妆前必备','通用话术','orig'],
+   ['CTA','引导加购','点下方加购','原创','orig']]},
+ {t:'沉浸开箱·氛围款',r:10,note:'钩子/证明借《悦美精华·熬夜急救》、质地展示原创',segs:[
+   ['钩子','开箱氛围感钩好奇','拆开这瓶，氛围感拉满','借《悦美精华·熬夜急救》·开场钩子的氛围钩','p'],
+   ['痛点共鸣','护肤也想要点仪式感','护肤也想要点仪式感','通用话术','orig'],
+   ['产品引出','质地展示','啫喱质地，一抹化水','原创','orig'],
+   ['卖点证明','上脸水光前后对比','前后对比，水光感肉眼可见','借《悦美精华·熬夜急救》·高光证明的前后对比手法','e'],
+   ['促销利益','礼盒装送自己','礼盒装送自己','通用话术','orig'],
+   ['CTA','引导宠自己','点下方宠自己一下','原创','orig']]},
+];
+/* v0.6：每条脚本都生成自己的分镜表（镜号/景别/运镜按位次，画面=方向、口播=台词、借鉴提取自借鉴点） */
+const FB_META=[['1','近景','缓推','0–3s','硬切'],['2','特写','固定','3–6s','叠化'],['3','中景','环绕','6–8s','硬切'],['4','特写','跟拍','8–12s','快切'],['5','近景','固定','12–13s','硬切'],['6','近景','缓拉','13–15s','—']];
+function fbHtml(b){
+ const rows=b.segs.map((s,i)=>{
+  const m=FB_META[i]||FB_META[FB_META.length-1];
+  const c3=s[3]||'';const mm=c3.match(/《([^》]+)》·?([^，,、;；）)]*)/);
+  const jt=mm&&CLIP_LIB[mm[1]]?`<span class="cl" onclick="openClip('${mm[1]}','${descSeg(mm[2]||'')||descSeg(c3)||CLIP_LIB[mm[1]].segs[0][0]}')">《${mm[1]}》<svg class="cpl" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></span>`:'—';
+  return `<tr><td>${m[0]}</td><td>${m[1]}/${m[2]}</td><td>${s[1]}</td><td>「${s[2]}」</td><td>${m[3]}</td><td>${m[4]}</td><td>${jt}</td></tr>`;
+ }).join('');
+ return `<div class="fbcap">分镜（本条脚本下方 · ⑤ 一次生成）</div><table class="fbt"><tr><th>镜</th><th>景别/运镜</th><th>画面</th><th>口播/字幕</th><th>时长</th><th>转场</th><th>机位借鉴</th></tr>${rows}</table>`;
+}
+
+let _rpOut=0,_rpIn=0;const _RP_PER=20;
+function rpSeg(s,nm){
+ const cls=s[2]?'p':s[3]?'e':'';
+ const tag=s[2]?`<span class="tg p">痛点·${s[2]}</span>`:s[3]?`<span class="tg e">超效·${s[3]}</span>`:'';
+ return `<div class="segc ${cls}"><span class="sn">${s[0]}</span>${tag}<span class="tc">${s[1]}</span><span class="pl" onclick="clipPlay('${nm}','${s[0]}','${s[1]}')">▶</span></div>`;
+}
+function rpRefCard(r,lib,open){
+ return `<div class="refv ${open?'':'col'}"><div class="rvh" onclick="this.parentElement.classList.toggle('col')"><span class="lib ${lib}">${lib==='in'?'内验':'外验'}</span><span class="nm">《${r.nm}》</span><span class="sc">分 ${r.sc}</span><span class="ar">▾</span></div>
+   <div class="rvb"><div style="font-size:10.5px;color:var(--ink-3);margin:3px 0 2px">识别到的脚本骨架段（可播放）：</div>${r.segs.map(s=>rpSeg(s,r.nm)).join('')}<div class="srcv" onclick="clipPlay('${r.nm}','源视频·全片','00:00–15')">↗ 源视频 · 全片 ▶</div></div></div>`;
+}
+function rpRefBlock(arr,key){
+ const p=key==='out'?_rpOut:_rpIn;const start=p*_RP_PER;const slice=arr.slice(start,start+_RP_PER);
+ const pages=Math.ceil(arr.length/_RP_PER);
+ let h=slice.map((r,i)=>rpRefCard(r,key==='out'?'ex':'in',start+i===0)).join('');
+ if(pages>1)h+=`<div class="pager"><button onclick="rpFlip('${key}',-1)" ${p===0?'disabled':''}>‹ 上一页</button><span class="pg">${p+1} / ${pages}（共 ${arr.length} 条）</span><button onclick="rpFlip('${key}',1)" ${p>=pages-1?'disabled':''}>下一页 ›</button></div>`;
+ return h;
+}
+function rpFlip(key,d){const arr=key==='out'?RP_OUT:RP_IN;const pages=Math.ceil(arr.length/_RP_PER);if(key==='out')_rpOut=Math.max(0,Math.min(pages-1,_rpOut+d));else _rpIn=Math.max(0,Math.min(pages-1,_rpIn+d));renderReport();}
+function rpBpCard(b,open,idx){
+ const rows=b.segs.map(s=>{
+   const t=s[4];const isHook=s[0]==='钩子',isCta=s[0]==='CTA';
+   const chg=BP_VER>1&&((CHG.hook&&isHook)||(CHG.cta&&isCta));
+   let dir=s[1],cite=s[3],isOrig=(t==='orig');
+   if(chg){
+     const hit=isHook?(idx%2===0):((idx%3)!==0);
+     dir=isHook?'按你指定的风格重写钩子方向':'按你指定的风格重写 CTA 方向';
+     cite=hit?(isHook?'风格复筛命中 → 借《XX气垫·伪素颜》·开场钩子':'风格复筛命中 → 借《XX面膜·熬夜党》·收尾CTA'):'风格复筛无命中 → 原创';
+     isOrig=!hit;
+   }
+   const sc=t==='p'?'p':t==='e'?'e':'';
+   const dirHtml=chg?`<span class="hl e">${dir}</span>`:(t==='p'?`<span class="hl">${dir}</span>`:t==='e'?`<span class="hl e">${dir}</span>`:dir);
+   const badge=chg?' <span style="font-size:9px;font-weight:700;color:#fff;background:var(--accent);padding:0 5px;border-radius:4px">已更新</span>':'';
+   const ctHtml=`<span class="ct${isOrig?' orig':''}">${citeHtml(cite)}</span>${badge}`;
+   return `<tr${chg?' style="background:#fff6ef"':''}><td class="sg ${sc}">${s[0]}</td><td>${dirHtml}</td><td>${ctHtml}</td></tr>`;
+ }).join('');
+ return `<div class="bpc ${open?'':'col'}"><div class="bh" onclick="this.parentElement.classList.toggle('col')">脚本 ${b.r} · ${b.t} <span class="rk">优选 ${b.r}</span><span class="ar">▾</span></div><div class="bb"><table class="bptbl"><tr class="bphd"><td>段</td><td>本段创作方向</td><td>借鉴点</td></tr>${rows}</table></div></div>`;
+}
+function rpScriptCard(b,fb){
+ const patched=SCRIPT_PATCH&&b.r===SCRIPT_PATCH.n;
+ const lines=b.segs.map((s,i)=>{
+   const t=s[4];const cls=t==='p'?'p':t==='e'?'e':'';
+   let cc=t==='orig'?'seg-cite orig':'seg-cite';
+   let txt=t==='p'?`<span class="hl">${s[2]}</span>`:t==='e'?`<span class="hl e">${s[2]}</span>`:s[2];
+   let cite=s[3],bd='';
+   if(patched&&s[0]==='钩子'){txt=`<span class="hl e">${SCRIPT_PATCH.line}</span>`;cite=SCRIPT_PATCH.cite;cc='seg-cite';bd='<span class="vbd">钩子 v2</span>';}
+   return `<div class="ln" style="border-left-color:${cls==='p'?'#ffd980':cls==='e'?'#f6b79c':'var(--brand-soft)'}${patched&&s[0]==='钩子'?';background:#fff6ef':''}"><span class="${cc}">${'①②③④⑤⑥'[i]} ${s[0]} · ${citeHtml(cite)}${bd}</span>${txt}</div>`;
+ }).join('');
+ const note=b.note?`<div style="font-size:10.5px;color:var(--ink-3);margin:-2px 0 7px">台词为本品自创，仅借手法 · ${citeHtml(b.note)}</div>`:'';
+ return `<div class="scriptcard"><div class="sh"><div class="nm">脚本 ${b.r} · ${b.t}${patched?'<span class="vbd">钩子已更新 v2</span>':''}</div><div class="rk">优选 ${b.r}</div></div>${note}${lines}${fb||''}</div>`;
+}
+function renderReport(){
+ $('#artBody').innerHTML=`<div class="doc"><h3>创作要素报告 · 悦美精华液</h3><div class="sub">6 块 · 素材全展示 · 每条露出全部骨架段切片</div>
+   <h4><span class="num">1</span>商品理解摘要</h4><div class="elem"><div class="ed">补水主打 · 卖点：72h 长效补水 / 熬夜急救 · 人群：18–28 熬夜党 / 敏感肌。</div>
+     <div style="font-size:11px;font-weight:700;color:var(--ink-3);margin-top:7px">痛点候选</div><div class="chips">${RP_PAIN.map(p=>`<span class="chip2">${p}</span>`).join('')}<span class="chip2 un">毛孔粗大·未归类</span></div></div>
+   <h4><span class="num">2</span>核心卖点矩阵</h4><div class="elem"><div class="ed">72h 补水 × 熬夜党（急救角度）；温和配方 × 敏感肌（无刺激角度）。</div></div>
+   <h4><span class="num">3</span>主力人群标签与诉求</h4><div class="elem"><div class="ed">18–28 熬夜党 / 敏感肌；场景：通勤前急救、睡前修护。</div></div>
+   <div style="background:var(--brand-soft);border:1px solid #d9ddff;border-radius:9px;padding:8px 12px;font-size:11.5px;color:var(--brand-ink);font-weight:700;margin:6px 0 2px">参考取 Top10 · 内验:外验 = <b>3:7</b>（内验 ${RP_IN.length} 条 + 外验 ${RP_OUT.length} 条，全展示）</div>
+   <h4><span class="num">4</span>内验素材（千川库 · ${RP_IN.length} 条，全展示）</h4>${rpRefBlock(RP_IN,'in')}
+   <h4><span class="num">5</span>外验参考（爆款库 · ${RP_OUT.length} 条，全展示）</h4>${rpRefBlock(RP_OUT,'out')}
+   <h4><span class="num">6</span>创作蓝图（${SCRIPT_N} 条 · 每条 6 段 · 纯方向 + 借鉴点${BP_VER>1?' · <span style="color:var(--accent-ink)">v'+BP_VER+'</span>':''}）</h4>${RP_BP.slice(0,Math.min(SCRIPT_N,RP_BP.length)).map((b,i)=>rpBpCard(b,i===0,i)).join('')}
+   <div style="font-size:11px;color:var(--ink-3);text-align:center;margin:4px 0">${BP_VER>1?`已按你的微调更新 ${CHG.hook?'钩子':''}${CHG.hook&&CHG.cta?'/':''}${CHG.cta?'CTA':''} 段（橙色高亮"已更新"）· ②风格复筛在 TopN 内挑段、命中则借/无则原创 · ①②未重跑全量。`:`按你要求的 <b>${SCRIPT_N}</b> 条出蓝图（跟随 query）· report-builder 过模型合成 · 只借手法不抄台词`}${SCRIPT_N>RP_BP.length?`<br>（演示库内置 ${RP_BP.length} 条示例，已全部展示）`:''}；④ 确认的就是这份蓝图</div>
+   <div class="dl" onclick="toast('下载 报告.html')"><svg viewBox="0 0 24 24" width="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v12m0 0 4-4m-4 4-4-4M4 19h16"/></svg>下载 HTML</div></div>`;
+}
+function renderScript(){
+ const n=Math.min(SCRIPT_N,RP_BP.length);
+ const rest=RP_BP.slice(0,n).map((b,i)=>{const op=i<1||(SCRIPT_PATCH&&b.r===SCRIPT_PATCH.n);return op?rpScriptCard(b,fbHtml(b)):`<div class="bpc col"><div class="bh" onclick="this.parentElement.classList.toggle('col')">脚本 ${b.r} · ${b.t}<span class="ar">▾</span></div><div class="bb">${rpScriptCard(b,fbHtml(b))}</div></div>`;}).join('');
+ $('#artBody').innerHTML=`<div class="doc"><h3>脚本 + 分镜 · ${SCRIPT_N} 条${SCRIPT_PATCH?` · <span style="color:var(--accent-ink)">脚本 ${SCRIPT_PATCH.n} 钩子已更新 v2</span>`:''}</h3><div class="sub">台词按 6 段 · 每段标借鉴点（借手法、内容自创）· <b>每条脚本正下方都带分镜表</b></div>
+   <div class="risk" style="background:var(--ok-soft);border-color:#bfe6d2;color:#15663f"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6 9 17l-5-5"/></svg>⑥ 审核：脚本含「最佳」绝对化 → 改「实测更水润」→ 通过；${SCRIPT_N} 条全部通过。</div>
+   ${rest}
+   <div style="font-size:12px;color:var(--ink-3);text-align:center;margin:6px 0">每条都含 6 段台词 + 分镜表（折叠的点开看）；共 ${SCRIPT_N} 条 · 优选排序 · 脚本数与参考数解耦${SCRIPT_N>RP_BP.length?`<br>（演示库内置 ${RP_BP.length} 条示例，已全部展示）`:''}</div>
+   <div class="dl" onclick="toast('下载 脚本.html')"><svg viewBox="0 0 24 24" width="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v12m0 0 4-4m-4 4-4-4M4 19h16"/></svg>下载 HTML</div></div>`;
+}
+/* ===== v0.6.1 切片弹层播放器：借鉴点/素材/分镜处处可点播 ===== */
+const PLAY_ICO='<svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>',PAUSE_ICO='<svg viewBox="0 0 24 24" fill="currentColor"><path d="M6 5h4v14H6zM14 5h4v14h-4z"/></svg>';
+const CLIP_PALETTE=['#2b2f4a,#4a3a5e','#1f3a3a,#3b2f4f','#3a2f1f,#2f3b4f','#33264a,#1f3a4a','#403049,#22384a','#2a3a2f,#3a2f44','#3a2440,#243a4a','#26323f,#41304a','#2f3a26,#30404f','#3f2a33,#2a3f4a'];
+const CLIP_LIB={};
+RP_OUT.forEach((r,i)=>CLIP_LIB[r.nm]={lib:'外验',sc:r.sc,g:CLIP_PALETTE[i%10],segs:r.segs});
+RP_IN.forEach((r,i)=>CLIP_LIB[r.nm]={lib:'内验',sc:r.sc,g:CLIP_PALETTE[(i+7)%10],segs:r.segs});
+SEARCH_RES.forEach(r=>CLIP_LIB[r.nm]={lib:'爆款库',sc:r.sc,g:r.g,segs:r.segs});
+const CLIP_LINES={ // 库内切片台词（采集时已转写落库）
+'悦美精华·熬夜急救|钩子':'熬夜的脸，真的藏不住吗？','悦美精华·熬夜急救|痛点共鸣':'凌晨两点睡，暗沉第二天全写在脸上','悦美精华·熬夜急救|产品引出':'直到我翻出这瓶熬夜急救精华','悦美精华·熬夜急救|卖点证明':'敷前敷后对比，暗沉肉眼退一档','悦美精华·熬夜急救|CTA':'点下方小黄车，熬夜党都该有一瓶',
+'XX气垫·伪素颜|钩子':'伪素颜气垫，到底是不是智商税？','XX气垫·伪素颜|产品引出':'这块气垫我用空了三个替换装','XX气垫·伪素颜|卖点证明':'上脸那一秒，气色直接回来了','XX气垫·伪素颜|CTA':'链接挂在下面，自己去试',
+'XX面膜·熬夜党|痛点共鸣':'熬夜党的脸，暗黄才是常态','XX面膜·熬夜党|卖点证明':'水分值从 32 飙到 78，仪器不会说谎','XX面膜·熬夜党|促销利益':'今晚直播间买一盒送半盒',
+'XX水乳·屏障修护|钩子':'敏感肌换水乳，先别急着下单','XX水乳·屏障修护|痛点共鸣':'上脸刺痛泛红，谁懂','XX水乳·屏障修护|卖点证明':'连用 14 天实测，泛红肉眼退','XX水乳·屏障修护|CTA':'敏感肌姐妹，闭眼入这套',
+'XX安瓶·急救屏障|钩子':'烂脸期自救，就靠这一支','XX安瓶·急救屏障|卖点证明':'用前用后对比，泛红当晚压下去','XX安瓶·急救屏障|CTA':'急救期囤两盒，不亏',
+'XX喷雾·随时补水|痛点共鸣':'办公室空调一吹，脸干到发紧','XX喷雾·随时补水|卖点证明':'通勤/工位/健身房，补一喷妆都不卡','XX喷雾·随时补水|促销利益':'小样装今天半价',
+'XX冻干粉·熬夜修护|钩子':'学生党的平价急救，真有用？','XX冻干粉·熬夜修护|卖点证明':'浓度数据摆这儿，锁水曲线说话','XX冻干粉·熬夜修护|CTA':'一瓶用俩月，学生党冲',
+'XX精华·早C晚A|钩子':'早C晚A，晚上到底该涂啥？','XX精华·早C晚A|卖点证明':'连用两周对比，暗沉差一个色号','XX精华·早C晚A|CTA':'晚间这步别省，链接在下面',
+'XX眼霜·抗老|钩子':'25 岁该不该用眼霜？','XX眼霜·抗老|卖点证明':'28 天细纹实测，浅了 40%','XX眼霜·抗老|CTA':'抗老要趁早，小黄车见',
+'XX面膜·熬夜党(内验)|痛点共鸣':'敏感肌敷面膜，总怕闷出问题','XX面膜·熬夜党(内验)|卖点证明':'实测全程零刺激，水分值照样拉','XX面膜·熬夜党(内验)|促销利益':'内购价只有今晚',
+'XX耳机·开箱一刻|钩子':'这价格我以为是假货…','XX耳机·开箱一刻|产品引出':'撕开封膜那一下，质感先赢了','XX耳机·开箱一刻|卖点证明':'上耳实测，降噪一开像换了世界','XX耳机·开箱一刻|CTA':'评论区蹲一个低价链接',
+'XX香薰·开箱|钩子':'拆快递最爽的一集','XX香薰·开箱|产品引出':'木盒一开，香味先到','XX香薰·开箱|卖点证明':'点上十分钟，整屋是松木味','XX香薰·开箱|促销利益':'今晚下单送补充装','XX香薰·开箱|CTA':'解压就完事了，链接在下面',
+'XX数码·拆封实测|钩子':'开箱 10 秒就后悔了？','XX数码·拆封实测|痛点共鸣':'买数码最怕货不对板','XX数码·拆封实测|卖点证明':'实测帧率拉满，真香了','XX数码·拆封实测|CTA':'后悔是不可能后悔的，冲'};
+let _clipTimer=null;
+function parseTc(tc){const m=tc&&String(tc).match(/00:(\d+)[–\-:](\d+)/);return m?[+m[1],+m[2]]:[0,15];}
+function descSeg(d){d=d||'';if(/钩子|开场|疑问|质疑|场景钩|提问|氛围/.test(d))return '钩子';if(/痛点|铺垫|共鸣|直击/.test(d))return '痛点共鸣';if(/证明|对比|数据|实测|高光|浮层|反转/.test(d))return '卖点证明';if(/CTA|收尾|号召/.test(d))return 'CTA';if(/促销|利益/.test(d))return '促销利益';if(/引出/.test(d))return '产品引出';return null;}
+function closeClip(){if(_clipTimer){clearInterval(_clipTimer);_clipTimer=null;}const o=document.getElementById('clipOv');if(o)o.remove();}
+function openClip(nm,seg){
+ const v=CLIP_LIB[nm];if(!v){toast('库内未找到《'+nm+'》（演示库）');return;}
+ closeClip();
+ if(/全片|源视频/.test(seg||''))seg='全片';
+ const sg=seg==='全片'?null:(v.segs.find(x=>x[0]===seg)||v.segs[0]);
+ const segName=sg?sg[0]:'全片';
+ const [st,en]=sg?parseTc(sg[1]):[0,15];
+ const line=CLIP_LINES[nm+'|'+segName]||(segName==='全片'?'整条 '+v.segs.length+' 段连播（演示）':'（该段台词已在库内转写）');
+ const tags=sg?((sg[2]?`<span class="tg p" style="font-size:9.5px">痛点·${sg[2]}</span>`:'')+(sg[3]?`<span class="tg e" style="font-size:9.5px">超效·${sg[3]}</span>`:'')):'';
+ const chips=v.segs.map(x=>`<span class="cmchip ${sg&&x[0]===sg[0]?'on':''}" onclick="openClip('${nm}','${x[0]}')">${x[0]}</span>`).join('')+`<span class="cmchip ${segName==='全片'?'on':''}" onclick="openClip('${nm}','全片')">全片</span>`;
+ document.body.insertAdjacentHTML('beforeend',
+ `<div class="clipov" id="clipOv" onclick="if(event.target===this)closeClip()"><div class="clipm">
+   <div class="cmh"><span class="lib ${v.lib==='内验'?'in':'ex'}">${v.lib}</span>《${nm}》<span class="tcx">${segName} 段 · 00:${String(st).padStart(2,'0')}–${String(en).padStart(2,'0')} · 分 ${v.sc}</span><span class="cmx" onclick="closeClip()">×</span></div>
+   <div class="player"><div class="pcv" style="background:linear-gradient(135deg,${v.g} 55%,#1c2030)"><span class="pttl">库内切片 · 模拟播放</span>
+     <div class="pbtn" onclick="cmPlay(this)">${PLAY_ICO}</div></div>
+    <div class="pbar"><span class="ptm" id="cmTm">00:${String(st).padStart(2,'0')}</span><div class="ptrk"><div class="psg" style="left:${(st/15*100).toFixed(0)}%;width:${((en-st)/15*100).toFixed(0)}%" title="${segName}段"></div><div class="pfl" id="cmFl" data-st="${st}" data-en="${en}" data-t="${st}" style="width:${(st/15*100).toFixed(0)}%"></div></div><span class="ptm">00:15</span></div></div>
+   <div class="cmline">「${line}」 ${tags}</div>
+   <div class="cmrow">${chips}</div>
+   <div class="cmnote">来自素材库切片（采集时已切好 + 台词转写落库）· 借鉴铁律：只借手法，不抄台词</div>
+ </div></div>`);
+ const b=document.querySelector('#clipOv .pbtn');if(b)cmPlay(b); // 点进来直接播
+}
+function cmPlay(btn){
+ const fl=document.getElementById('cmFl'),tm=document.getElementById('cmTm');if(!fl)return;
+ if(_clipTimer){clearInterval(_clipTimer);_clipTimer=null;btn.innerHTML=PLAY_ICO;return;}
+ btn.innerHTML=PAUSE_ICO;
+ const st=+fl.dataset.st,en=+fl.dataset.en;let t=parseFloat(fl.dataset.t||st);
+ _clipTimer=setInterval(()=>{t+=0.18;if(t>=en)t=st;fl.dataset.t=t;fl.style.width=(t/15*100)+'%';if(tm)tm.textContent='00:'+String(Math.floor(t)).padStart(2,'0');},120);
+}
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeClip();});
+function clipPlay(nm,seg){openClip(nm,seg);} // 旧入口全部升级为弹层播放
+function citeHtml(c){ // 借鉴点文案 → 《源》可点直接播该切片
+ if(!c)return c;
+ return String(c).replace(/《([^》]+)》(?:·([^，,、;；）)]*))?/g,(m,nm,desc,off,str)=>{
+   if(!CLIP_LIB[nm])return m;
+   const near=str.slice(Math.max(0,off-10),off);
+   const seg=descSeg(desc)||descSeg(near)||CLIP_LIB[nm].segs[0][0];
+   return `<span class="cl" onclick="event.stopPropagation();openClip('${nm}','${seg}')">《${nm}》<svg class="cpl" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></span>${desc?'·'+desc:''}`;
+ });
+}
+/* —— 脚本层 · 单条修改（确认后微调，不重开④）—— */
+function scriptTweak(n,v){
+ pushUser(v,'微调');
+ const total=Math.min(SCRIPT_N,RP_BP.length);
+ if(n<1||n>total){
+  pushBot(routeBox('脚本层 · 单条修改',{目标:'脚本 '+n,判定:'越界'},'')+`<div class="bubble">当前只有 <b>${total}</b> 条脚本（1–${total}），没有第 ${n} 条——指个有效的，或说「再加几条」。</div>`);return;
+ }
+ SCRIPT_PATCH={n,line:'熬夜暗沉曝光实验：10 个加班党 9 个中招，你呢？',cite:'借《XX面膜·熬夜党》·数据浮层式开场（复筛命中）'};
+ pushBot(routeBox('脚本层 · 单条修改',{层级:'脚本层·第 '+n+' 条·钩子段',影响:'仅脚本 '+n,确认闸:'④ 不重开（蓝图未动）'},'法则：改了什么→哪些失效→从最早失效处重算。蓝图 v'+BP_VER+' 仍有效，③④ 不回链路')
+ +`<div class="plan"><div class="plan-h">${PLAN_SVG}局部重跑 · 仅脚本 ${n}</div>
+ ${stepHtml('done','②','素材匹配 · 风格复筛',`派发柔性任务${tparams({条件:'更吸睛的钩子(自然语言)',范围:'TopN 缓存',粒度:'钩子段',排序:'爆款分',条数:'3 候选'})}缓存内捞参考，不回全库（可选步）`)}
+ ${stepHtml('done','⑤','脚本 + 分镜',`只重跑脚本 ${n}：重写钩子段 + 上下衔接，其余 ${total-1} 条不动`,'脚本')}
+ ${stepHtml('done','⑥','内容审核',`只复审脚本 ${n} → 通过（任何新生成文本必过审）`)}
+ </div><div class="bubble">脚本 ${n} 钩子已更新为 <b>v2</b>（右侧 → 橙色高亮），其余脚本与蓝图未动。</div>`);
+ buildArtifact();renderScript();artTab('script');toast('脚本 '+n+' · 钩子已更新 v2');
+}
+/* —— 微调后的 ④ 确认（确认前=首次生成；确认后=按 v2 全量重写）—— */
+function gateV2(btn){
+ const first=!gateConfirmed;
+ if(btn){btn.disabled=true;btn.textContent='已确认 v'+BP_VER+' ✓';}
+ gateConfirmed=true;SCRIPT_PATCH=null;
+ if(first){
+  const gb=document.getElementById('gateBlock');
+  if(gb)gb.innerHTML=`<div class="step"><div class="mk done"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6 9 17l-5-5"/></svg></div><div class="sb"><div class="sn">④ 用户确认闸</div><div class="sd">已确认 · 蓝图 v${BP_VER}</div></div></div>`;
+  const ds=document.getElementById('downSteps');
+  if(ds)ds.innerHTML=stepHtml('done','⑤','脚本 + 分镜',`按确认蓝图 v${BP_VER} 出 ${SCRIPT_N} 条，每条正下方带分镜表`,'脚本')+stepHtml('done','⑥','内容审核','审核标准扫描 → 通过','脚本');
+ }
+ pushBot(`<div class="plan"><div class="plan-h">${PLAN_SVG}${first?'确认 v'+BP_VER+' · 生成':'按 v'+BP_VER+' 全量重写'} ⑤⑥</div>
+ ${stepHtml('done','⑤','脚本 + 分镜',(first?'出 ':'全量重写 ')+SCRIPT_N+' 条（钩子/CTA 段按 v'+BP_VER+' 新方向），每条带分镜表','脚本')}
+ ${stepHtml('done','⑥','内容审核','全部通过 · 0 处需改')}
+ </div>`);
+ const ts=document.getElementById('tabScript');if(ts)ts.classList.remove('dis');
+ buildArtifact();artTab('script');toast((first?'已确认 v':'已按 v')+BP_VER+(first?' → 生成脚本':' 重写全部脚本'));
+}
+function buildArtifact(){_rpOut=0;_rpIn=0;}
+function artTab(tab){
+ const el=document.querySelector(`.art-tab[data-tab=${tab}]`);
+ if(!el)return; /* 单 tab 场景（检索/审核/字段/脚本）直接渲染，无切换 */
+ if(tab==='script'){const ts=document.getElementById('tabScript');if(ts&&ts.classList.contains('dis')){toast('先在 ④ 确认闸点「确认并生成脚本」');return;}}
+ document.querySelectorAll('.art-tab').forEach(t=>t.classList.remove('on'));
+ el.classList.add('on');
+ if(tab==='script')renderScript();else renderReport();
+}
+function teardown(name){
+ $('#drName').textContent=name;
+ $('#drPills').innerHTML='<span class="pill cat">骨架段切片</span> <span class="pill def">已入库</span>';
+ $('#drBody').innerHTML=`<div class="dr-row"><div class="k">画像</div><div class="v">品类·美妆 · 卖点·熬夜补水急救 · 人群·18–28 熬夜党 / 敏感肌 · 识别商品名·该视频在卖的精华</div></div>
+  <div class="dr-row"><div class="k">合格门</div><div class="v" style="font-size:12.5px">痛点 ✓ + 超效 ✓ 同时具备 → 合格入库（所以必含痛点切片 + 超效切片）。爆款分仅用于 Top100 排序。</div></div>
+  <div class="dr-row"><div class="k">脚本骨架段切片（识别到几段切几段 · 含时间码）</div><div class="v">
+    <div class="elem"><div class="eh">钩子<span class="clip">⏱ 00:00–00:03</span></div><div class="ed">痛点·熬夜脸暗沉：前 3 秒痛点提问开场。</div></div>
+    <div class="elem"><div class="eh">痛点共鸣<span class="clip">⏱ 00:03–00:06</span></div><div class="ed">加班党脸最先垮，场景代入。</div></div>
+    <div class="elem"><div class="eh">卖点证明<span class="clip">⏱ 00:08–00:11</span></div><div class="ed">超效·前后对比 + 数据浮层，情绪峰值在第 9 秒。</div></div>
+    <div class="elem"><div class="eh">CTA<span class="clip">⏱ 00:13–00:15</span></div><div class="ed">「今晚回温」收尾转化。</div></div>
+    <div style="font-size:11px;color:var(--ink-3);margin-top:6px">（本条未识别到 产品引出 / 促销利益 段，按"允许不完整"处理）</div>
+  </div></div>
+  <div class="dr-row"><div class="k">源视频</div><div class="v mono" style="font-size:12px;color:var(--brand)">https://www.douyin.com/video/7xxxxx ↗</div></div>`;
+ $('#drFoot').innerHTML='<button class="btn-sec" onclick="closeDrawer()">关闭</button><button class="btn-pri" onclick="toast(\'打开源视频\')">打开源视频 ↗</button>';
+ openDrawer();
+}
+function openLog(name,last,add,dedup,fail){
+ $('#drName').textContent=name+' · 跑批日志';
+ $('#drPills').innerHTML='<span class="pill def">正常</span>';
+ const total=Math.max(1,Math.ceil((add+dedup)/50));let rows='';
+ for(let b=1;b<=Math.min(total,8);b++){const dd=Math.round(dedup/total);const ok=Math.round(add/total);
+   rows+=`<tr><td class="mono">#${b}</td><td class="mono">50</td><td class="mono">${dd}</td><td class="mono" style="color:var(--ok)">+${ok}</td><td class="mono">${b===total?fail:0}</td></tr>`;}
+ $('#drBody').innerHTML=`<div class="dr-row"><div class="k">本次概况</div><div class="v">上次运行 ${last}　·　新增入库 <b>+${add}</b>　·　去重命中 <b>${dedup}</b>　·　失败重试 <b>${fail}</b></div></div>
+  <div class="dr-row"><div class="k">跑批明细 · 每批 50</div><div class="v">
+   <table class="tbl" style="margin:0"><thead><tr><th>批次</th><th>拉取</th><th>去重命中</th><th>合格入库</th><th>失败</th></tr></thead><tbody>${rows}</tbody></table></div></div>
+  <div class="dr-row"><div class="k">流程</div><div class="v">每批拉 50 → seen_videos 按 video_id 去重 → <b>合格门：痛点 AND 超效 都有？</b>（缺一丢弃、继续循环）→ 合格才按脚本骨架 6 段切片(允许不完整) → 打标 → viral-scoring 打分(仅供 Top100 排序) → 写入库；累计合格 30 止或满 10 轮止。</div></div>`;
+ $('#drFoot').innerHTML='<button class="btn-sec" onclick="closeDrawer()">关闭</button>';
+ openDrawer();
+}
+
+/* ============ SKILL DRAWER ============ */
+function openSkill(id){
+ const s=SKILLS.find(x=>x.id===id);if(!s)return;
+ const catlabel={main:'主线',sub:'副线',common:'通用'}[s.cat];
+ const sed=s.source==='sed';
+ $('#drName').textContent=s.id;
+ $('#drPills').innerHTML=`<span class="pill cat ${s.cat}">${catlabel}</span> <span class="pill ${sed?'sed':'def'}">${sed?'沉淀·已装':'默认·已装'}</span>`;
+ $('#drBody').innerHTML=renderMd(MD[s.id]||defaultMd(s));
+ $('#drFoot').innerHTML=`<button class="btn-sec" onclick="closeDrawer()">关闭</button>`;
+ openDrawer();
+}
+/* ============ SEDIMENTATION (admin) ============ */
+function openSed(){
+ if(document.body.dataset.role!=='admin'){toast('技能沉淀仅超管可见');go('skills');return;}
+ $('#skillsTitle').textContent='技能 Store ▸ 技能沉淀';
+ $('#skillsBody').innerHTML=`<div class="sed-note"><svg viewBox="0 0 24 24" width="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2 3 14h7l-1 8 10-12h-7z"/></svg>Agent 自动生成 · 待超管审核应用（门槛：可泛化 且 复用 ≥ N 次）</div>`+
+  (CANDIDATES.length?CANDIDATES.map(c=>`<div class="cand">
+    <div class="ci"><svg viewBox="0 0 24 24" width="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2 3 14h7l-1 8 10-12h-7z"/></svg></div>
+    <div class="cb"><div class="cn">${c.id} <span class="pill sed">候选</span></div><div class="cd">${c.cn}</div></div>
+    <span class="reuse">复用 ${c.reuse} 次</span>
+    <button class="btn-sec" style="padding:8px 14px" onclick="openCand('${c.id}')">查看</button></div>`).join('')
+   :`<div style="text-align:center;color:var(--ink-3);padding:50px">暂无待审候选 — 已全部应用 🎉</div>`);
+ document.querySelectorAll('#skillFilter .ftab').forEach(t=>t.classList.remove('on'));
+}
+function openCand(id){
+ const c=CANDIDATES.find(x=>x.id===id);if(!c)return;
+ $('#drName').textContent=c.id;
+ $('#drPills').innerHTML=`<span class="pill sed">候选 · 复用 ${c.reuse} 次</span>`;
+ $('#drBody').innerHTML='<div class="sed-note" style="margin-bottom:14px"><svg viewBox="0 0 24 24" width="15" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2 3 14h7l-1 8 10-12h-7z"/></svg>Agent 自动生成的候选 SKILL.md · 应用后即作为正式技能装载</div>'+renderMd(MD[c.id]||defaultMd({id:c.id,cn:c.cn,full:c.full,agent:c.agent}));
+ $('#drFoot').innerHTML=`<button class="btn-sec" onclick="ignoreCand('${c.id}')">忽略</button><button class="btn-pri" onclick="applyCand('${c.id}')">✓ 应用 (active)</button>`;
+ openDrawer();
+}
+function applyCand(id){
+ const i=CANDIDATES.findIndex(x=>x.id===id);if(i<0)return;
+ const c=CANDIDATES[i];
+ SKILLS.push({id:c.id,cn:c.cn,cat:'main',agent:c.agent,tools:'(沉淀生成)',desc:c.full.slice(0,40)+'…',full:c.full,source:'sed'});
+ CANDIDATES.splice(i,1);
+ closeDrawer();updateBadges();openSed();
+ toast('已应用：'+c.id+' → 进入技能 Store（沉淀·已装）');
+}
+function ignoreCand(id){const i=CANDIDATES.findIndex(x=>x.id===id);if(i>=0)CANDIDATES.splice(i,1);closeDrawer();updateBadges();openSed();toast('已忽略该候选');}
+function updateBadges(){$('#skillCount').textContent=SKILLS.length;$('#sedBadge').textContent=CANDIDATES.length;}
+
+/* ============ DRAWER ctrl ============ */
+function openDrawer(){$('#scrim').classList.add('on');$('#drawer').classList.add('on');}
+function closeDrawer(){$('#scrim').classList.remove('on');$('#drawer').classList.remove('on');}
+
+/* ============ ROLE ============ */
+function toggleRolePop(e){e.stopPropagation();$('#rolePop').classList.toggle('hidden');}
+function setRole(r){
+ document.body.dataset.role=r;
+ $('#roleBadge').textContent=r==='admin'?'超管':'普通用户';
+ $('#roleBadge').classList.toggle('admin',r==='admin');
+ $('#optUser').classList.toggle('on',r==='user');$('#optAdmin').classList.toggle('on',r==='admin');
+ $('#rolePop').classList.add('hidden');
+ if(r==='user'&&($('#view-dashboard').classList.contains('on'))){go('home');}
+ if(r==='user'&&$('#skillsTitle').textContent.includes('沉淀')){go('skills');}
+ toast(r==='admin'?'已切到超管 — 多了 看板 + 技能沉淀':'已切到普通用户');
+}
+document.body.addEventListener('click',()=>$('#rolePop').classList.add('hidden'));
+
+/* ============ toast ============ */
+let tT;function toast(m){$('#toastMsg').textContent=m;$('#toast').classList.add('on');clearTimeout(tT);tT=setTimeout(()=>$('#toast').classList.remove('on'),2600);}
+function filterSkills(f,el){skillFilter=f;document.querySelectorAll('#skillFilter .ftab').forEach(t=>t.classList.remove('on'));el.classList.add('on');$('#skillsTitle').textContent='技能 Store';renderSkills();}
+
+/* ============ INIT ============ */
+renderCaps();renderSessions();renderSkills();renderHealth();renderTopTabs();renderRank();updateBadges();
+</script>
+</body>
+</html>

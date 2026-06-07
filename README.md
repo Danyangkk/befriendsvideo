@@ -1,5 +1,7 @@
 # Befriendsvideo — Multi-Agent AI Platform for E-commerce Short-Video Script Creation
 
+**English | [中文](./README.zh-CN.md)**
+
 **Live demo:** https://danyangkk.github.io/befriendsvideo/
 
 An AI-native multi-agent platform that translates the expertise of top short-video creators into system architecture — input a product link + an idea, get a creative-elements report and ready-to-shoot scripts with storyboards.

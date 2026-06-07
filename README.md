@@ -28,5 +28,3 @@ An AI-native multi-agent platform that translates the expertise of top short-vid
 This is a **high-fidelity interactive prototype** used for interaction validation and engineering alignment. **All data is mocked; there is no backend.** The production frontend would be rebuilt from this prototype as the visual spec.
 
 Try it: submit the sample product link on the home page → walk through the creation flow → tweak the hook at the confirmation gate → confirm to generate scripts → switch role (top-right) to Admin to view the metrics dashboard and skill registry.
-
-> Full PRD and architecture design documents available upon request.

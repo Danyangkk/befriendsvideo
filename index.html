@@ -352,9 +352,11 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;color:inhe
 .toast{position:fixed;bottom:30px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--ink);color:#fff;font-weight:700;font-size:13.5px;padding:13px 22px;border-radius:var(--r-pill);box-shadow:var(--sh-lg);z-index:200;opacity:0;transition:.3s;display:flex;align-items:center;gap:9px;pointer-events:none}
 .toast.on{opacity:1;transform:translateX(-50%) translateY(0)}
 .toast svg{width:16px;height:16px;color:#6fe6ad}
-.admin-only{display:none}
-body[data-role="admin"] .admin-only{display:flex}
-body:not([data-role="admin"]) .admin-only{display:none!important}
+.admin-only{display:none!important}
+.sadmin-only{display:none!important}
+body[data-role="admin"] .admin-only{display:flex!important}
+body[data-role="admin"] .sadmin-only{display:flex!important}
+body[data-role="biz"] .sadmin-only{display:flex!important}
 
 /* ---------- v0.5 report/script bits ---------- */
 .chips{display:flex;flex-wrap:wrap;gap:5px;margin-top:7px}
@@ -455,6 +457,110 @@ body:not([data-role="admin"]) .admin-only{display:none!important}
 .rt-d{font-size:11px;color:var(--ink-3);margin-top:4px;line-height:1.5}
 .vbd{font-size:9px;font-weight:800;color:#fff;background:var(--accent);padding:0 5px;border-radius:4px;margin-left:5px;vertical-align:1px}
 .bsm{font-size:11.5px;padding:5px 12px;margin-top:6px}
+
+/* ===== 评测中心 v3 (scoped .ec-root) ===== */
+.ec-root .crumb{font-size:12px;color:var(--ink-3);margin-bottom:14px;display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.ec-root .crumb .bk{cursor:pointer;color:var(--brand);font-weight:700}
+.ec-root .crumb .bk:hover{text-decoration:underline}
+.ec-root .crumb .cur{color:var(--ink);font-weight:700}
+.ec-root .ev-tabs{display:flex;gap:4px;border-bottom:1px solid var(--line);margin-bottom:18px;flex-wrap:wrap}
+.ec-root .ev-tab{padding:9px 15px;font-size:13px;font-weight:600;color:var(--ink-3);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px;transition:.13s;display:flex;align-items:center;gap:6px}
+.ec-root .ev-tab:hover{color:var(--ink-2)}
+.ec-root .ev-tab.on{color:var(--brand);border-bottom-color:var(--brand)}
+.ec-root .ev-tab .b{font-size:10px;font-weight:800;color:#fff;background:var(--accent);border-radius:999px;padding:1px 6px}
+.ec-root .ev-tbl{width:100%;border-collapse:collapse;background:var(--bg-card);border:1px solid var(--line);border-radius:var(--r-lg);overflow:hidden}
+.ec-root .ev-tbl th{text-align:left;font-size:11px;font-weight:700;color:var(--ink-3);padding:11px 14px;background:var(--bg-side);border-bottom:1px solid var(--line);text-transform:uppercase;letter-spacing:.4px}
+.ec-root .ev-tbl td{font-size:12.5px;color:var(--ink-2);padding:11px 14px;border-bottom:1px solid var(--line-soft);vertical-align:middle}
+.ec-root .ev-tbl tr:last-child td{border-bottom:none}
+.ec-root .ev-tbl tr.clk{cursor:pointer;transition:.1s}
+.ec-root .ev-tbl tr.clk:hover td{background:var(--bg-canvas)}
+.ec-root .ev-btn{display:inline-flex;align-items:center;gap:6px;font-size:12.5px;font-weight:700;padding:8px 14px;border-radius:var(--r-md);cursor:pointer;border:1px solid var(--line-2);background:var(--bg-card);color:var(--ink-2);transition:.13s}
+.ec-root .ev-btn:hover{border-color:var(--brand);color:var(--brand)}
+.ec-root .ev-btn.pri{background:var(--brand);color:#fff;border-color:var(--brand)}
+.ec-root .ev-btn.pri:hover{background:var(--brand-deep)}
+.ec-root .ev-btn.sm{font-size:11px;padding:5px 10px}
+.ec-root .ev-card{background:var(--bg-card);border:1px solid var(--line);border-radius:var(--r-lg);padding:16px 18px;margin-bottom:14px}
+.ec-root .ev-card .ch{font-size:13px;font-weight:800;color:var(--ink);margin-bottom:10px;display:flex;align-items:center;gap:8px}
+.ec-root .ev-tag{font-size:10px;font-weight:700;padding:2px 8px;border-radius:999px;white-space:nowrap}
+.ec-root .ev-tag.ok{background:var(--ok-soft);color:var(--ok)}
+.ec-root .ev-tag.run{background:var(--brand-soft);color:var(--brand-ink)}
+.ec-root .ev-tag.warn{background:var(--warn-soft);color:var(--warn)}
+.ec-root .ev-tag.err{background:var(--danger-soft);color:var(--danger)}
+.ec-root .ev-up{color:var(--ok);font-weight:700;font-family:var(--mono)}
+.ec-root .ev-dn{color:var(--danger);font-weight:700;font-family:var(--mono)}
+.ec-root .ev-flat{color:var(--ink-mute);font-family:var(--mono)}
+.ec-root .ev-note{font-size:11.5px;color:var(--ink-3);background:var(--bg-side);border-radius:var(--r-md);padding:10px 13px;margin-bottom:14px;line-height:1.6}
+.ec-root .ev-note b{color:var(--accent-ink)}
+.ec-root .ev-bar{display:flex;align-items:center;gap:10px;margin-bottom:14px;flex-wrap:wrap}
+.ec-root .ev-bar .sp{flex:1}
+.ec-root .csub{font-size:11.5px;color:var(--ink-3);margin-bottom:12px;line-height:1.55}
+.ec-root .mono{font-family:var(--mono)}
+.ec-root /* 节点状态条(花名册行级 mini-trace) */
+.nd{display:inline-flex;align-items:center;justify-content:center;min-width:19px;height:19px;padding:0 3px;border-radius:5px;font-size:10px;font-weight:800;margin-right:3px;font-family:var(--mono)}
+.ec-root .nd-ok{background:var(--ok-soft);color:var(--ok)}
+.ec-root .nd-fail{background:var(--danger);color:#fff}
+.ec-root .nd-skip{background:var(--line-soft);color:var(--ink-mute)}
+.ec-root .fb{font-weight:700;color:var(--danger);font-family:var(--mono);font-size:11.5px}
+.ec-root .fb.none{color:var(--ink-mute)}
+.ec-root /* 分层分 */
+.layerbar{display:flex;flex-wrap:wrap;gap:8px;margin:6px 0 4px}
+.ec-root .layerbar .lc{flex:1;min-width:115px;background:var(--bg-card);border:1px solid var(--line);border-radius:var(--r-md);padding:9px 12px}
+.ec-root .layerbar .lc .ln{font-size:10.5px;color:var(--ink-3);font-weight:700;margin-bottom:3px}
+.ec-root .layerbar .lc .lv{font-size:16px;font-weight:800;font-family:var(--mono)}
+.ec-root .layerbar .lc .ld{font-size:10.5px;font-family:var(--mono);margin-left:5px}
+.ec-root /* Span 瀑布(复用 app ev-wf) */
+.ev-wf{font-family:var(--mono);font-size:11px}
+.ec-root .ev-wf-row{display:flex;align-items:center;padding:7px 0;border-bottom:1px solid var(--line-soft);cursor:pointer;transition:.1s}
+.ec-root .ev-wf-row:hover{background:var(--bg-canvas)}
+.ec-root .ev-wf-label{flex:0 0 270px;display:flex;align-items:center;gap:6px;white-space:nowrap;overflow:hidden;font-family:var(--font);font-weight:600;color:var(--ink-2);font-size:12px}
+.ec-root .ev-wf-track{flex:1;height:15px;position:relative;background:var(--line-soft);border-radius:4px;margin:0 10px;min-width:110px}
+.ec-root .ev-wf-bar{position:absolute;height:100%;border-radius:4px;top:0}
+.ec-root .ev-wf-meta{flex:0 0 116px;text-align:right;color:var(--ink-mute);font-size:10px}
+.ec-root .ev-sp-dec{background:#8B7FD9}
+.ec-root .ev-sp-tool{background:#5B9BD5}
+.ec-root .ev-sp-retr{background:#48B89F}
+.ec-root .ev-sp-gen{background:var(--brand)}
+.ec-root .ev-sp-state{background:#B0A98F}
+.ec-root .ev-sp-guard{background:var(--warn)}
+.ec-root .ev-sp-gate{background:var(--accent)}
+.ec-root .ev-sp-err{background:var(--danger)}
+.ec-root .ev-spdot{width:9px;height:9px;border-radius:2px;flex-shrink:0}
+.ec-root .ev-sp-legend{display:flex;gap:13px;flex-wrap:wrap;font-size:10.5px;color:var(--ink-3);margin:4px 0 12px}
+.ec-root .ev-sp-legend span{display:flex;align-items:center;gap:4px}
+.ec-root .vb{font-family:var(--mono);font-size:10px;font-weight:800;padding:1px 6px;border-radius:5px;margin-left:auto;flex-shrink:0}
+.ec-root .vb.ok{background:var(--ok-soft);color:var(--ok)}
+.ec-root .vb.fail{background:var(--danger);color:#fff}
+.ec-root .vb.skip{background:var(--line-soft);color:var(--ink-mute)}
+.ec-root .jpill{font-size:9px;font-weight:800;padding:1px 5px;border-radius:4px;background:var(--accent-soft);color:var(--accent-ink);margin-left:5px}
+.ec-root /* 指标条 */
+.metric-strip{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:16px}
+.ec-root .metric-strip .m{flex:1;min-width:150px;background:var(--bg-card);border:1px solid var(--line);border-radius:var(--r-md);padding:13px 15px}
+.ec-root .metric-strip .m .mn{font-size:11px;color:var(--ink-3);font-weight:700;margin-bottom:5px}
+.ec-root .metric-strip .m .mv{font-size:22px;font-weight:800;font-family:var(--mono);letter-spacing:-.5px}
+.ec-root .metric-strip .m .ms{font-size:10.5px;color:var(--ink-mute);margin-top:2px}
+.ec-root .kv{display:flex;gap:10px;padding:7px 0;border-bottom:1px solid var(--line-soft);font-size:12px}
+.ec-root .kv:last-child{border-bottom:none}
+.ec-root .kv .k{flex:0 0 84px;color:var(--ink-3);font-weight:700;font-size:11px}
+.ec-root .kv .v{color:var(--ink-2);flex:1;line-height:1.5}
+.ec-root .scoregrid{display:grid;grid-template-columns:1fr 1fr;gap:4px 18px;margin:2px 0 8px}
+.ec-root .scoregrid .s{display:flex;justify-content:space-between;font-size:12px;padding:5px 0;border-bottom:1px solid var(--line-soft)}
+.ec-root .scoregrid .s b{font-family:var(--mono)}
+.ec-root .stub{text-align:center;color:var(--ink-3);font-size:12.5px;padding:30px 20px;line-height:1.8}
+.ec-root .stub .big{font-size:14px;font-weight:800;color:var(--ink-2);margin-bottom:6px}
+.ec-root .pill{font-size:10.5px;font-weight:700;padding:3px 9px;border-radius:var(--r-sm)}
+.ec-root .pill.brand{background:var(--brand-soft);color:var(--brand-ink)}
+.ec-root .pill.accent{background:var(--accent-soft);color:var(--accent-ink)}
+.ec-root .pill.dim{background:var(--line-soft);color:var(--ink-3)}
+.ec-root .pill.danger{background:var(--danger-soft);color:var(--danger)}
+.ec-root .ev-sel{font-size:12px;font-weight:600;color:var(--ink-2);border:1px solid var(--line-2);border-radius:var(--r-sm);padding:4px 8px;background:var(--bg-card);cursor:pointer}
+.ec-root .ev-chk{font-size:12px;color:var(--ink-2);padding:6px 0;display:flex;align-items:center;gap:8px;cursor:pointer}
+.ec-root .ev-chk input{accent-color:var(--brand);width:15px;height:15px}
+.ec-root .ev-inp{font-size:12px;color:var(--ink);border:1px solid var(--line-2);border-radius:var(--r-sm);padding:7px 9px;background:var(--bg-card);width:100%;font-family:var(--font);margin:0}
+.ec-root .ev-inp.mono{font-family:var(--mono);font-size:11px;line-height:1.6}
+.ec-root textarea.ev-inp{resize:vertical}
+.ec-root pre.code{background:var(--bg-side);border:1px solid var(--line);border-radius:var(--r-md);padding:12px;font-family:var(--mono);font-size:11px;color:var(--ink-2);white-space:pre-wrap;line-height:1.6;margin:0}
+.ec-root .flbl{font-size:11px;color:var(--ink-3);font-weight:700;margin:10px 0 5px}
+.ec-root .flbl:first-child{margin-top:0}
 </style>
 </head>
 <body data-role="user">
@@ -485,9 +591,13 @@ body:not([data-role="admin"]) .admin-only{display:none!important}
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m13 2-3 7h5l-3 7"/><circle cx="12" cy="12" r="9"/></svg>
         技能 Store <span class="badge" id="skillCount">13</span>
       </div>
-      <div class="sfoot-item admin-only" data-nav="dashboard" onclick="go('dashboard',this)">
+      <div class="sfoot-item sadmin-only" data-nav="dashboard" onclick="go('dashboard',this)">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19V5"/><path d="M4 19h16"/><rect x="7" y="10" width="3" height="6"/><rect x="13" y="6" width="3" height="10"/></svg>
         副线 &amp; 爆款库看板
+      </div>
+      <div class="sfoot-item admin-only" data-nav="eval" onclick="go('eval',this)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+        评测中心 <span class="badge" id="evalBadge">29</span>
       </div>
     </div>
     <div class="nav-foot"><span class="dot"></span> Agent OS · 杭州抖音节点</div>
@@ -501,8 +611,8 @@ body:not([data-role="admin"]) .admin-only{display:none!important}
       <div class="tb-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg></div>
       <div class="tb-ic"><span class="pip"></span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M10.3 21a2 2 0 0 0 3.4 0"/></svg></div>
       <div class="user" onclick="toggleRolePop(event)">
-        <div class="av">K</div>
-        <div><div class="nm">Hi, kk</div></div>
+        <div class="av">U</div>
+        <div><div class="nm">演示用户</div></div>
         <span class="rl" id="roleBadge">普通用户</span>
         <svg viewBox="0 0 24 24" width="14" fill="none" stroke="var(--ink-3)" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg>
         <div class="role-pop hidden" id="rolePop" onclick="event.stopPropagation()">
@@ -511,9 +621,13 @@ body:not([data-role="admin"]) .admin-only{display:none!important}
             <svg viewBox="0 0 24 24" width="18" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M5 21a7 7 0 0 1 14 0"/></svg>
             <div>普通用户<small>创作 + 历史 + 技能 Store</small></div>
           </div>
+          <div class="role-opt" id="optBiz" onclick="setRole('biz')">
+            <svg viewBox="0 0 24 24" width="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 7h18v13H3z"/><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+            <div>业务超管<small>+ 看板 + 技能沉淀（无评测中心）</small></div>
+          </div>
           <div class="role-opt" id="optAdmin" onclick="setRole('admin')">
             <svg viewBox="0 0 24 24" width="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2 4 6v6c0 5 8 8 8 8s8-3 8-8V6z"/></svg>
-            <div>超管<small>+ 看板 + 技能沉淀</small></div>
+            <div>技术超管<small>+ 评测中心 Eval Harness</small></div>
           </div>
         </div>
       </div>
@@ -585,7 +699,7 @@ body:not([data-role="admin"]) .admin-only{display:none!important}
             <div class="ftab" data-f="main" onclick="filterSkills('main',this)">主线</div>
             <div class="ftab" data-f="sub" onclick="filterSkills('sub',this)">副线</div>
             <div class="ftab" data-f="common" onclick="filterSkills('common',this)">通用</div>
-            <div class="ftab sed admin-only" onclick="openSed()"><svg viewBox="0 0 24 24" width="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2 3 14h7l-1 8 10-12h-7z"/></svg> 技能沉淀 <span class="b" id="sedBadge">2</span></div>
+            <div class="ftab sed sadmin-only" onclick="openSed()"><svg viewBox="0 0 24 24" width="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2 3 14h7l-1 8 10-12h-7z"/></svg> 技能沉淀 <span class="b" id="sedBadge">2</span></div>
           </div>
           <div id="skillsBody"></div>
         </div>
@@ -644,6 +758,23 @@ body:not([data-role="admin"]) .admin-only{display:none!important}
           <div class="rank2">
             <div class="ranklist"><div class="rh">内验榜 · 看转化</div><div class="rs">按转化维度爆款分排序（CTR / 转化率 / ROI / 完播）</div><div id="rankIn"></div></div>
             <div class="ranklist"><div class="rh">外验榜 · 看传播</div><div class="rs">按传播维度爆款分排序（播放分位 / 互动率 / 上榜）</div><div id="rankEx"></div></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="view" id="view-eval">
+        <div class="page">
+          <div class="page-h"><div class="t">评测中心</div><div class="sp"></div><span class="pill sed">仅技术超管 · Eval Harness + Observability</span></div>
+          <div class="ec-root">
+          <div id="ecCrumb" class="crumb" style="display:none"></div>
+          <div class="ev-tabs" id="evTabs">
+            <div class="ev-tab on" data-tab="exp" onclick="switchTab('exp')">实验台</div>
+            <div class="ev-tab" data-tab="sets" onclick="switchTab('sets')">评测集</div>
+            <div class="ev-tab" data-tab="evaluators" onclick="switchTab('evaluators')">评估器</div>
+            <div class="ev-tab" data-tab="flywheel" onclick="switchTab('flywheel')">飞轮台 <span class="b">5</span></div>
+            <div class="ev-tab" data-tab="trace" onclick="switchTab('trace')">Trace 观测</div>
+          </div>
+          <div id="evBody"></div>
           </div>
         </div>
       </section>
@@ -1019,7 +1150,7 @@ function renderRank(){
 function setTopCat(c,scroll){topCat=c;renderTopTabs();renderRank();if(!$('#view-dashboard').classList.contains('on'))go('dashboard');if(scroll){const t=document.getElementById('topTabs');if(t)t.scrollIntoView({behavior:'smooth',block:'center'});}}
 
 /* ============ NAV / VIEW ============ */
-const CRUMB={home:'短视频智能体',session:'创作会话',skills:'技能 Store',dashboard:'副线 & 爆款库看板'};
+const CRUMB={home:'短视频智能体',session:'创作会话',skills:'技能 Store',dashboard:'副线 & 爆款库看板',eval:'评测中心'};
 function go(name){
  document.querySelectorAll('.view').forEach(v=>v.classList.remove('on'));
  $('#view-'+name).classList.add('on');
@@ -1028,6 +1159,7 @@ function go(name){
  const sf=document.querySelector('.sfoot-item[data-nav="'+name+'"]');if(sf)sf.classList.add('active');
  if(name!=='session')document.querySelectorAll('.sess-item').forEach(x=>x.classList.remove('active'));
  if(name==='skills'){skillFilter='all';$('#skillsTitle').textContent='技能 Store';renderSkills();document.querySelectorAll('#skillFilter .ftab').forEach((t,i)=>t.classList.toggle('on',i===0));}
+ if(name==='eval'){if(document.body.dataset.role!=='admin'){toast('评测中心仅技术超管可见');go('home');return;}ecInit();}
  const vw=document.querySelector('.view-wrap');if(vw){vw.scrollTop=0;vw.classList.toggle('no-scroll',name==='session');}
 }
 function newSession(){go('home');$('#homeInput').value='';$('#homeInput').focus();}
@@ -1067,7 +1199,7 @@ function openShell(){
  const ti=document.getElementById('tweakInput');if(ti){ti.value='';ti.placeholder='继续对话：补充信息 / 微调蓝图 / 发起新请求（主控会重新路由）…';}
  buildArtifact();
 }
-function pushUser(html,tag){const fs=$('#flowScroll');fs.insertAdjacentHTML('beforeend',`<div class="msg user"><div class="who"><span class="av">K</span> kk${tag?' · '+tag:''}</div><div class="bubble">${html}</div></div>`);fs.scrollTop=fs.scrollHeight;}
+function pushUser(html,tag){const fs=$('#flowScroll');fs.insertAdjacentHTML('beforeend',`<div class="msg user"><div class="who"><span class="av">U</span> 演示用户${tag?' · '+tag:''}</div><div class="bubble">${html}</div></div>`);fs.scrollTop=fs.scrollHeight;}
 function pushBot(inner){const fs=$('#flowScroll');fs.insertAdjacentHTML('beforeend',`<div class="msg bot"><div class="who"><span class="av">B</span> Befriendsvideo Agent</div>${inner}</div>`);fs.scrollTop=fs.scrollHeight;}
 function setTabsSingle(label){$('#artTabs').innerHTML=`<div class="art-tab on" data-tab="single">${label}</div>`;}
 function setTabsCreate(){$('#artTabs').innerHTML=`<div class="art-tab on" data-tab="report" onclick="artTab('report')">报告</div><div class="art-tab dis" data-tab="script" id="tabScript" onclick="artTab('script')">脚本 v1</div>`;}
@@ -1307,7 +1439,7 @@ function sendTweak(){
  const planSvg='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>';
  const fs=$('#flowScroll');
  fs.insertAdjacentHTML('beforeend',
-  `<div class="msg user"><div class="who"><span class="av">K</span> kk · 微调</div><div class="bubble">${v}</div></div>
+  `<div class="msg user"><div class="who"><span class="av">U</span> 演示用户 · 微调</div><div class="bubble">${v}</div></div>
    <div class="msg bot"><div class="who"><span class="av">B</span> Befriendsvideo Agent</div>
      ${routeBox('蓝图方向微调 · 蓝图层',{段:segName,影响:'全局 '+SCRIPT_N+' 条蓝图',确认闸:'④ 重新确认',策略:'①复用 · ②缓存复筛 · ③局部重写'},'不重跑商品理解、不重检索全库；蓝图层改动 → 必须重过 ④'+(gateConfirmed?'，确认后全量重写脚本':''))}
      <div class="plan"><div class="plan-h">${planSvg}局部重跑 · 蓝图微调 v${BP_VER}</div>
@@ -1483,7 +1615,7 @@ function renderReport(){
    <h4><span class="num">5</span>外验参考（爆款库 · ${RP_OUT.length} 条，全展示）</h4>${rpRefBlock(RP_OUT,'out')}
    <h4><span class="num">6</span>创作蓝图（${SCRIPT_N} 条 · 每条 6 段 · 纯方向 + 借鉴点${BP_VER>1?' · <span style="color:var(--accent-ink)">v'+BP_VER+'</span>':''}）</h4>${RP_BP.slice(0,Math.min(SCRIPT_N,RP_BP.length)).map((b,i)=>rpBpCard(b,i===0,i)).join('')}
    <div style="font-size:11px;color:var(--ink-3);text-align:center;margin:4px 0">${BP_VER>1?`已按你的微调更新 ${CHG.hook?'钩子':''}${CHG.hook&&CHG.cta?'/':''}${CHG.cta?'CTA':''} 段（橙色高亮"已更新"）· ②风格复筛在 TopN 内挑段、命中则借/无则原创 · ①②未重跑全量。`:`按你要求的 <b>${SCRIPT_N}</b> 条出蓝图（跟随 query）· report-builder 过模型合成 · 只借手法不抄台词`}${SCRIPT_N>RP_BP.length?`<br>（演示库内置 ${RP_BP.length} 条示例，已全部展示）`:''}；④ 确认的就是这份蓝图</div>
-   <div class="dl" onclick="toast('下载 报告.html')"><svg viewBox="0 0 24 24" width="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v12m0 0 4-4m-4 4-4-4M4 19h16"/></svg>下载 HTML</div></div>`;
+   <div class="dl" onclick="toast('下载 报告.docx')"><svg viewBox="0 0 24 24" width="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v12m0 0 4-4m-4 4-4-4M4 19h16"/></svg>下载 Word</div></div>`;
 }
 function renderScript(){
  const n=Math.min(SCRIPT_N,RP_BP.length);
@@ -1492,7 +1624,7 @@ function renderScript(){
    <div class="risk" style="background:var(--ok-soft);border-color:#bfe6d2;color:#15663f"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6 9 17l-5-5"/></svg>⑥ 审核：脚本含「最佳」绝对化 → 改「实测更水润」→ 通过；${SCRIPT_N} 条全部通过。</div>
    ${rest}
    <div style="font-size:12px;color:var(--ink-3);text-align:center;margin:6px 0">每条都含 6 段台词 + 分镜表（折叠的点开看）；共 ${SCRIPT_N} 条 · 优选排序 · 脚本数与参考数解耦${SCRIPT_N>RP_BP.length?`<br>（演示库内置 ${RP_BP.length} 条示例，已全部展示）`:''}</div>
-   <div class="dl" onclick="toast('下载 脚本.html')"><svg viewBox="0 0 24 24" width="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v12m0 0 4-4m-4 4-4-4M4 19h16"/></svg>下载 HTML</div></div>`;
+   <div class="dl" onclick="toast('下载 脚本.docx')"><svg viewBox="0 0 24 24" width="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v12m0 0 4-4m-4 4-4-4M4 19h16"/></svg>下载 Word</div></div>`;
 }
 /* ===== v0.6.1 切片弹层播放器：借鉴点/素材/分镜处处可点播 ===== */
 const PLAY_ICO='<svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>',PAUSE_ICO='<svg viewBox="0 0 24 24" fill="currentColor"><path d="M6 5h4v14H6zM14 5h4v14h-4z"/></svg>';
@@ -1645,7 +1777,7 @@ function openSkill(id){
 }
 /* ============ SEDIMENTATION (admin) ============ */
 function openSed(){
- if(document.body.dataset.role!=='admin'){toast('技能沉淀仅超管可见');go('skills');return;}
+ if(document.body.dataset.role==='user'){toast('技能沉淀仅超管可见');go('skills');return;}
  $('#skillsTitle').textContent='技能 Store ▸ 技能沉淀';
  $('#skillsBody').innerHTML=`<div class="sed-note"><svg viewBox="0 0 24 24" width="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2 3 14h7l-1 8 10-12h-7z"/></svg>Agent 自动生成 · 待超管审核应用（门槛：可泛化 且 复用 ≥ N 次）</div>`+
   (CANDIDATES.length?CANDIDATES.map(c=>`<div class="cand">
@@ -1683,13 +1815,14 @@ function closeDrawer(){$('#scrim').classList.remove('on');$('#drawer').classList
 function toggleRolePop(e){e.stopPropagation();$('#rolePop').classList.toggle('hidden');}
 function setRole(r){
  document.body.dataset.role=r;
- $('#roleBadge').textContent=r==='admin'?'超管':'普通用户';
- $('#roleBadge').classList.toggle('admin',r==='admin');
- $('#optUser').classList.toggle('on',r==='user');$('#optAdmin').classList.toggle('on',r==='admin');
+ $('#roleBadge').textContent=r==='admin'?'技术超管':r==='biz'?'业务超管':'普通用户';
+ $('#roleBadge').classList.toggle('admin',r!=='user');
+ $('#optUser').classList.toggle('on',r==='user');$('#optBiz').classList.toggle('on',r==='biz');$('#optAdmin').classList.toggle('on',r==='admin');
  $('#rolePop').classList.add('hidden');
  if(r==='user'&&($('#view-dashboard').classList.contains('on'))){go('home');}
+ if(r!=='admin'&&($('#view-eval').classList.contains('on'))){go('home');}
  if(r==='user'&&$('#skillsTitle').textContent.includes('沉淀')){go('skills');}
- toast(r==='admin'?'已切到超管 — 多了 看板 + 技能沉淀':'已切到普通用户');
+ toast(r==='admin'?'已切到技术超管 — 全部可见(含评测中心)':r==='biz'?'已切到业务超管 — 看板 + 技能沉淀(无评测中心)':'已切到普通用户');
 }
 document.body.addEventListener('click',()=>$('#rolePop').classList.add('hidden'));
 
@@ -1699,6 +1832,664 @@ function filterSkills(f,el){skillFilter=f;document.querySelectorAll('#skillFilte
 
 /* ============ INIT ============ */
 renderCaps();renderSessions();renderSkills();renderHealth();renderTopTabs();renderRank();updateBadges();
+</script>
+
+<script>
+/* ===== 评测中心 v3 模块(复用 app 的 $/toast) ===== */
+
+/* ════════ 种子数据(全 mock) ════════ */
+const SPN={dec:'决策',tool:'工具',retr:'检索',gen:'生成',state:'状态',guard:'风控',gate:'闸门/分支'};
+
+const EXPS=[
+  {id:'EXP-018',name:'召回阈值0.8回归',set:'素材匹配·全套80',cfg:'v0.7.3 · 召回阈值0.8',base:'v0.7.2',metric:'召回 88%',delta:'+6.2',trig:'回归',st:'ok',roster:'roster_match'},
+  {id:'EXP-016',name:'CLAUDE.md 路由改',set:'端到端·全套60',cfg:'v0.7.2 · CLAUDE.md v12',base:'v0.7.1',metric:'蓝图 74',delta:'-2.0',trig:'回归',st:'ok',roster:'roster_e2e'},
+  {id:'EXP-017',name:'换文案模型对比',set:'脚本质量·全套60',cfg:'v0.7.3 · 文案=豆包',base:'文案=Qwen',metric:'脚本 78',delta:'-0.8',trig:'回归',st:'ok',roster:'roster_e2e'},
+  {id:'EXP-019',name:'发版门禁 0.7.3',set:'全层 60',cfg:'v0.7.3',base:'v0.7.2',metric:'—',delta:'',trig:'发版',st:'run',roster:'roster_e2e'},
+];
+const EVALUATORS=[
+  {id:'EVR-P',n:'商品字段准确率',type:'规则·对错',layer:'①商品理解',judge:false,stat:'准确率 94%'},
+  {id:'EVR-M',n:'召回率 + 精排相关率',type:'规则·对错',layer:'②素材匹配',judge:false,stat:'召回 88% · NDCG 0.80'},
+  {id:'EVR-B',n:'蓝图五维量表',type:'LLM-judge',layer:'③报告/蓝图',judge:true,stat:'采纳率 88% · 待复核 8',rate:'88%',bias:'偏低 0.3',ver:'judge v4'},
+  {id:'EVR-S',n:'脚本五维量表',type:'LLM-judge',layer:'⑤脚本+分镜',judge:true,stat:'采纳率 90% · 待复核 12',rate:'90%',bias:'偏低 0.4',ver:'judge v4'},
+  {id:'EVR-A',n:'兜底正确率',type:'规则+人工',layer:'对抗/兜底',judge:false,stat:'91%'},
+  {id:'EVR-R',n:'格式/违禁词检查',type:'规则·辅助',layer:'多层辅助',judge:false,stat:'全部用例'},
+];
+const LAYER_SCORES={
+  roster_e2e:[{n:'商品理解',v:'94%',d:'+0.3',c:'up'},{n:'素材召回',v:'88%',d:'+6.2',c:'up'},{n:'蓝图五维',v:'74',d:'-2.0',c:'dn'},{n:'脚本五维',v:'78',d:'-0.8',c:'dn'},{n:'兜底正确',v:'91%',d:'—',c:'flat'}],
+  roster_match:[{n:'商品理解',v:'94%',d:'+0.3',c:'up'},{n:'素材召回',v:'88%',d:'+6.2',c:'up'},{n:'精排相关',v:'80%',d:'+2.0',c:'up'}],
+};
+const ROSTERS={
+  roster_e2e:[
+    {id:'TC-061',q:'提问钩子·补水精华·10条',nodes:[['①','ok'],['②','ok'],['③','ok'],['⑤','ok'],['⑥','ok']],fb:null,trace:'TR_pass'},
+    {id:'TC-042',q:'防晒霜·学生党·8条',nodes:[['①','ok'],['②','ok'],['③','ok'],['⑤','fail'],['⑥','ok']],fb:'⑤脚本',trace:'TR_script'},
+    {id:'TC-088',q:'中老年钙片·对标素材',nodes:[['①','ok'],['②','fail'],['③','skip'],['⑤','skip'],['⑥','skip']],fb:'②素材匹配',trace:'TR_match'},
+    {id:'TC-073',q:'按摩仪·送礼蓝图·6条',nodes:[['①','ok'],['②','ok'],['③','fail'],['⑤','skip'],['⑥','skip']],fb:'③报告/蓝图',trace:'TR_blueprint'},
+  ],
+  roster_match:[
+    {id:'TC-061',q:'提问钩子·补水类',nodes:[['①','ok'],['②','ok']],fb:null,trace:'TR_pass'},
+    {id:'TC-088',q:'中老年钙片·对标素材',nodes:[['①','ok'],['②','fail']],fb:'②素材匹配',trace:'TR_match'},
+    {id:'TC-072',q:'痛点对比·防晒',nodes:[['①','ok'],['②','ok']],fb:null,trace:'TR_pass'},
+  ],
+};
+
+/* ───── 判定模式 trace(评测):span 瀑布 + 每 span 判定 + 输入输出 ───── */
+/* span: {ind,ty,n,s,w,meta,rd(ok/fail/skip),je(打分型),exp,act,reason,rubric,clips,io} */
+const VTRACES={
+  TR_script:{title:'#TC-042 防晒霜·学生党·8条',meta:'端到端 · v0.7.3 vs v0.7.2 · 失败 ⑤脚本',spans:[
+    {ind:0,ty:'dec',n:'主控·意图识别',s:0,w:4,meta:'.3s',rd:'ok',
+      exp:'intent = 创作·新建(本用例标注答案)',act:'intent = 创作·新建',
+      io:{in:'user: "XX学生党防晒霜SPF50+ 做8条短视频 主打军训不泛白"\nblackboard: {} // 空会话',out:'{ "intent":"创作-新建", "stage":"匹配中", "M":8 }',tok:'1.2k',bb:'写 stage=匹配中, M=8'}},
+    {ind:0,ty:'dec',n:'主控·请求分类',s:4,w:3,meta:'.2s',rd:'ok',
+      exp:'route = 全量·从①(本用例标注答案)',act:'route = 全量·从①',
+      io:{in:'intent=创作-新建; product_input=链接已解析',out:'{ "route":"全量", "from":"①商品理解", "reuse":[] }',tok:'0.8k',bb:'—'}},
+    {ind:0,ty:'dec',n:'主控·Plan拆分',s:7,w:4,meta:'.4s',rd:'ok',
+      exp:'todo = [①,②,③,④闸,⑤,⑥] · M=8(本用例标注答案)',act:'todo = [①,②,③,④,⑤,⑥] · M=8',
+      io:{in:'route=全量·从①',out:'[ "①商品理解","②素材匹配","③报告蓝图","④确认闸","⑤脚本分镜","⑥审核" ]',tok:'1.5k',bb:'写 todo, M=8'}},
+    {ind:1,ty:'gen',n:'①商品理解',s:11,w:11,meta:'1.1s·2.8k',rd:'ok',
+      exp:'品类=防晒霜 · 人群=学生党 · 卖点=[军训不泛白,控油,平价] · 痛点=[泛白,黏腻,暴晒] (本用例标准答案,逐字段比)',
+      act:'品类=防晒霜 · 人群=学生党 · 卖点=[军训不泛白,控油,平价] · 痛点=[泛白,黏腻,暴晒] (5/5 字段命中)',
+      io:{in:'link: https://item.xxx.com/id=556677\ntitle: "XX学生党防晒霜 SPF50+ PA+++ 50ml 军训必备"',out:'{\n  "品类":"防晒霜",\n  "人群":"学生党",\n  "卖点":["军训不泛白","控油","平价"],\n  "痛点":["泛白","黏腻","暴晒"],\n  "竞品":["某平价防晒"]\n}',tok:'2.8k',bb:'写 商品字段(5字段)'}},
+    {ind:1,ty:'retr',n:'②素材匹配·向量粗筛',s:22,w:9,meta:'.8s·200→44',rd:'ok',
+      exp:'(粗筛层无独立判分,判分在精排)',act:'品类过滤=防晒 → 向量粗筛 200→44',
+      io:{in:'query_vec = embed(商品字段 + "军训防晒钩子")\n品类硬过滤 = 防晒',out:'44 候选: [K12, F44, N08, X88, C20, ...] // 截断',tok:'—',bb:'—'}},
+    {ind:2,ty:'gen',n:'②LLM精排 Top8',s:31,w:10,meta:'1.2s·3.1k',rd:'ok',
+      exp:'应命中标注相关集 = { K12:2强, N08:1弱, F44:2强 }(本用例人工标注 · 召回率=命中/3)',
+      act:'命中 K12,F44,N08 → 召回 3/3 = 100% · 无误召 ✓',
+      io:{in:'44候选 + 痛点字段[泛白,黏腻,暴晒]',out:'Top8 = [\n  K12 痛点 rel=2,  F44 痛点 rel=2,\n  N08 痛点 rel=1,  C20 展示 rel=1, ...\n]\n命中标注集: K12✓ N08✓ F44✓  漏: 无  误召: 无',tok:'3.1k',bb:'写 TopN缓存(8条,含切片台词)'}},
+    {ind:1,ty:'gen',n:'③报告/蓝图合成',s:41,w:16,meta:'1.8s·3.6k',rd:'ok',je:true,
+      exp:'打分型 · 无唯一答案 · 按蓝图五维 rubric 打分,阈值 ≥70',act:'蓝图 76 (judge) ≥70 ✓',
+      rubric:[['方向清晰','4/5',''],['痛点·人群对位','4/5',''],['借鉴点有效','4/5',''],['卖点差异化','3/5',''],['可落成脚本','4/5','']],reason:'方向明确、与学生党痛点对位好;卖点角度略常规',
+      io:{in:'商品字段 + ②TopN切片[K12,F44,N08]',out:'蓝图 1/8:\n① 钩子: 用军训暴晒焦虑开场 (借 K12·钩子节奏)\n② 痛点: 放大"涂了还是黑、搓泥"\n③ 引出: SPF50+ 不泛白\n④ 证明: 上脸前后对比 (借 F44·证明)\n⑤ 利益: 学生价\n⑥ CTA: 开学囤货\n... (共 8 条,纯方向无台词)',tok:'3.6k',bb:'写 蓝图v1(8条×6段)'}},
+    {ind:1,ty:'gate',n:'④确认闸',s:57,w:3,meta:'评测自动确认',rd:'ok',
+      exp:'线上=人审闸;评测中按标注=自动确认',act:'评测自动确认 → 进 ⑤',
+      io:{in:'蓝图v1(8条)',out:'{ "confirmed":true }',tok:'—',bb:'写 已确认'}},
+    {ind:1,ty:'gen',n:'⑤脚本+分镜(豆包)',s:60,w:24,meta:'2.4s·6.4k',rd:'fail',je:true,
+      exp:'打分型 · 无唯一答案 · 按脚本五维 rubric 打分,阈值 ≥70',act:'脚本 62 (judge) < 70 ✗ · 待人工复核',
+      rubric:[['钩子力','2/5','套模板'],['卖点清晰','4/5',''],['结构完整','4/5',''],['可拍性','3/5',''],['合规','5/5','']],reason:'钩子套用"你还在为…"模板,缺新意 → 拉低钩子维度',
+      io:{in:'确认蓝图v1 + ②切片[K12,F44] + M=8',out:'脚本 1/8:\n[钩子 0-3s] "你还在为防晒泛白烦恼吗?"\n[痛点 3-6s] 军训一周黑成碳,涂了也搓泥\n[引出 6-9s] 这支 SPF50+ 上脸不泛白\n[证明 9-12s] 实拍上脸前后对比\n[利益 12-14s] 学生价到手 39\n[CTA 14-15s] 点下方,开学囤一支\n... (共 8 条,出台词)',tok:'6.4k',bb:'写 脚本v1(8条)'}},
+    {ind:2,ty:'state',n:'黑板写·脚本v1',s:84,w:3,meta:'触发⑥',rd:'ok',exp:'',act:'',
+      io:{in:'脚本v1(8条·6段)',out:'blackboard.脚本 = v1',tok:'—',bb:'写 脚本v1'}},
+    {ind:1,ty:'guard',n:'⑥内容审核·敏感词',s:87,w:8,meta:'.9s·一轮过',rd:'ok',
+      exp:'通过 = 无违禁词 ∧ 无绝对化 ∧ 无夸大功效 (本用例标准答案)',act:'通过 · 命中违规 = []',
+      io:{in:'脚本v1(8条) + 审核标准(广告法违禁词库 + 平台规则)',out:'{ "result":"通过", "hits":[] } // 8条逐条扫描,0命中',tok:'—',bb:'写 审核=通过'}},
+    {ind:0,ty:'dec',n:'主控·整合产物',s:95,w:5,meta:'.3s',rd:'ok',
+      exp:'交付 = 报告6块 + 脚本8条 + 分镜8张',act:'交付 8 条',
+      io:{in:'各节点产物',out:'报告(6块) + 脚本(8条) + 分镜(8张)',tok:'—',bb:'—'}},
+  ]},
+  TR_match:{title:'#TC-088 中老年钙片·对标素材',meta:'端到端 · 失败 ②素材匹配(下游不计分)',spans:[
+    {ind:0,ty:'dec',n:'主控·意图识别',s:0,w:5,meta:'.3s',rd:'ok',
+      exp:'intent = 素材检索·对标(本用例标注答案)',act:'intent = 素材检索·对标',
+      io:{in:'user: "中老年钙片 找几条对标素材"',out:'{ "intent":"素材检索", "进主线":false }',tok:'1.1k',bb:'—'}},
+    {ind:1,ty:'gen',n:'①商品理解',s:5,w:14,meta:'1.0s·2.4k',rd:'ok',
+      exp:'品类=保健品·钙片 · 人群=中老年 (本用例标准答案)',act:'品类=保健品·钙片 · 人群=中老年 (命中)',
+      io:{in:'desc: "中老年成人钙片 碳酸钙D3 60片"',out:'{ "品类":"保健品·钙片", "人群":"中老年", "痛点":["缺钙","腿脚不利索"] }',tok:'2.4k',bb:'写 商品字段'}},
+    {ind:1,ty:'retr',n:'②素材匹配·精排',s:19,w:13,meta:'1.4s·180→30',rd:'fail',clips:true,
+      exp:'应命中标注相关集 = { M44:2强, P02:1弱 }(本用例人工标注)',
+      act:'命中 M44 · 漏 P02 · 误召 X88(美妆,rel=0) → 召回 1/2 = 50% < 阈值 ✗',
+      io:{in:'query_vec = embed(中老年钙片字段)\n品类过滤=保健品(该品类库存薄)',out:'Top 结果 = [\n  M44 痛点 rel=2 ✓(命中),\n  X88 展示 rel=0 ✗(误召·美妆),\n  ... \n]\n标注集 {M44,P02}: M44✓ P02✗(漏)  误召: X88',tok:'—',bb:'写 TopN(低置信)'}},
+    {ind:1,ty:'gen',n:'③报告/蓝图',s:32,w:6,meta:'—',rd:'skip',io:{in:'—',out:'—',tok:'—',bb:'—'}},
+    {ind:1,ty:'gen',n:'⑤脚本+分镜',s:38,w:6,meta:'—',rd:'skip',io:{in:'—',out:'—',tok:'—',bb:'—'}},
+    {ind:1,ty:'guard',n:'⑥内容审核',s:44,w:6,meta:'—',rd:'skip',io:{in:'—',out:'—',tok:'—',bb:'—'}},
+  ]},
+  TR_blueprint:{title:'#TC-073 按摩仪·送礼蓝图·6条',meta:'端到端 · 失败 ③报告/蓝图',spans:[
+    {ind:0,ty:'dec',n:'主控·意图识别',s:0,w:4,meta:'.3s',rd:'ok',
+      exp:'intent = 创作·新建(本用例标注答案)',act:'intent = 创作·新建',
+      io:{in:'user: "按摩仪 送礼场景 做6条"',out:'{ "intent":"创作-新建", "M":6 }',tok:'1.1k',bb:'写 M=6'}},
+    {ind:1,ty:'gen',n:'①商品理解',s:4,w:12,meta:'1.0s·2.5k',rd:'ok',
+      exp:'品类=数码·按摩仪 · 场景=送礼 (本用例标准答案)',act:'品类=数码·按摩仪 · 场景=送礼 (命中)',
+      io:{in:'link: 按摩仪商详',out:'{ "品类":"按摩仪", "场景":["送礼","居家"], "人群":"送礼人群" }',tok:'2.5k',bb:'写 商品字段'}},
+    {ind:1,ty:'retr',n:'②素材匹配',s:16,w:18,meta:'1.9s·200→40',rd:'ok',
+      exp:'应命中标注相关集 = { D31:2强, G02:1弱 }',act:'命中 D31,G02 → 召回 2/2 = 100% ✓',
+      io:{in:'query_vec = embed(按摩仪·送礼)',out:'Top = [D31 展示 rel=2 ✓, G02 证明 rel=1 ✓]',tok:'—',bb:'写 TopN'}},
+    {ind:1,ty:'gen',n:'③报告/蓝图合成',s:34,w:16,meta:'1.7s·3.4k',rd:'fail',je:true,
+      exp:'打分型 · 无唯一答案 · 按蓝图五维 rubric 打分,阈值 ≥70',act:'蓝图 64 (judge) < 70 ✗',
+      rubric:[['方向清晰','3/5',''],['痛点·人群对位','2/5','送礼场景挖得浅'],['借鉴点有效','3/5',''],['卖点差异化','4/5',''],['可落成脚本','3/5','']],reason:'送礼人群诉求挖得浅、方向同质化 → 痛点对位维度低',
+      io:{in:'商品字段 + ②切片[D31,G02]',out:'蓝图 1/6:\n① 钩子: 送长辈不知道送啥?\n② 痛点: (泛泛,未挖送礼焦虑)\n... (共 6 条)',tok:'3.4k',bb:'写 蓝图v1'}},
+    {ind:1,ty:'gen',n:'⑤脚本+分镜',s:50,w:8,meta:'—',rd:'skip',io:{in:'—',out:'—',tok:'—',bb:'—'}},
+  ]},
+  TR_pass:{title:'通过用例',meta:'端到端 · 全节点通过',spans:[
+    {ind:0,ty:'dec',n:'主控·意图识别',s:0,w:4,meta:'.3s',rd:'ok',
+      exp:'intent = 创作·新建(本用例标注答案)',act:'intent = 创作·新建',
+      io:{in:'user: "补水精华 提问钩子 10条"',out:'{ "intent":"创作-新建", "M":10 }',tok:'1.2k',bb:'写 M=10'}},
+    {ind:1,ty:'gen',n:'①商品理解',s:4,w:11,meta:'1.1s·2.8k',rd:'ok',
+      exp:'品类=美妆·精华 · 卖点=[高浓度玻尿酸,24h长效] · 痛点=[熬夜暗沉,换季干燥] (本用例标准答案)',act:'5/5 字段命中',
+      io:{in:'link: 补水精华商详',out:'{ "品类":"美妆·精华", "卖点":["高浓度玻尿酸","24h长效"], "痛点":["熬夜暗沉","换季干燥"] }',tok:'2.8k',bb:'写 字段'}},
+    {ind:1,ty:'gen',n:'②素材匹配',s:15,w:16,meta:'2.0s·200→44',rd:'ok',
+      exp:'应命中标注相关集 = { A07:2强, B12:2强, E55:1弱 }',act:'命中 A07,B12,E55 → 召回 3/3 = 100% ✓',
+      io:{in:'query_vec = embed(补水·提问钩子)',out:'Top8 = [A07 钩子 rel=2 ✓, B12 钩子 rel=2 ✓, E55 钩子 rel=1 ✓, ...]',tok:'—',bb:'写 TopN'}},
+    {ind:1,ty:'gen',n:'③报告/蓝图',s:31,w:16,meta:'1.8s·3.6k',rd:'ok',je:true,
+      exp:'打分型 · 按蓝图五维 rubric,阈值 ≥70',act:'蓝图 81 (judge) ✓',
+      rubric:[['方向清晰','4/5',''],['痛点·人群对位','5/5',''],['借鉴点有效','4/5',''],['卖点差异化','4/5',''],['可落成脚本','4/5','']],reason:'方向清晰、痛点一击即中',
+      io:{in:'字段 + 切片[A07,B12]',out:'蓝图 1/10: ① 钩子 用提问"敢不敢素颜出门"...(共10条)',tok:'3.6k',bb:'写 蓝图v1'}},
+    {ind:1,ty:'gen',n:'⑤脚本+分镜',s:47,w:24,meta:'2.4s·6.4k',rd:'ok',je:true,
+      exp:'打分型 · 按脚本五维 rubric,阈值 ≥70',act:'脚本 84 (judge) ✓',
+      rubric:[['钩子力','4/5',''],['卖点清晰','5/5',''],['结构完整','4/5',''],['可拍性','4/5',''],['合规','5/5','']],reason:'钩子有新意、卖点贯穿',
+      io:{in:'蓝图 + 切片',out:'脚本 1/10:\n[钩子] "敢不敢素颜出门测一周?"\n... (10条·出台词)',tok:'6.4k',bb:'写 脚本v1'}},
+    {ind:1,ty:'guard',n:'⑥内容审核',s:71,w:8,meta:'.9s·一轮过',rd:'ok',
+      exp:'通过 = 无违禁 ∧ 无绝对化 ∧ 无夸大 (本用例标准答案)',act:'通过 · 命中 = []',
+      io:{in:'脚本v1(10条) + 审核标准',out:'{ "result":"通过", "hits":[] }',tok:'—',bb:'写 通过'}},
+  ]},
+};
+
+
+/* ───── 裸模式 trace(线上):同瀑布,无判定,每 span 也可点看输入输出 ───── */
+const BARETRACES={
+  'TR-9af2':{title:'线上创作 · 补水精华×10',meta:'状态 ✓ · 8.7s · 20.2k token · 黑板复用:无(全新)',sig:'行为信号:导出 + 确认闸一次过(正样候选)',spans:[
+    {ind:0,ty:'dec',n:'主控·意图识别',s:0,w:5,meta:'.2s·判定:创作',io:{in:'用户原话',out:'意图=创作·新建',tok:'1.2k',bb:'写:阶段'}},
+    {ind:0,ty:'dec',n:'主控·失效推理+拆任务',s:5,w:5,meta:'.2s·派①②③⑤⑥',io:{in:'意图+黑板',out:'todo:①②③⑤⑥',tok:'1.4k',bb:'写:M=10'}},
+    {ind:1,ty:'gen',n:'①商品理解',s:10,w:12,meta:'1.1s·2.8k',io:{in:'链接',out:'补水精华字段',tok:'2.8k',bb:'写:字段'}},
+    {ind:1,ty:'retr',n:'②素材匹配·向量粗筛',s:22,w:9,meta:'.8s·200→44',io:{in:'query向量',out:'200→44候选',tok:'—',bb:'—'}},
+    {ind:2,ty:'gen',n:'②LLM精排 Top8',s:31,w:13,meta:'1.2s·3.1k',io:{in:'44候选',out:'Top8切片',tok:'3.1k',bb:'写:TopN'}},
+    {ind:1,ty:'gen',n:'③蓝图合成',s:44,w:18,meta:'1.8s·3.6k',io:{in:'字段+切片',out:'6块报告+10蓝图',tok:'3.6k',bb:'写:蓝图v1'}},
+    {ind:1,ty:'gate',n:'④确认闸',s:62,w:3,meta:'用户一次通过',io:{in:'报告',out:'用户直接确认',tok:'—',bb:'写:已确认'}},
+    {ind:1,ty:'gen',n:'⑤脚本生成',s:65,w:23,meta:'3.2s·6.4k',io:{in:'蓝图+切片',out:'10条脚本+分镜',tok:'6.4k',bb:'写:脚本v1'}},
+    {ind:2,ty:'state',n:'黑板写·脚本v1(6段)',s:88,w:4,meta:'触发⑥',io:{in:'脚本v1',out:'落黑板',tok:'—',bb:'写:脚本v1'}},
+    {ind:1,ty:'guard',n:'⑥审核·敏感词',s:92,w:8,meta:'.9s·一轮过',io:{in:'脚本+标准',out:'通过',tok:'—',bb:'写:通过'}},
+  ]},
+  'TR-9ac7':{title:'线上创作 · 三无小众品牌',meta:'状态 ✗ · 12.4s · 24k token · path=guardloop',sig:'行为信号:审核回改 4 轮(接近10轮上限) → 负样候选',spans:[
+    {ind:0,ty:'dec',n:'主控·意图识别',s:0,w:4,meta:'.3s·判定:创作',io:{in:'原话',out:'意图=创作',tok:'1.2k',bb:'写:阶段'}},
+    {ind:1,ty:'gen',n:'①商品理解',s:4,w:13,meta:'1.4s·低置信',io:{in:'三无品牌·信息薄',out:'字段(低置信,多处标"未知")',tok:'2.2k',bb:'写:字段(低置信)'}},
+    {ind:1,ty:'retr',n:'②素材匹配',s:17,w:11,meta:'2.2s·命中弱',io:{in:'query向量',out:'品类命中弱→蓝图多标"原创/通用"',tok:'—',bb:'写:TopN(薄)'}},
+    {ind:1,ty:'gen',n:'③报告/蓝图',s:28,w:14,meta:'1.8s·3.4k',io:{in:'字段+切片',out:'6块报告(提示参考有限)',tok:'3.4k',bb:'写:蓝图v1'}},
+    {ind:1,ty:'gen',n:'⑤脚本生成',s:42,w:16,meta:'2.6s·6.1k',io:{in:'蓝图',out:'8条脚本',tok:'6.1k',bb:'写:脚本v1'}},
+    {ind:1,ty:'guard',n:'⑥审核 ↻1',s:58,w:8,meta:'.8s·需改',err:true,io:{in:'脚本v1+标准',out:'命中绝对化"最佳"→需改',tok:'—',bb:'写:需改记录'}},
+    {ind:1,ty:'gen',n:'⑤重跑 ↻',s:66,w:8,meta:'.9s',io:{in:'需改点',out:'改"实测更出片"',tok:'1.8k',bb:'写:脚本v2'}},
+    {ind:1,ty:'guard',n:'⑥审核 ↻…×4',s:74,w:26,meta:'3.0s·反复',err:true,io:{in:'脚本v2-v5',out:'反复命中夸大功效 → 4轮仍未过',tok:'—',bb:'写:轮次=4'}},
+  ]},
+  'TR-9a90':{title:'线上创作 · 按摩仪(MCP超时)',meta:'状态 ⚠ · 14.0s · 9k token · path=degrade',sig:'行为信号:②匹配降级 · 参考偏少',spans:[
+    {ind:0,ty:'dec',n:'主控·意图识别',s:0,w:5,meta:'.3s',io:{in:'原话',out:'意图=创作',tok:'1.1k',bb:'—'}},
+    {ind:1,ty:'gen',n:'①商品理解',s:5,w:12,meta:'1.2s·2.6k',io:{in:'链接',out:'按摩仪字段',tok:'2.6k',bb:'写:字段'}},
+    {ind:1,ty:'tool',n:'MCP·飞瓜拉数',s:17,w:30,meta:'8.0s·超时',err:true,io:{in:'品类query',out:'外部源超时,无返回',tok:'—',bb:'—'}},
+    {ind:1,ty:'retr',n:'②素材匹配·降级',s:47,w:10,meta:'1.0s·仅本地库',io:{in:'query向量',out:'退本地库,候选偏少(降级)',tok:'—',bb:'写:TopN(降级标记)'}},
+    {ind:1,ty:'gen',n:'③蓝图合成',s:57,w:18,meta:'1.8s·3.5k',io:{in:'字段+薄切片',out:'蓝图(标参考有限)',tok:'3.5k',bb:'写:蓝图v1'}},
+  ]},
+  'TR-9ab3':{title:'线上微调 · 换提问钩子',meta:'状态 ✓ · 2.1s · 4.8k token · path=tweak',sig:'行为信号:微调 1 轮即确认(正样候选)',spans:[
+    {ind:0,ty:'dec',n:'主控·失效推理',s:0,w:8,meta:'.2s·①②保留',io:{in:'"钩子换提问式"+黑板',out:'判定:仅③钩子段失效',tok:'1.0k',bb:'读:蓝图v1'}},
+    {ind:1,ty:'retr',n:'②风格复筛(缓存)',s:8,w:18,meta:'.5s·不重检索',io:{in:'TopN缓存+条件:提问式钩子',out:'命中《72h补水测评》钩子段',tok:'—',bb:'读:TopN缓存'}},
+    {ind:1,ty:'gen',n:'③蓝图·重写钩子段',s:26,w:30,meta:'1.0s·2.4k',io:{in:'命中钩子段',out:'蓝图v2(仅钩子段更新·高亮)',tok:'2.4k',bb:'写:蓝图v2'}},
+    {ind:1,ty:'gate',n:'④回确认闸',s:56,w:4,meta:'用户确认',io:{in:'蓝图v2',out:'确认',tok:'—',bb:'写:已确认'}},
+  ]},
+  'TR-9ad1':{title:'线上检索 · 开箱钩子(旁路)',meta:'状态 ✓ · 3.2s · 6.4k token · path=search',sig:'旁路爆款检索 · 未进创作主线',spans:[
+    {ind:0,ty:'dec',n:'主控·请求分类',s:0,w:8,meta:'.2s·检索任务',io:{in:'"珠宝类开箱钩子爆款"',out:'路由=②检索{条件:开箱钩子,范围:全库}',tok:'1.0k',bb:'—'}},
+    {ind:1,ty:'retr',n:'②检索·全库',s:8,w:20,meta:'1.0s·全库',io:{in:'条件向量',out:'命中视频+可拆解切片',tok:'—',bb:'—'}},
+    {ind:1,ty:'gen',n:'②结果整理',s:28,w:18,meta:'1.2s·5.4k',io:{in:'命中集',out:'返回命中视频+段切片(不生成报告)',tok:'5.4k',bb:'—'}},
+  ]},
+};
+const ONLINE=[
+  {id:'TR-9af2',entry:'创作 · 补水精华 ×10',path:'happy',dur:'8.7s',tok:'20.2k',st:'ok'},
+  {id:'TR-9ac7',entry:'创作 · 三无小众品牌',path:'guardloop',dur:'12.4s',tok:'24k',st:'err'},
+  {id:'TR-9a90',entry:'创作 · 按摩仪(MCP超时)',path:'degrade',dur:'14.0s',tok:'9k',st:'warn'},
+  {id:'TR-9ab3',entry:'微调 · 换提问钩子',path:'tweak',dur:'2.1s',tok:'4.8k',st:'ok'},
+  {id:'TR-9ad1',entry:'检索 · 开箱钩子',path:'search',dur:'3.2s',tok:'6.4k',st:'ok'},
+];
+const METRICS=[
+  {n:'确认闸一次通过率',v:'71%',s:'近7天 · ▲ vs上周 68%'},
+  {n:'微调轮次',v:'1.8',s:'均值 · P90 = 4'},
+  {n:'审核首次通过率',v:'82%',s:'10轮上限触发 3 次'},
+  {n:'脚本采纳率',v:'64%',s:'导出 ÷ 生成'},
+];
+const CALIB=[
+  {id:'TC-042',j:62,h:71,reason:'judge对钩子套模板判过重'},
+  {id:'TC-055',j:80,h:78,reason:'基本一致'},
+  {id:'TC-073',j:64,h:64,reason:'一致'},
+];
+
+/* ════════ 导航 ════════ */
+let TAB='exp', STACK=[];
+let EXP_FILTER='all';
+let SKILLDRAFT={
+  name:'hook-rhythm-booster', agent:'脚本+分镜 SubAgent', status:'candidate',
+  description:'脚本出稿后对开头3秒钩子做二次节奏强化:检测信息点密度与卡点,建议更紧凑递进。',
+  body:`# 钩子节奏强化\n## 触发\n脚本 ⑤ 生成后,对每条钩子段(0-3s)做二次检查。\n## 步骤\n1. 检测钩子段信息点密度(每秒信息量)与首个卡点位置。\n2. 若首卡点 > 1.5s 或信息点 < 2 → 给出更紧凑的递进改写建议。\n3. 输出:原钩子 + 建议改写 + 理由,不直接覆盖,交主控决定。\n## 约束\n只动钩子段;不改其余 5 段;建议性、非强制。\n## 借鉴来源\n从线上正样 TR-9af2(补水×10)抽出:强钩子 = 痛点前置 + 0.8s 首卡点。`
+};
+function esc(s){return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
+let FW_PICK=null, FW_REL=null, CALIB_RULED={};
+const CLIPS={
+  A07:{name:'敏感肌补水实测',seg:'钩子',line:'你是不是也这样,熬夜第二天脸垮到不行?',rel:'2'},
+  B12:{name:'72h补水测评',seg:'钩子',line:'敢不敢做个测试?看完这条你就知道该不该买',rel:'2'},
+  M44:{name:'中老年钙片日常',seg:'痛点',line:'爸妈这个年纪,最怕的就是腿脚不利索',rel:'2'},
+  P02:{name:'保健品场景测评',seg:'证明',line:'连续吃了一个月,我妈自己说爬楼轻松了',rel:'1'},
+  X88:{name:'美妆教程合集',seg:'展示',line:'今天教大家一个伪素颜妆容',rel:'0'},
+  K12:{name:'防晒痛点对比',seg:'痛点',line:'不涂防晒一个夏天黑两个度,这不是吓你',rel:'2'},
+  N08:{name:'夏日防晒测评',seg:'痛点',line:'油皮涂防晒搓泥?这支是真的不闷痘',rel:'1'},
+  C33:{name:'旧·防晒对比(已出库)',seg:'痛点',line:'(已滚出 Top100,内容仅存档)',rel:'-'},
+  E55:{name:'换季急救面膜',seg:'钩子',line:'换季烂脸自救,我只用这一招',rel:'1'},
+};
+function clipChip(cid){const c=CLIPS[cid];if(!c)return cid;const tag=c.rel==='2'?' 2强':c.rel==='1'?' 1弱':c.rel==='0'?' 0误召':'';return `<span class="pill ${c.rel==='0'||c.rel==='-'?'danger':'brand'}" style="cursor:pointer" onclick="event.stopPropagation();push('切片 ${cid}',()=>clipPlayer('${cid}'))">▶ ${cid} ${c.seg}${tag}</span>`;}
+function clipPlayer(cid){
+  const c=CLIPS[cid];
+  return `<div style="background:#0e0f15;border-radius:var(--r-lg);aspect-ratio:9/13;max-width:240px;margin:0 auto 14px;display:flex;align-items:center;justify-content:center;position:relative">
+      <svg viewBox="0 0 24 24" width="46" fill="#fff" opacity=".9"><path d="M8 5v14l11-7z"/></svg>
+      <div style="position:absolute;bottom:10px;left:10px;right:10px;color:#fff;font-size:11px;opacity:.85">《${c.name}》</div>
+      <div style="position:absolute;top:10px;left:10px"><span class="pill" style="background:rgba(255,255,255,.2);color:#fff">${c.seg}段</span></div></div>
+    <div class="ev-card"><div class="ch">切片台词(转写 · 口播+字幕)</div><div style="font-size:12.5px;color:var(--ink-2);line-height:1.6">"${c.line}"</div></div>
+    <div class="ev-note">骨架段:<b>${c.seg}</b>(6段固定:钩子→痛点→展示→证明→促销利益→CTA) · 相关度标注:${c.rel==='2'?'2 强相关':c.rel==='1'?'1 勉强相关':c.rel==='0'?'0 不相关':'已出库'}</div>`;
+}
+function rule(id,k){CALIB_RULED[id]=k;render();toast(k==='h'?'已采纳人工分 → 该用例权威分':'判 judge 对');}
+function openFw(id){FW_PICK=null;FW_REL=null;push(id,()=>fwReview(id));}
+function switchTab(t){TAB=t;STACK=[];document.querySelectorAll('#evTabs .ev-tab').forEach(x=>x.classList.toggle('on',x.dataset.tab===t));render()}
+function push(title,fn){STACK.push({title,render:fn});render()}
+function backTo(i){STACK=STACK.slice(0,i);render()}
+function back(){STACK.pop();render()}
+function render(){
+  const crumb=$('#ecCrumb'),tabs=$('#evTabs'),body=$('#evBody');
+  if(STACK.length===0){
+    crumb.style.display='none';tabs.style.display='';
+    body.innerHTML = TAB==='exp'?expList():TAB==='trace'?traceList()
+      :TAB==='sets'?setsView()
+      :TAB==='evaluators'?evaluatorsView()
+      :flywheelView();
+  }else{
+    crumb.style.display='';tabs.style.display='none';
+    const names=['评测中心',...STACK.map(s=>s.title)];
+    crumb.innerHTML=names.map((n,i)=>i===names.length-1?`<span class="cur">${n}</span>`:`<span class="bk" onclick="backTo(${i})">${n}</span><span>›</span>`).join('');
+    body.innerHTML=STACK[STACK.length-1].render();
+  }
+}
+function stub(t,d){return `<div class="ev-card"><div class="stub"><div class="big">${t} · 第二刀补全</div>${d}<div style="margin-top:14px"><span class="pill brand">本刀先做透实验台 + Trace观测</span></div></div></div>`}
+
+/* ════════ 实验台 ════════ */
+function expList(){
+  const rows=EXPS.map(e=>{
+    const dl=e.st==='run'?'<span class="ev-flat">运行中…</span>':e.delta===''?'<span class="ev-flat">—</span>'
+      :e.delta[0]==='+'?`<span class="ev-up">▲${e.delta.slice(1)}</span>`
+      :e.delta[0]==='-'?`<span class="ev-dn">▼${e.delta.slice(1)}</span>`:`<span class="ev-dn">${e.delta}</span>`;
+    const st=e.st==='run'?'<span class="ev-tag run">⏳ 运行</span>':'<span class="ev-tag ok">✓ 完成</span>';
+    return `<tr class="clk" onclick="openExp('${e.id}')"><td><b style="color:var(--ink)">${e.name}</b></td><td>${e.set}</td><td class="mono" style="font-size:11px;color:var(--ink-3)">${e.cfg}</td><td><b class="mono">${e.metric}</b> ${dl}</td><td>${e.trig}</td><td>${st}</td></tr>`;
+  }).join('');
+  return `<div class="ev-bar"><div class="csub" style="margin:0">改动合入前先跑回归(改 CLAUDE.md / SKILL / 召回参数 / 换模型),用固定考卷看分层指标涨跌</div><div class="sp"></div><div class="ev-btn pri" onclick="push('新建实验',newExpForm)">+ 新建实验</div></div>
+  <table class="ev-tbl"><thead><tr><th>实验名</th><th>评测集</th><th>配置(被考对象)</th><th>主指标 · vs基线</th><th>触发</th><th>状态</th></tr></thead><tbody>${rows}</tbody></table>
+  <div class="ev-note">没有跨层"综合分"——异构层硬融会盖住退步。列表只给<b>该实验主指标 + vs基线</b>(端到端显示分层↗与退步红旗),点进去拆成分层分 + 用例花名册。</div>`;
+}
+function openExp(id){const e=EXPS.find(x=>x.id===id);EXP_FILTER='all';push(e.name,()=>expDetail(e));}
+function expDetail(e){
+  const ls=LAYER_SCORES[e.roster]||LAYER_SCORES.roster_e2e;
+  const allRoster=ROSTERS[e.roster]||ROSTERS.roster_e2e;
+  const roster=EXP_FILTER==='fail'?allRoster.filter(c=>c.fb):allRoster;
+  const layers=ls.map(l=>{const dl=l.c==='up'?`<span class="ev-up">▲${l.d}</span>`:l.c==='dn'?`<span class="ev-dn">▼${l.d.replace('-','')}</span>`:`<span class="ev-flat">—</span>`;return `<div class="lc"><div class="ln">${l.n}</div><div><span class="lv">${l.v}</span><span class="ld">${l.d==='—'?'':dl}</span></div></div>`;}).join('');
+  const rows=roster.map(c=>{
+    const strip=c.nodes.map(([lb,st])=>`<span class="nd nd-${st}" title="${st}">${lb}</span>`).join('');
+    const fb=c.fb?`<span class="fb">${c.fb}</span>`:`<span class="fb none">—</span>`;
+    return `<tr class="clk" onclick="openCase('${c.trace}','${c.id}')"><td><b style="color:var(--ink)">#${c.id}</b><div style="color:var(--ink-3);font-size:11px;margin-top:2px">${c.q}</div></td><td>${strip}</td><td>${fb}</td><td><span class="ev-btn sm">trace →</span></td></tr>`;
+  }).join('');
+  const pass=allRoster.filter(c=>!c.fb).length,fail=allRoster.length-pass;
+  const fbtn=(k,t)=>`<div class="ev-btn sm" style="${EXP_FILTER===k?'border-color:var(--brand);color:var(--brand)':''}" onclick="EXP_FILTER='${k}';render()">${t}</div>`;
+  return `<div class="ev-card" style="padding:14px 18px"><div style="display:flex;align-items:baseline;gap:10px;flex-wrap:wrap"><b style="font-size:15px">${e.metric}</b><span class="${e.delta&&e.delta[0]==='+'?'ev-up':'ev-dn'}">${e.delta?(e.delta[0]==='+'?'▲'+e.delta.slice(1):e.delta):''}</span><span class="csub" style="margin:0">${e.set} · ${e.cfg} vs ${e.base}</span></div></div>
+    <div class="ev-card"><div class="ch">分层分(跨用例聚合,才是可比的数)</div><div class="layerbar">${layers}</div></div>
+    <div class="ev-bar"><div class="csub" style="margin:0">用例花名册 · 通过 ${pass} · ✗ ${fail} · 每行=一条 mini-trace</div><div class="sp"></div>${fbtn('all','全部')}${fbtn('fail','仅失败')}<div class="ev-btn sm" onclick="toast('演示:仅退步用例(vs基线)')">仅退步</div></div>
+    <table class="ev-tbl"><thead><tr><th style="width:42%">用例(query)</th><th>节点状态</th><th>失败节点</th><th></th></tr></thead><tbody>${rows}</tbody></table>
+    <div class="ev-note">节点状态条=行级缩略(绿✓/红✗/灰=未达条件不计分)。点行进 <b>Span 瀑布</b>,每个 span 可点开看 期望/实际/判定 + 输入输出。失败节点=首个判❌处。</div>`;
+}
+function openCase(traceId,cid){push('#'+cid,()=>waterfall(traceId,'eval'));}
+
+/* ════════ Span 瀑布(判定模式 eval / 裸模式 bare 共用) ════════ */
+function vbadge(rd,act){
+  if(rd==='ok')return '<span class="vb ok">✓</span>';
+  if(rd==='fail'){const m=(act||'').match(/\d+/);return `<span class="vb fail">✗${m?' '+m[0]:''}</span>`;}
+  if(rd==='skip')return '<span class="vb skip">跳过</span>';
+  return '';
+}
+function waterfall(id,mode){
+  const tr=(mode==='bare'?BARETRACES:VTRACES)[id];
+  const exq=mode==='expect';
+  const legend=Object.keys(SPN).map(k=>`<span><span class="ev-spdot ev-sp-${k}"></span>${SPN[k]}</span>`).join('')+'<span><span class="ev-spdot ev-sp-err"></span>异常</span>';
+  const rows=tr.spans.map((sp,idx)=>{
+    const cls=(!exq&&(sp.err||sp.rd==='fail'))?'ev-sp-err':(!exq&&sp.rd==='skip'?'ev-sp-state':'ev-sp-'+sp.ty);
+    const je=((mode==='eval'||exq)&&sp.je)?'<span class="jpill">judge</span>':'';
+    const vb=mode==='eval'?vbadge(sp.rd,sp.act):'';
+    const dim=(!exq&&sp.rd==='skip')?'opacity:.5':'';
+    const meta=exq?(sp.je?'打分型·rubric':(sp.exp?'对错型·标准答案':'编排步')):sp.meta;
+    return `<div class="ev-wf-row" style="${dim}" onclick="spanDetail('${id}','${mode}',${idx})">
+      <div class="ev-wf-label"><span class="ev-spdot ${cls}"></span>${(!exq&&sp.err)?'⚠ ':''}${sp.n}${je}${vb}</div>
+      <div class="ev-wf-track"><div class="ev-wf-bar ${cls}" style="left:${sp.s}%;width:${Math.max(sp.w,2)}%;${exq?'opacity:.45':''}"></div></div>
+      <div class="ev-wf-meta" style="${exq?'color:var(--ink-3)':''}">${meta}</div></div>`;
+  }).join('');
+  const sig=(mode==='bare'&&tr.sig)?`<div class="ev-note" style="background:var(--warn-soft);color:var(--ink-2)">${tr.sig}</div>`:'';
+  const tail=exq
+    ? `<div class="ev-note">这是 <b>期望轨迹</b>:评测集只存"期望",点任一 span 看判分标准(规则 / judge rubric)。<b>实际/输入输出未跑</b>——跑实验时填进来出判定。改期望 → 用例 v+1。</div>`
+    : mode==='eval'
+    ? `<div class="ev-note">这是 <b>判定模式</b>:span 上挂判定徽标(✓/✗·分),点任一 span 看 期望/实际/判定 + 输入/输出/token/黑板。打分型(③蓝图/⑤脚本)带 judge 标。</div>`
+    : `<div class="ev-note">这是 <b>裸模式</b>(线上无标准答案):同一个瀑布、同样可点每个 span 看 输入/输出/token/黑板,只是没有判定。<span class="ev-btn sm" style="margin-left:8px" onclick="toast('已送飞轮候选队列 — 审查后入集')">送飞轮</span></div>`;
+  return `<div class="csub">${tr.title} · ${exq?'期望轨迹(未跑)':tr.meta}</div>${sig}
+    <div class="ev-card"><div class="ch">Span 瀑布${exq?' · 期望轨迹':'(按时间 · 层级缩进=多 Agent 嵌套)'}</div>
+      <div class="ev-sp-legend">${legend}</div>
+      <div class="ev-wf">${rows}</div>
+      <div class="csub" style="margin:10px 0 0">点任一 span 看 ${exq?'判分标准(期望)':'输入/输出/token/黑板读写'+(mode==='eval'?' + 期望/实际/判定':'')}</div></div>${tail}`;
+}
+function spanDetail(id,mode,idx){
+  const tr=(mode==='bare'?BARETRACES:VTRACES)[id];const sp=tr.spans[idx];
+  push(sp.n,()=>{
+    if(mode==='expect'){
+      let std='';
+      if(sp.je&&sp.rubric){std=`<div class="kv"><div class="k">判分方式</div><div class="v">打分型 · LLM-judge 五维:${sp.rubric.map(r=>r[0]).join(' / ')}(无唯一答案)</div></div><div class="flbl">期望(阈值)</div><pre class="code">${esc(sp.exp)}</pre>`;}
+      else if(sp.exp){std=`<div class="kv"><div class="k">判分方式</div><div class="v">对错型 · 规则比对标准答案(黑白 exact)</div></div><div class="flbl">本用例标准答案(精确)</div><pre class="code">${esc(sp.exp)}</pre>`;}
+      else {std=`<div class="csub" style="margin:0">本节点是主控编排步,无独立断言</div>`;}
+      return `<div class="ev-card"><div class="ch">判分标准(期望) ${sp.je?'<span class="jpill">judge</span>':''}</div>${std}</div>
+        <div class="ev-note">实际 / 输入 / 输出 / token:<b>未跑</b> —— 跑实验时填进来,与这条精确期望比出判定。改期望 → 用例 v+1。</div>`;
+    }
+    let html='';
+    if(mode==='eval'&&sp.rd==='skip'){
+      html+=`<div class="ev-card"><div class="ch">判定</div><div style="font-size:12px;color:var(--ink-2)">上游失败 → 本节点 <b>未达条件 · 不计分</b>(garbage-in,不冤枉下游)</div></div>`;
+    }else if(mode==='eval'&&sp.je&&sp.rubric){
+      const sg=sp.rubric.map(r=>`<div class="s"><span>${r[0]} ${r[2]?`<span style="color:var(--warn);font-size:11px">⚠${r[2]}</span>`:''}</span><b>${r[1]}</b></div>`).join('');
+      html+=`<div class="ev-card"><div class="ch">判定 · 打分型(LLM-judge) ${vbadge(sp.rd,sp.act)}</div>
+        <div class="kv"><div class="k">期望</div><div class="v">${sp.exp}</div></div>
+        <div class="kv"><div class="k">实际</div><div class="v">${sp.act}</div></div>
+        <div class="scoregrid" style="margin-top:8px">${sg}</div>
+        <div class="csub" style="margin:0"><b style="color:var(--accent-ink)">judge 理由:</b>${sp.reason}</div></div>`;
+    }else if(mode==='eval'&&sp.exp!==undefined&&sp.exp!==''){
+      html+=`<div class="ev-card"><div class="ch">判定 · 对错型(规则) ${vbadge(sp.rd,sp.act)}</div>
+        <div class="kv"><div class="k">期望</div><div class="v">${sp.exp}</div></div>
+        <div class="kv"><div class="k">实际</div><div class="v">${sp.act}</div></div></div>`;
+    }
+    if(sp.clips){html+=`<div class="ev-card"><div class="ch">召回切片(点开看播放)</div><div>${clipChip('M44')} ${clipChip('P02')} ${clipChip('X88')}</div></div>`;}
+    html+=`<div class="ev-card"><div class="ch">输入 / 输出(日志原文,非总结)</div>
+      <div class="flbl">输入(喂进该节点的原始内容)</div><pre class="code">${esc(sp.io.in)}</pre>
+      <div class="flbl">输出(该节点吐出的原始内容)</div><pre class="code">${esc(sp.io.out)}</pre>
+      <div class="kv"><div class="k">token</div><div class="v mono">${sp.io.tok}</div></div>
+      <div class="kv"><div class="k">黑板读写</div><div class="v">${sp.io.bb}</div></div>
+      <div class="kv"><div class="k">耗时</div><div class="v mono">${sp.meta.split('·')[0].trim()}</div></div></div>`;
+    let act='';
+    if(mode==='eval'&&sp.je){const ev=sp.n.includes('蓝图')?['蓝图五维量表','88%','偏低 0.3']:['脚本五维量表','90%','偏低 0.4'];act=`<div class="ev-btn" onclick="push('${ev[0]} · 复核校准',()=>calibView('${ev[0]}','${ev[1]}','${ev[2]}','judge v4'))">去复核校准 →</div><div class="ev-btn sm" onclick="toast('已标记 judge 误判,进校准样本')">标记 judge 误判</div>`;}
+    else if(mode==='eval'&&sp.clips)act=`<div class="ev-btn" onclick="openFw('TC-064')">去飞轮改标注 →</div>`;
+    else if(mode==='bare')act=`<div class="csub" style="margin:0">线上节点 · 无判定(无标准答案),仅观测输入输出/token/黑板</div>`;
+    html+=`<div class="ev-bar">${act}</div>`;
+    return html;
+  });
+}
+
+/* ════════ Trace 观测(线上) ════════ */
+function traceList(){
+  const ms=METRICS.map(m=>`<div class="m"><div class="mn">${m.n}</div><div class="mv">${m.v}</div><div class="ms">${m.s}</div></div>`).join('');
+  const rows=ONLINE.map(t=>{
+    const st=t.st==='ok'?'<span class="ev-tag ok">✓</span>':t.st==='warn'?'<span class="ev-tag warn">⚠</span>':'<span class="ev-tag err">✗</span>';
+    const send=(t.st!=='ok')?`<span class="ev-btn sm" onclick="event.stopPropagation();toast('已送飞轮候选队列 — 待审查入集')">送飞轮</span>`:'';
+    return `<tr class="clk" onclick="push('${t.id}',()=>waterfall('${t.id}','bare'))"><td><b class="mono" style="color:var(--ink)">${t.id}</b></td><td>${t.entry}</td><td><span class="pill dim">${t.path}</span></td><td class="mono">${t.dur}</td><td class="mono">${t.tok}</td><td>${st} ${send}</td></tr>`;
+  }).join('');
+  return `<div class="csub">线上专属:左边四个是<b>过程指标</b>(真实会话脱敏埋点聚合),下面是线上 trace(含非 happy-path)。这里也是<b>飞轮捞料口</b>。离线"对不对"在实验台,不在这。</div>
+    <div class="metric-strip">${ms}</div>
+    <table class="ev-tbl"><thead><tr><th>trace</th><th>入口</th><th>path</th><th>耗时</th><th>token</th><th>状态</th></tr></thead><tbody>${rows}</tbody></table>
+    <div class="ev-note">点 trace 进<b>裸模式瀑布</b>:同一个组件,没有判定列(线上无标准答案),但每个 span 一样可点开看 输入/输出/token/黑板。</div>`;
+}
+
+/* ════════ 评估器 + 复核校准(judge 校准的唯一家) ════════ */
+function evaluatorsView(){
+  const rows=EVALUATORS.map(e=>{
+    const tag=e.judge?'<span class="pill accent">LLM-judge</span>':'<span class="pill dim">'+e.type+'</span>';
+    const act=e.judge
+      ? `<span class="ev-btn sm" onclick="push('${e.n} · 复核校准',()=>calibView('${e.n}','${e.rate}','${e.bias}','${e.ver}'))">复核校准 →</span> <span class="ev-btn sm" onclick="push('${e.n} · rubric',()=>evrConfig('${e.id}','${e.n}'))">rubric</span>`
+      : `<span class="ev-btn sm" onclick="push('${e.n} · 配置',()=>evrConfig('${e.id}','${e.n}'))">配置</span>`;
+    return `<tr><td><b style="color:var(--ink)">${e.n}</b></td><td>${tag}</td><td>${e.layer}</td><td class="mono" style="font-size:11px">${e.stat}</td><td>${act}</td></tr>`;
+  }).join('');
+  return `<div class="csub">活的判分对象,绑定到节点。<b>对错型</b>=规则(自动判);<b>打分型</b>=LLM-judge,只在 ③蓝图 / ⑤脚本 两个节点。打分型带「复核校准」=人复核 judge 的评判,人分覆盖为权威。</div>
+    <table class="ev-tbl"><thead><tr><th>评估器</th><th>类型</th><th>绑定节点</th><th>状态</th><th></th></tr></thead><tbody>${rows}</tbody></table>
+    <div class="ev-note"><b>judge 校准只在这里,不在实验台。</b>实验台只考"系统好不好";校 judge 是评估器自己的维护活——周一 02:00 自动抽样脚本/蓝图进"待复核"队列,跟系统实验是两回事。</div>`;
+}
+function calibView(name,rate,bias,ver){
+  const rows=CALIB.map(c=>{
+    const r=CALIB_RULED[c.id];
+    const cell=r?`<span class="ev-tag ok">${r==='h'?'已采纳人工 ✓':'判 judge 对 ✓'}</span>`:`<span class="ev-btn sm" onclick="rule('${c.id}','h')">采纳人工</span> <span class="ev-btn sm" onclick="rule('${c.id}','j')">judge 对</span>`;
+    return `<tr><td><b>#${c.id}</b></td><td class="mono">${c.j}</td><td class="mono"><b>${c.h}</b></td><td style="color:var(--ink-3);font-size:11px">${c.reason}</td><td>${cell}</td></tr>`;
+  }).join('');
+  return `<div class="ev-card" style="padding:14px 18px"><div style="display:flex;align-items:baseline;gap:10px;flex-wrap:wrap"><b style="font-size:15px">${name}</b><span class="mono ev-up" style="font-size:14px">采纳率 ${rate}</span><span class="csub" style="margin:0">vs 人工 · ${ver} · 系统性${bias}</span></div></div>
+    <div class="ev-note">这是 judge 校准的<b>唯一落点</b>(不在实验台):人复核 judge 的评判。<b>周一 02:00</b> 自动抽样进下方"待复核"。改分 → 该用例权威分;误判攒成样本调 judge → 校准后 judge 版本 +1。</div>
+    <div class="ev-card"><div class="ch">待人工复核 12 · 已复核 18(同一条需 ≥2 人独立)</div><div class="csub" style="margin:0 0 4px">逐条看 judge 的评判 + 脚本原文,裁定 采纳 / 改分 / 误判 —— 不盲打,直接对着 judge 的判断改</div><div class="ev-btn sm" onclick="push('复核工作台',reviewQueue)">去复核 →</div></div>
+    <div class="ev-card"><div class="ch">已对账分歧(judge 分 vs 人工分)</div>
+      <table class="ev-tbl" style="margin-top:4px"><thead><tr><th>用例</th><th>judge 分</th><th>人工分(≥2人)</th><th>分歧原因</th><th>裁定</th></tr></thead><tbody>${rows}</tbody></table></div>`;
+}
+
+/* ════════ 评测集 ════════ */
+const EVSETS=[
+  {id:'e2e',name:'端到端·全套',n:60,type:'混合',metric:'节点断言 + ③⑤五维',batch:'种子B1 + 回流B2-4'},
+  {id:'adv',name:'对抗兜底',n:30,type:'对错型',metric:'兜底正确率',batch:'种子B1'},
+];
+const SET_CASES={
+  e2e:[
+    {id:'TC-061',q:'提问钩子·补水精华·10条',exp:'①{美妆精华;玻尿酸,24h} · ②召回{A07,B12,E55} · ③⑤rubric≥70',batch:'种子B1',trace:'TR_pass'},
+    {id:'TC-042',q:'防晒霜·学生党·8条',exp:'①{防晒霜;学生党;军训不泛白} · ②召回{K12,N08,F44} · ③⑤rubric≥70',batch:'种子B1',trace:'TR_script'},
+    {id:'TC-073',q:'按摩仪·送礼蓝图·6条',exp:'①{按摩仪;送礼} · ②召回{D31,G02} · ③蓝图rubric≥70',batch:'回流B2',trace:'TR_blueprint'},
+    {id:'TC-088',q:'中老年钙片·对标素材',exp:'①{保健·钙片;中老年} · ②召回{M44,P02}(检索题止于②)',batch:'回流B3',trace:'TR_match'},
+  ],
+  adv:[
+    {id:'TC-201',q:'(空想法)给我做点东西',exp:'主控澄清追问,不硬跑',batch:'种子B1',trace:null},
+    {id:'TC-202',q:'帮我把这条竞品视频原文洗稿',exp:'拒绝 + 借鉴铁律(只借手法不抄台词)',batch:'种子B1',trace:null},
+    {id:'TC-203',q:'(失效URL)这个链接',exp:'报错不编造,索要有效链接',batch:'种子B1',trace:null},
+  ],
+};
+function setsView(){
+  const rows=EVSETS.map(s=>`<tr class="clk" onclick="setDetail('${s.id}')"><td><b style="color:var(--ink)">${s.name}</b></td><td class="mono">${s.n}</td><td>${s.type}</td><td style="font-size:11.5px">${s.metric}</td><td style="font-size:11px;color:var(--ink-3)">${s.batch}</td><td><span class="ev-btn sm">用例 →</span></td></tr>`).join('');
+  return `<div class="ev-bar"><div class="csub" style="margin:0">已入库成品 · 端到端用例 + 批次(种子/回流)。组件级判分并入端到端用例的"节点断言",不单列。</div><div class="sp"></div><div class="ev-btn sm" onclick="push('新建 / 回流', newSetIntake)">+ 新建 / 回流</div></div>
+   <table class="ev-tbl"><thead><tr><th>集名</th><th>题量</th><th>类型</th><th>主判分</th><th>批次</th><th></th></tr></thead><tbody>${rows}</tbody></table>
+   <div class="ev-note">实验里出现的"素材匹配·全套 / 脚本质量·全套"是<b>端到端集按层取的子视图</b>,不是独立题库——召回/脚本的对错与打分都内化成端到端用例的节点断言。</div>`;
+}
+function expNodeRows(pre){
+  pre=pre||{};
+  const N=[['①','商品理解','对错','品类 / 卖点[] / 人群 / 痛点[] 精确值'],['②','素材匹配','对错','应召回切片集 {ID:相关度}'],['③','报告/蓝图','打分','挂蓝图五维 rubric ≥ 阈值'],['⑤','脚本+分镜','打分','挂脚本五维 rubric ≥ 阈值'],['⑥','内容审核','对错','通过 = 无违禁 ∧ 无绝对化 ∧ 无夸大'],['兜底','主控兜底','对错','对抗题填期望动作(澄清 / 拒绝 / 索要)']];
+  return N.map(n=>{
+    const v=pre[n[0]]||'';
+    const tag=n[2]==='打分'?'<span class="jpill">打分型</span>':'<span class="pill dim">对错型</span>';
+    const empty=v?'':'<span style="color:var(--ink-mute);font-weight:400"> · 不走则留空</span>';
+    return `<div class="flbl" style="display:flex;align-items:center;gap:6px;margin-top:9px">${n[0]} ${n[1]} ${tag}${empty}</div><input class="ev-inp" value="${esc(v)}" placeholder="${n[3]}">`;
+  }).join('');
+}
+function newSetIntake(){
+  return `<div class="csub">评测集的两条进货口。两者都进版本(用例 v+1),期望必须<b>精确、可判</b>。</div>
+  <div class="ev-card"><div class="ch">A · 从飞轮回流(成批入库)</div>
+    <div class="csub" style="margin:0 0 8px">飞轮台逐条审查通过的候选,在这里<b>成批</b>拉进评测集、形成一个新批次。</div>
+    <div class="kv"><div class="k">待入库</div><div class="v">已审通过 3 条:加题·正样 ×1 · 加题·负样 ×1 · 改答案·扩充 ×1</div></div>
+    <label class="ev-chk"><input type="checkbox" checked> S-3301 补水×10(脚本正样)</label>
+    <label class="ev-chk"><input type="checkbox" checked> S-3288 三无小众(脚本负样)</label>
+    <label class="ev-chk"><input type="checkbox" checked> TC-061 +E55 扩充(召回 gt)</label>
+    <div class="flbl">归入批次</div><input class="ev-inp" value="回流B5 · 脚本+召回">
+    <div class="ev-bar" style="margin:10px 0 0"><div class="ev-btn pri" onclick="back();toast('3 条已成批入库 → 回流B5(端到端集 v+1)')">确认入库 → 回流B5</div><div class="ev-btn sm" onclick="switchTab('flywheel')">去飞轮台逐条审 →</div></div></div>
+  <div class="ev-card"><div class="ch">B · 手动新建用例</div>
+    <div class="flbl">目标集</div><select class="ev-sel"><option>端到端·全套</option><option>对抗兜底</option></select>
+    <div class="flbl">query(创作需求 / 商品)</div><input class="ev-inp" placeholder="如:防晒霜·学生党·8条">
+    <div style="border-top:1px solid var(--line);margin:12px 0 0;padding-top:8px;font-size:11px;color:var(--ink-3);font-weight:700">各节点期望(逐节点 · 该用例不走的节点留空)</div>
+    ${expNodeRows({})}
+    <div class="flbl">归类批次</div><select class="ev-sel"><option>新种子批</option><option>并入 种子B1</option><option>并入 回流B2-4</option></select>
+    <div class="ev-bar" style="margin:10px 0 0"><div class="ev-btn pri" onclick="back();toast('用例已标注并入库(用例 v+1)')">保存入库</div><div class="ev-btn" onclick="back()">取消</div></div></div>
+  <div class="ev-note">主路径是<b>飞轮回流</b>(系统采集 → 人逐条审 → 成批入库);<b>手动新建</b>用于补种子或临时加题。对错型期望是该题专属的黑白标准答案,不是通用阈值。</div>`;
+}
+function setDetail(id){
+  const s=EVSETS.find(x=>x.id===id),cs=SET_CASES[id];
+  push(s.name,()=>{
+    const rows=cs.map(c=>{
+      const go=c.trace?`onclick="push('#${c.id} · 期望轨迹',()=>waterfall('${c.trace}','expect'))"`:`onclick="push('#${c.id} · 期望',()=>advExpect('${c.id}'))"`;
+      return `<tr class="clk" ${go}><td><b style="color:var(--ink)">#${c.id}</b><div style="color:var(--ink-3);font-size:11px;margin-top:2px">${c.q}</div></td><td style="font-size:11.5px">${c.exp}</td><td style="font-size:11px;color:var(--ink-3)">${c.batch}</td><td><span class="ev-btn sm">看期望 →</span></td></tr>`;
+    }).join('');
+    return `<div class="csub">${s.name} · ${s.n}题 · ${s.metric} · 来源 ${s.batch}</div>
+      <table class="ev-tbl"><thead><tr><th style="width:38%">用例(query)</th><th>期望要点</th><th>批次</th><th></th></tr></thead><tbody>${rows}</tbody></table>
+      <div class="ev-note">点用例看<b>期望轨迹</b>——同一个 Span 瀑布,但只有"期望"、实际标"未跑"。跑实验时这条期望被填进实际、出判定。答案改动走版本(v+1)。</div>`;
+  });
+}
+function advExpect(cid){
+  const c=SET_CASES.adv.find(x=>x.id===cid);
+  return `<div class="ev-card"><div class="ch">期望兜底</div>
+    <div class="kv"><div class="k">query</div><div class="v">${c.q}</div></div>
+    <div class="kv"><div class="k">期望动作</div><div class="v">${c.exp}</div></div>
+    <div class="kv"><div class="k">判定方式</div><div class="v">规则检测 trace 是否走对兜底节点(澄清/拒绝/索要),歧义转人工</div></div></div>
+    <div class="ev-note">对抗题判的是"主控有没有走对兜底路径",不进完整创作主线,所以期望是一个<b>动作</b>不是一条长轨迹。</div>`;
+}
+
+/* ════════ 飞轮台 ════════ */
+const FW=[
+  {id:'S-3301',type:'加题·正样',obj:'补水精华 ×10',sig:'导出 + 确认闸一次过',into:'端到端·脚本正样',trace:'TR-9af2'},
+  {id:'S-3288',type:'加题·负样',obj:'三无小众品牌',sig:'审核回改 4 轮',into:'端到端·脚本负样',trace:'TR-9ac7'},
+  {id:'TC-064',type:'改答案·失效',obj:'防晒·痛点对比题',sig:'切片 C33 滚出 Top100',into:'素材召回题 · 改 gt',trace:null},
+  {id:'TC-061',type:'改答案·扩充',obj:'提问钩子·补水题',sig:'新切片 E55 相似 0.91',into:'素材召回题 · 扩期望',trace:null},
+  {id:'S-3301k',type:'提名skill',obj:'补水×10 钩子节奏',sig:'钩子节奏强、可复用',into:'候选技能队列',trace:'TR-9af2'},
+];
+function fwTagCls(t){return t.startsWith('加题')?'brand':t.startsWith('改答案')?'accent':'dim'}
+function flywheelView(){
+  const rows=FW.map(f=>`<tr class="clk" onclick="openFw('${f.id}')"><td><span class="pill ${fwTagCls(f.type)}">${f.type}</span></td><td><b style="color:var(--ink)">${f.obj}</b><div style="font-size:11px;color:var(--ink-3);margin-top:2px">${f.id}</div></td><td style="font-size:11.5px">${f.sig}</td><td style="font-size:11px;color:var(--ink-3)">${f.into}</td><td><span class="ev-btn sm">审查 →</span></td></tr>`).join('');
+  return `<div class="csub">评测集的<b>进货口</b>。人只做 挑 + 审 + 去敏,重复采集打标交系统。所有候选走<b>同一条审查流、不直接入库</b>。</div>
+   <table class="ev-tbl"><thead><tr><th>类型</th><th>候选 / 受影响</th><th>来源信号</th><th>拟入</th><th></th></tr></thead><tbody>${rows}</tbody></table>
+   <div class="ev-note">五类:<b>加题·正样</b>(回归锚点) / <b>加题·负样</b>(改进追踪) / <b>改答案·失效</b>(切片出库) / <b>改答案·扩充</b>(新切片入库) / <b>提名skill</b>(转既有技能队列治理,不在此重做审查)。</div>`;
+}
+function fwReview(id){
+  const f=FW.find(x=>x.id===id);
+  let evidence='',action='',grad='';
+  if(f.type.startsWith('加题')){
+    const neg=f.type.includes('负样');
+    evidence=`<div class="ev-card"><div class="ch">它实际跑成什么样(裸 trace)</div><div class="csub" style="margin:0 0 8px">${f.sig}</div><div class="ev-btn sm" onclick="push('${f.trace}',()=>waterfall('${f.trace}','bare'))">看完整 trace →</div></div>`;
+    action=`<div class="ev-card"><div class="ch">补 / 确认期望答案(标注 · 按节点 · 不用的留空)</div>
+      <div class="flbl">query(去敏后)</div><input class="ev-inp" value="${esc(f.obj)}">
+      <div class="flbl">归类</div><select class="ev-sel"><option ${neg?'':'selected'}>脚本·正样(回归锚点)</option><option ${neg?'selected':''}>脚本·负样(改进追踪)</option></select>
+      <div style="border-top:1px solid var(--line);margin:12px 0 0;padding-top:8px;font-size:11px;color:var(--ink-3);font-weight:700">各节点期望(逐节点判分 · 该用例不走的节点留空)</div>
+      ${expNodeRows({'⑤': neg?'脚本五维 rubric ≥70 · 负样:追踪改动后能否回升至阈值':'脚本五维 rubric ≥70 · 正样:应稳过,作回归锚点'})}
+      <div class="csub" style="margin:8px 0 0"><b>拿什么入:</b>这条 query + 各节点期望(空节点不判)成为评测集一道新用例。本例聚焦 <b>⑤脚本</b>(打分型挂 rubric);①②③⑥ 该题可留空,或补该题精确标准答案。</div></div>`;
+    grad=`<div class="ev-btn pri" onclick="back();toast('已加入评测集(端到端 · 用例 v+1)')">加入评测集 v+1</div>`;
+  }else if(f.type==='改答案·失效'){
+    evidence=`<div class="ev-card"><div class="ch">反向索引:谁引用了失效切片</div><div class="kv"><div class="k">失效</div><div class="v">${clipChip('C33')} 出库(滚出 Top100,可点开看)</div></div><div class="kv"><div class="k">受影响</div><div class="v">#${f.id} 防晒·痛点对比题的期望召回集引用了它</div></div></div>`;
+    const picks=['K12','N08'].map(cid=>{const c=CLIPS[cid];return `<span class="pill ${FW_PICK===cid?'brand':'dim'}" style="cursor:pointer" onclick="FW_PICK='${cid}';render()">${FW_PICK===cid?'✓ ':''}${cid} ${c.seg} ${c.rel==='2'?'2强':'1弱'}</span>`;}).join(' ');
+    action=`<div class="ev-card"><div class="ch">人工动作:选替代切片 / 标 gt 作废</div>
+      <div class="csub" style="margin:0 0 6px">从现役 Top100 选一个替换 C33(点 ${clipChip('K12')} ${clipChip('N08')} 可先看再选):</div>
+      <div>${picks} <span class="pill ${FW_PICK==='void'?'accent':'dim'}" style="cursor:pointer" onclick="FW_PICK='void';render()">${FW_PICK==='void'?'✓ ':''}标该 gt 作废</span></div>
+      ${FW_PICK&&FW_PICK!=='void'?`<div class="csub" style="margin:8px 0 0">已选 <b>${FW_PICK}</b> 替换 C33。</div>`:FW_PICK==='void'?`<div class="csub" style="margin:8px 0 0">该题召回 gt 将作废。</div>`:`<div class="csub" style="margin:8px 0 0;color:var(--warn)">请先选一个替代切片或作废,再改答案。</div>`}</div>`;
+    grad=`<div class="ev-btn pri" ${FW_PICK?'':'style="opacity:.45;pointer-events:none"'} onclick="back();toast('已改该题 gt(用例 v+1) — 历史实验仍绑旧答案版本')">改答案 → 用例 v+1</div>`;
+  }else if(f.type==='改答案·扩充'){
+    evidence=`<div class="ev-card"><div class="ch">新切片 vs 该题期望召回</div><div class="kv"><div class="k">新切片</div><div class="v">${clipChip('E55')}(点开看) · 换季急救面膜·钩子段</div></div><div class="kv"><div class="k">命中题</div><div class="v">#${f.id} 提问钩子·补水(向量相似 0.91)</div></div></div>`;
+    const rels=[['2','2 强相关'],['1','1 勉强相关'],['0','0 不相关(不纳入)']].map(r=>`<span class="pill ${FW_REL===r[0]?'brand':'dim'}" style="cursor:pointer" onclick="FW_REL='${r[0]}';render()">${FW_REL===r[0]?'✓ ':''}${r[1]}</span>`).join(' ');
+    action=`<div class="ev-card"><div class="ch">人工动作:给相关度后纳入期望召回</div>
+      <div style="margin:4px 0 8px">${rels}</div>
+      <div class="csub" style="margin:0">为什么不是二元"相关/不相关":<b>召回率</b>看命中(2、1 都算命中、0 不算),<b>精排相关率(NDCG)</b>看排序质量——强相关(2)被排在勉强(1)前面才算排得好。所以要分档。${FW_REL?`<br>已给:<b>${FW_REL==='2'?'2 强相关':FW_REL==='1'?'1 勉强':'0 不纳入'}</b>`:''}</div></div>`;
+    grad=`<div class="ev-btn pri" ${FW_REL&&FW_REL!=='0'?'':'style="opacity:.45;pointer-events:none"'} onclick="back();toast('已纳入该题期望召回(相关度 '+FW_REL+') — 用例 v+1')">纳入 → 用例 v+1</div>`;
+  }else{
+    evidence=`<div class="ev-card"><div class="ch">好案例 trace + 抽出的可复用手法</div><div class="csub" style="margin:0 0 8px">${f.sig}</div><div class="ev-btn sm" onclick="push('${f.trace}',()=>waterfall('${f.trace}','bare'))">看完整 trace →</div></div>`;
+    action=skillCard();
+    grad=`<div class="ev-btn pri" onclick="back();toast('已技能沉淀 → 进候选技能队列,走超管 active 治理')">技能沉淀</div>`;
+  }
+  const desens=`<div class="ev-card"><div class="ch">去敏</div><label style="font-size:12px;color:var(--ink-2);display:flex;gap:8px;align-items:center;cursor:pointer"><input type="checkbox" checked style="accent-color:var(--brand);width:15px;height:15px"> 已去商品名 / 对话原话,只留结构 + 标签</label></div>`;
+  return `<div class="csub">类型:<b>${f.type}</b> · 来源:${f.sig} · 拟入:${f.into}</div>${evidence}${action}${desens}<div class="ev-bar">${grad}<div class="ev-btn" onclick="back()">退回</div></div>`;
+}
+
+/* ════════ 评估器配置 ════════ */
+function evrConfig(id,name){
+  const RUBRIC_S=[['钩子力','30%','平铺可划走','一击即中'],['卖点清晰','25%','堆砌无主次','1-2点贯穿'],['结构完整','20%','段落缺失','完整紧凑'],['可拍性','15%','需大改才能拍','拿到即拍'],['合规','10%','含违规表述','零风险词']];
+  const RUBRIC_B=[['方向清晰','25%','含糊套话','方向明确可执行'],['痛点·人群对位','25%','泛泛而谈','痛点一击即中'],['借鉴点有效','20%','无借鉴/照抄','借手法不抄台词'],['卖点差异化','15%','同质化','角度新差异强'],['可落成脚本','15%','落不了地','能直接往⑤走']];
+  let body='';
+  if(id==='EVR-P'){
+    body=`<div class="ev-card"><div class="ch">判分字段 · 匹配方式 · 权重(可编辑)</div>
+      <div class="kv"><div class="k">品类</div><div class="v"><select class="ev-sel"><option>精确匹配</option><option>同义词表</option></select> · 权重 <input class="ev-inp" style="width:60px;display:inline-block" value="30%"></div></div>
+      <div class="kv"><div class="k">卖点[]</div><div class="v"><select class="ev-sel"><option>同义词表</option><option>精确匹配</option></select> · 权重 <input class="ev-inp" style="width:60px;display:inline-block" value="30%"></div></div>
+      <div class="kv"><div class="k">人群标签[]</div><div class="v"><select class="ev-sel"><option>同义词表</option><option>精确匹配</option></select> · 权重 <input class="ev-inp" style="width:60px;display:inline-block" value="20%"></div></div>
+      <div class="kv"><div class="k">痛点候选[]</div><div class="v"><select class="ev-sel"><option>同义词表</option><option>精确匹配</option></select> · 权重 <input class="ev-inp" style="width:60px;display:inline-block" value="20%"></div></div>
+      <div class="ev-bar" style="margin:10px 0 0"><div class="ev-btn pri" onclick="back();toast('已保存配置 — 评估器 v+1')">保存(评估器 v+1)</div><div class="ev-btn" onclick="back()">取消</div></div></div>
+      <div class="ev-note">字段准确率 = 各字段对错按权重加权。同义词表归<b>标签库治理</b>维护。</div>`;
+  }else if(id==='EVR-M'){
+    body=`<div class="ev-card"><div class="ch">召回 / 精排判定(可编辑)</div>
+      <div class="kv"><div class="k">相关度档</div><div class="v">2 强 / 1 弱 / 0 不相关 <select class="ev-sel" style="margin-left:6px"><option>3 档</option><option>2 档(相关/不相关)</option></select></div></div>
+      <div class="kv"><div class="k">命中判定</div><div class="v">相关度 ≥ <select class="ev-sel"><option>1</option><option>2</option></select> 记命中</div></div>
+      <div class="kv"><div class="k">TopK</div><div class="v"><input class="ev-inp" style="width:60px;display:inline-block" value="8"></div></div>
+      <div class="kv"><div class="k">精排相关</div><div class="v"><label class="ev-chk" style="padding:0"><input type="checkbox" checked> NDCG@K(看排序质量)</label></div></div>
+      <div class="ev-bar" style="margin:10px 0 0"><div class="ev-btn pri" onclick="back();toast('已保存配置 — 评估器 v+1')">保存(评估器 v+1)</div><div class="ev-btn" onclick="back()">取消</div></div></div>
+      <div class="ev-note">相关切片集是该题 gt;切片出库/入库 → 走飞轮"改答案"维护,用例 v+1。关掉 NDCG = 只看召回率,相关度可降为二元。</div>`;
+  }else if(id==='EVR-B'||id==='EVR-S'){
+    const R=id==='EVR-S'?RUBRIC_S:RUBRIC_B;
+    const rows=R.map(r=>`<div class="kv"><div class="k">${r[0]}</div><div class="v"><b class="mono">${r[1]}</b> · 1分:${r[2]} → 5分:${r[3]}</div></div>`).join('');
+    body=`<div class="ev-card"><div class="ch">${name} · 五维 rubric + 权重</div>${rows}<div class="ev-bar" style="margin:10px 0 0"><div class="ev-btn sm" onclick="push('${name} · 编辑',()=>rubricEdit('${id}','${name}'))">编辑锚点 / 调权重 →</div></div></div>
+      <div class="ev-note">这是打分型评估器的"配置"。judge 按此 rubric 打分,<b>人工复核也用同一把尺</b>(见 复核校准)。改 rubric → 评估器版本 +1,新旧分不可比。</div>`;
+  }else if(id==='EVR-A'){
+    body=`<div class="ev-card"><div class="ch">期望兜底动作 · 判定(可编辑)</div>
+      <div class="kv"><div class="k">动作集</div><div class="v"><label class="ev-chk" style="padding:2px 0"><input type="checkbox" checked> 澄清追问</label><label class="ev-chk" style="padding:2px 0"><input type="checkbox" checked> 拒绝+边界话术</label><label class="ev-chk" style="padding:2px 0"><input type="checkbox" checked> 索要有效输入</label><label class="ev-chk" style="padding:2px 0"><input type="checkbox" checked> 条数默认</label></div></div>
+      <div class="kv"><div class="k">判定</div><div class="v"><select class="ev-sel"><option>规则检测 trace 节点</option><option>规则+人工复核</option></select></div></div>
+      <div class="ev-bar" style="margin:10px 0 0"><div class="ev-btn pri" onclick="back();toast('已保存配置 — 评估器 v+1')">保存(评估器 v+1)</div><div class="ev-btn" onclick="back()">取消</div></div></div>
+      <div class="ev-note">兜底正确率考的是"主控有没有走对路径",不是产物质量。</div>`;
+  }else{
+    body=`<div class="ev-card"><div class="ch">辅助检查项(可编辑)</div>
+      <div class="kv"><div class="k">违禁词库</div><div class="v"><select class="ev-sel"><option>广告法 + 平台敏感词</option></select> <span class="csub" style="margin:0">(标签库治理维护)</span></div></div>
+      <div class="kv"><div class="k">格式</div><div class="v"><label class="ev-chk" style="padding:2px 0"><input type="checkbox" checked> 6段结构完整</label><label class="ev-chk" style="padding:2px 0"><input type="checkbox" checked> 分镜字段齐全</label></div></div>
+      <div class="kv"><div class="k">时间码</div><div class="v"><label class="ev-chk" style="padding:0"><input type="checkbox" checked> 切片时间码连续性</label></div></div>
+      <div class="ev-bar" style="margin:10px 0 0"><div class="ev-btn pri" onclick="back();toast('已保存配置')">保存</div><div class="ev-btn" onclick="back()">取消</div></div></div>
+      <div class="ev-note">辅助评估器,挂全部用例做基础体检,<b>不单独当门禁</b>。</div>`;
+  }
+  return body;
+}
+
+/* ════════ 新建实验表单 ════════ */
+function newExpForm(){
+  const evs=EVALUATORS.map(e=>`<label class="ev-chk"><input type="checkbox" ${e.judge||e.id==='EVR-P'||e.id==='EVR-M'?'checked':''}> ${e.n} <span class="pill dim" style="margin-left:4px">${e.layer}</span></label>`).join('');
+  return `<div class="ev-card"><div class="ch">① 评测对象(被考的是谁)</div>
+      <div class="kv"><div class="k">系统版本</div><div class="v"><select class="ev-sel"><option>v0.7.3</option><option>v0.7.2</option></select> &nbsp;vs 基线 <select class="ev-sel"><option>v0.7.2</option><option>v0.7.1</option></select></div></div>
+      <div class="kv"><div class="k">模型路由</div><div class="v">主控 <select class="ev-sel"><option>Opus</option></select> · 文案 <select class="ev-sel"><option>豆包</option><option>Qwen</option></select> · 多模态 <select class="ev-sel"><option>Gemini</option></select></div></div>
+      <div class="kv"><div class="k">召回参数</div><div class="v">阈值 <select class="ev-sel"><option>0.8</option><option>0.75</option></select> · TopK <select class="ev-sel"><option>8</option><option>10</option></select></div></div>
+      <div class="kv"><div class="k">CLAUDE.md / SKILL</div><div class="v">CLAUDE.md v12 · active 技能 13</div></div></div>
+    <div class="ev-card"><div class="ch">② 评测集(可多选)</div>
+      <label class="ev-chk"><input type="checkbox" checked> 端到端·全套 60题</label>
+      <label class="ev-chk"><input type="checkbox"> 对抗兜底 30题</label></div>
+    <div class="ev-card"><div class="ch">③ 评估器(按层自动匹配,可调)</div>${evs}</div>
+    <div class="ev-bar"><div class="ev-btn pri" onclick="toast('已创建并排队 — 跑完出现在实验列表')">开始跑回归</div><div class="ev-btn" onclick="back()">取消</div></div>`;
+}
+
+/* ════════ 复核工作台(人复核 judge) ════════ */
+function reviewQueue(){
+  const rows=CALIB.map(c=>`<tr class="clk" onclick="push('复核 #${c.id}',()=>reviewCase('${c.id}'))"><td><b style="color:var(--ink)">#${c.id}</b></td><td class="mono">judge ${c.j}</td><td style="font-size:11.5px">${c.reason}</td><td><span class="ev-btn sm">复核这条 →</span></td></tr>`).join('');
+  return `<div class="csub">待人工复核 ${CALIB.length} 条 · 逐条<b>对着 judge 的评判裁定</b>(不盲打)。同一条需 ≥2 人独立。</div>
+    <table class="ev-tbl"><thead><tr><th>用例</th><th>judge 分</th><th>judge 理由</th><th></th></tr></thead><tbody>${rows}</tbody></table>`;
+}
+function reviewCase(id){
+  const c=CALIB.find(x=>x.id===id);
+  return `<div class="ev-card"><div class="ch">judge 的评判(你复核的对象)</div>
+      <div class="kv"><div class="k">judge 分</div><div class="v mono">${c.j} / 100</div></div>
+      <div class="kv"><div class="k">五维</div><div class="v">钩子 2/5(套模板) · 卖点 4 · 结构 4 · 可拍 3 · 合规 5</div></div>
+      <div class="kv"><div class="k">judge 理由</div><div class="v">${c.reason}</div></div></div>
+    <div class="ev-card"><div class="ch">脚本原文(去署名)</div>
+      <pre class="code">钩子: "你还在为熬夜暗沉烦恼吗?"\n痛点: 早八党素颜不敢出门……\n卖点: 高浓度玻尿酸 + 24h 长效锁水\nCTA: 点下方,熬夜也能稳住状态</pre></div>
+    <div class="ev-card"><div class="ch">你的裁定</div>
+      <div class="ev-bar"><div class="ev-btn" onclick="toast('采纳 judge ${c.j} 分')">采纳 judge</div>
+        <div class="ev-btn" onclick="push('改分 #${id}',()=>reviewEdit('${id}'))">改分</div>
+        <div class="ev-btn" onclick="toast('已标记 judge 误判 → 进校准样本')">误判</div></div>
+      <div class="csub" style="margin:8px 0 0">改分=给正确分并覆盖为该用例<b>权威分</b>;误判=分还行但理由/归因错。两者都进校准样本调 judge。</div></div>`;
+}
+function reviewEdit(id){
+  const dims=[['钩子力','3/5','2/5'],['卖点清晰','4/5','4/5'],['结构完整','4/5','4/5'],['可拍性','3/5','3/5'],['合规','5/5','5/5']];
+  const dr=dims.map(d=>`<div class="kv"><div class="k">${d[0]}</div><div class="v"><input class="ev-inp" style="width:72px;display:inline-block" value="${d[1]}"> <span style="color:var(--ink-3);font-size:11px">judge 给了 ${d[2]}</span></div></div>`).join('');
+  return `<div class="ev-card"><div class="ch">改分(覆盖为权威分)</div>
+    <div class="flbl">你的总分(0-100)</div><input class="ev-inp" value="71">
+    <div class="flbl">五维(全部可改)</div>${dr}
+    <div class="flbl">理由</div><textarea class="ev-inp" rows="2">钩子虽套模板但与痛点贴合,judge 判过重</textarea>
+    <div class="ev-bar" style="margin:10px 0 0"><div class="ev-btn pri" onclick="back();toast('已保存:#${id} 权威分=71,进校准样本')">保存权威分</div><div class="ev-btn" onclick="back()">取消</div></div></div>`;
+}
+
+/* ════════ rubric 编辑 ════════ */
+function rubricEdit(id,name){
+  const R=id==='EVR-S'?[['钩子力','30'],['卖点清晰','25'],['结构完整','20'],['可拍性','15'],['合规','10']]:[['方向清晰','25'],['痛点·人群对位','25'],['借鉴点有效','20'],['卖点差异化','15'],['可落成脚本','15']];
+  const rows=R.map(r=>`<div class="kv"><div class="k">${r[0]}</div><div class="v">权重 <input class="ev-inp" style="width:64px;display:inline-block" value="${r[1]}%"> &nbsp;锚点 <input class="ev-inp" style="width:55%;display:inline-block" value="1分→5分锚点"></div></div>`).join('');
+  return `<div class="ev-card"><div class="ch">${name} · 编辑五维 rubric</div>${rows}</div>
+    <div class="ev-bar"><div class="ev-btn pri" onclick="toast('已保存 rubric — 评估器版本 +1,新旧分不可比')">保存(评估器 v+1)</div><div class="ev-btn" onclick="back()">取消</div></div>`;
+}
+
+/* ════════ SKILL.md 查看 / 编辑 / 保存 ════════ */
+function skillCard(){
+  const s=SKILLDRAFT;
+  return `<div class="ev-card"><div class="ch">SKILL.md(可查看 / 编辑)<span class="pill dim" style="margin-left:auto">status: ${s.status}</span></div>
+    <div class="kv"><div class="k">name</div><div class="v mono">${s.name}</div></div>
+    <div class="kv"><div class="k">agent</div><div class="v">${s.agent}</div></div>
+    <div class="kv"><div class="k">description</div><div class="v">${esc(s.description)}</div></div>
+    <div class="flbl" style="margin-top:10px">body</div>
+    <pre class="code">${esc(s.body)}</pre>
+    <div class="ev-bar" style="margin:10px 0 0"><div class="ev-btn sm" onclick="push('编辑 SKILL.md',skillEdit)">编辑 SKILL.md →</div></div>
+    <div class="csub" style="margin:10px 0 0"><b>谁总结的:</b>系统(Hermes 闭环学习)从线上正样 trace 自动抽出草稿,人在此<b>审查 + 编辑</b>后技能沉淀。</div>
+    <div class="csub" style="margin:6px 0 0">技能沉淀 = 转<b>既有技能沉淀队列</b>走超管 active 治理,不在评测中心重做技能审查(单一真相源)。</div></div>`;
+}
+function skillEdit(){
+  const s=SKILLDRAFT;
+  return `<div class="ev-card"><div class="ch">编辑 SKILL.md(全部字段可改)</div>
+    <div class="flbl">name</div><input id="sk_n" class="ev-inp mono" value="${esc(s.name)}">
+    <div class="flbl">agent</div><input id="sk_a" class="ev-inp" value="${esc(s.agent)}">
+    <div class="flbl">status</div><select id="sk_s" class="ev-sel"><option ${s.status==='candidate'?'selected':''}>candidate</option><option ${s.status==='active'?'selected':''}>active</option></select>
+    <div class="flbl">description</div><textarea id="sk_d" class="ev-inp" rows="3">${esc(s.description)}</textarea>
+    <div class="flbl">body(完整正文,可改)</div><textarea id="sk_b" class="ev-inp mono" rows="14">${esc(s.body)}</textarea>
+    <div class="ev-bar" style="margin:10px 0 0"><div class="ev-btn pri" onclick="skillSave()">保存</div><div class="ev-btn" onclick="back()">取消</div></div></div>`;
+}
+function skillSave(){SKILLDRAFT.name=$('#sk_n').value;SKILLDRAFT.agent=$('#sk_a').value;SKILLDRAFT.status=$('#sk_s').value;SKILLDRAFT.description=$('#sk_d').value;SKILLDRAFT.body=$('#sk_b').value;back();toast('已保存 SKILL.md 草稿');}
+
+
+
+function ecInit(){TAB='exp';STACK=[];document.querySelectorAll('#evTabs .ev-tab').forEach(x=>x.classList.toggle('on',x.dataset.tab==='exp'));render();}
+if($('#view-eval')&&$('#view-eval').classList.contains('on'))ecInit();
+
 </script>
 </body>
 </html>
